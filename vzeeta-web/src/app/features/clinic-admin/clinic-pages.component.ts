@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, SlicePipe } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,7 +26,8 @@ import {
   ClinicLabResult,
   ClinicPatient,
   ClinicServiceItem,
-  ClinicSpecialty
+  ClinicSpecialty,
+  CreateDoctorRequest
 } from '../../core/services/clinic-admin.service';
 import { Appointment } from '../../core/models/appointment.model';
 import { SnackService } from '../../core/services/snack.service';
@@ -35,161 +36,104 @@ import { I18nService } from '../../core/i18n/i18n.service';
 @Component({
   selector: 'app-clinic-admin-dashboard',
   standalone: true,
-  imports: [NgFor, NgIf, TranslateModule, MatProgressSpinnerModule, MatButtonModule, MatIconModule],
+  imports: [NgFor, NgIf, SlicePipe, TranslateModule, MatProgressSpinnerModule, MatButtonModule, MatIconModule],
   template: `
-    <div class="med-dashboard">
-      <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+    <div class="app-page dashboard-page">
+      <div *ngIf="loading" class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
 
       <ng-container *ngIf="!loading">
-        <!-- KPI Cards -->
-        <div class="med-kpi-grid">
-          <div class="med-kpi-card">
-            <div class="med-kpi-body">
-              <div class="med-kpi-text">
-                <div class="med-kpi-label">{{ 'CLINIC.MONTH_APPOINTMENTS' | translate }}</div>
-                <div class="med-kpi-value">{{ analytics.appointmentCount }}</div>
-                <div class="med-kpi-sub">{{ 'CLINIC.TODAY' | translate }}</div>
-              </div>
-              <div class="med-kpi-ring blue">
-                <svg viewBox="0 0 56 56" width="56" height="56">
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#e2e8f0" stroke-width="5"/>
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#2563eb" stroke-width="5"
-                    stroke-dasharray="138.2" [attr.stroke-dashoffset]="ringOffset(analytics.todayCount, analytics.appointmentCount)" stroke-linecap="round" transform="rotate(-90 28 28)"/>
-                  <text x="28" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">{{ analytics.todayCount }}/{{ analytics.appointmentCount }}</text>
-                </svg>
-              </div>
+        <div class="estate-stat-grid">
+          <article class="estate-stat-card navy">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'CLINIC.MONTH_APPOINTMENTS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">event</span></div>
             </div>
-            <div class="med-kpi-bar"><span class="med-badge blue">{{ analytics.todayCount }} {{ 'COMMON.TODAY' | translate }}</span></div>
-          </div>
+            <div class="estate-stat-value">{{ analytics.appointmentCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ analytics.todayCount }} {{ 'COMMON.TODAY' | translate }}</span>
+            </div>
+          </article>
 
-          <div class="med-kpi-card">
-            <div class="med-kpi-body">
-              <div class="med-kpi-text">
-                <div class="med-kpi-label">{{ 'CLINIC.ACTIVE_DOCTORS' | translate }}</div>
-                <div class="med-kpi-value">{{ analytics.doctorCount }}</div>
-                <div class="med-kpi-sub">{{ 'CLINIC.BRANCHES' | translate }}: {{ analytics.branchCount }}</div>
-              </div>
-              <div class="med-kpi-ring rose">
-                <svg viewBox="0 0 56 56" width="56" height="56">
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#fce7f3" stroke-width="5"/>
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#db2777" stroke-width="5"
-                    stroke-dasharray="138.2" stroke-dashoffset="34" stroke-linecap="round" transform="rotate(-90 28 28)"/>
-                  <text x="28" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">{{ analytics.doctorCount }}</text>
-                </svg>
-              </div>
+          <article class="estate-stat-card teal">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'CLINIC.ACTIVE_DOCTORS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">medical_services</span></div>
             </div>
-            <div class="med-kpi-bar"><span class="med-badge rose">{{ analytics.branchCount }} {{ 'NAV.BRANCHES' | translate }}</span></div>
-          </div>
+            <div class="estate-stat-value">{{ analytics.doctorCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ analytics.branchCount }} {{ 'NAV.BRANCHES' | translate }}</span>
+            </div>
+          </article>
 
-          <div class="med-kpi-card">
-            <div class="med-kpi-body">
-              <div class="med-kpi-text">
-                <div class="med-kpi-label">{{ 'APPOINTMENT.CANCELLED' | translate }}</div>
-                <div class="med-kpi-value">{{ analytics.cancelledCount }}</div>
-                <div class="med-kpi-sub">{{ 'COMMON.TOTAL' | translate }}</div>
-              </div>
-              <div class="med-kpi-ring gray">
-                <svg viewBox="0 0 56 56" width="56" height="56">
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#f1f5f9" stroke-width="5"/>
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#94a3b8" stroke-width="5"
-                    stroke-dasharray="138.2" [attr.stroke-dashoffset]="ringOffset(analytics.cancelledCount, analytics.appointmentCount)" stroke-linecap="round" transform="rotate(-90 28 28)"/>
-                  <text x="28" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">{{ analytics.cancelledCount }}</text>
-                </svg>
-              </div>
+          <article class="estate-stat-card gold">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'APPOINTMENT.PENDING' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">pending_actions</span></div>
             </div>
-            <div class="med-kpi-bar"><span class="med-badge gray">{{ 'APPOINTMENT.STATUS_CANCELLED' | translate }}</span></div>
-          </div>
+            <div class="estate-stat-value">{{ analytics.pendingCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ 'APPOINTMENT.STATUS_PENDING' | translate }}</span>
+            </div>
+          </article>
 
-          <div class="med-kpi-card urgent">
-            <div class="med-kpi-body">
-              <div class="med-kpi-text">
-                <div class="med-kpi-label">{{ 'APPOINTMENT.PENDING' | translate }}</div>
-                <div class="med-kpi-value">{{ analytics.pendingCount }}</div>
-                <div class="med-kpi-sub">{{ 'COMMON.TODAY' | translate }}</div>
-              </div>
-              <div class="med-kpi-ring teal">
-                <svg viewBox="0 0 56 56" width="56" height="56">
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#d1fae5" stroke-width="5"/>
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#059669" stroke-width="5"
-                    stroke-dasharray="138.2" [attr.stroke-dashoffset]="ringOffset(analytics.pendingCount, analytics.appointmentCount)" stroke-linecap="round" transform="rotate(-90 28 28)"/>
-                  <text x="28" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">{{ analytics.pendingCount }}</text>
-                </svg>
-              </div>
+          <article class="estate-stat-card danger">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'APPOINTMENT.CANCELLED' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">event_busy</span></div>
             </div>
-            <div class="med-kpi-bar"><span class="med-badge teal">{{ 'APPOINTMENT.STATUS_PENDING' | translate }}</span></div>
-          </div>
+            <div class="estate-stat-value">{{ analytics.cancelledCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ 'APPOINTMENT.STATUS_CANCELLED' | translate }}</span>
+            </div>
+          </article>
         </div>
 
         <!-- Today Appointments -->
-        <div class="med-appts-section">
-          <div class="med-appts-header">
-            <h3 class="med-appts-title">{{ 'CLINIC.TODAY_APPOINTMENTS' | translate }} <span class="med-appts-count">({{ todayAppointments.length }} {{ 'COMMON.APPOINTMENTS' | translate }})</span></h3>
+        <div class="appt-panel">
+          <div class="appt-panel-head">
+            <h3 class="appt-panel-title">{{ 'CLINIC.TODAY_APPOINTMENTS' | translate }} <span class="appt-count">({{ todayAppointments.length }})</span></h3>
           </div>
-          <div class="med-appt-grid" *ngIf="todayAppointments.length > 0; else noAppts">
-            <div class="med-appt-card" *ngFor="let a of todayAppointments">
-              <div class="med-appt-card-top">
-                <div class="med-appt-avatar" [style.background]="avatarColor(a.patientNameAr || a.patientNameEn || 'P')">
+          <div class="appt-grid" *ngIf="todayAppointments.length > 0; else noAppts">
+            <div class="appt-card" *ngFor="let a of todayAppointments">
+              <div class="appt-card-row">
+                <div class="appt-avatar" [style.background]="avatarColor(a.patientNameAr || a.patientNameEn || 'P')">
                   {{ initials(a.patientNameAr || a.patientNameEn) }}
                 </div>
-                <div class="med-appt-info">
-                  <div class="med-appt-name">{{ a.patientNameAr || a.patientNameEn || ('PATIENT.PATIENT' | translate) + ' #' + a.patientId }}</div>
-                  <div class="med-appt-type">{{ a.specialtyNameAr || a.consultationType }}</div>
-                  <div class="med-appt-actions">
-                    <span class="status-badge" [attr.data-status]="a.status">{{ a.status | translate }}</span>
-                  </div>
+                <div class="appt-info">
+                  <div class="appt-name">{{ a.patientNameAr || a.patientNameEn || ('PATIENT.PATIENT' | translate) + ' #' + a.patientId }}</div>
+                  <div class="appt-type">{{ a.specialtyNameAr || a.consultationType }}</div>
+                  <span class="status-badge" [attr.data-status]="a.status">{{ a.status }}</span>
                 </div>
               </div>
-              <div class="med-appt-time">{{ a.startTime | slice:0:5 }}</div>
-              <div class="med-appt-date">{{ a.appointmentDate }}</div>
-              <div class="med-appt-footer">
-                <a class="med-appt-link">{{ 'COMMON.VIEW_DETAILS' | translate }}</a>
-              </div>
+              <div class="appt-time">{{ a.startTime | slice:0:5 }}</div>
+              <div class="appt-date">{{ a.appointmentDate }}</div>
             </div>
           </div>
           <ng-template #noAppts>
-            <div class="app-empty-state">
-              <span class="material-icons empty-icon">event_available</span>
-              <h4>{{ 'APPOINTMENT.NO_TODAY' | translate }}</h4>
-            </div>
+            <div class="appt-empty"><span class="material-icons">event_available</span><p>{{ 'APPOINTMENT.NO_TODAY' | translate }}</p></div>
           </ng-template>
         </div>
       </ng-container>
     </div>
   `,
   styles: [`
-    .med-dashboard { padding: 24px; min-height: calc(100vh - 64px); }
-    .med-kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
-    .med-kpi-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 1px 4px rgba(15,23,42,.06); }
-    .med-kpi-body { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-    .med-kpi-label { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 4px; }
-    .med-kpi-value { font-size: 38px; font-weight: 700; color: #0f172a; line-height: 1; }
-    .med-kpi-sub { font-size: 12px; color: #94a3b8; margin-top: 4px; }
-    .med-kpi-ring { flex-shrink: 0; }
-    .med-kpi-bar { display: flex; align-items: center; gap: 8px; }
-    .med-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
-    .med-badge.blue { background: #dbeafe; color: #2563eb; }
-    .med-badge.rose { background: #fce7f3; color: #db2777; }
-    .med-badge.gray { background: #f1f5f9; color: #64748b; }
-    .med-badge.teal { background: #d1fae5; color: #059669; }
-    .med-appts-section { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; }
-    .med-appts-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #f1f5f9; }
-    .med-appts-title { font-size: 1rem; font-weight: 700; color: #0f172a; margin: 0; }
-    .med-appts-count { color: #64748b; font-weight: 500; }
-    .med-appt-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: #f1f5f9; }
-    .med-appt-card { background: #fff; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
-    .med-appt-card-top { display: flex; align-items: flex-start; gap: 12px; }
-    .med-appt-avatar { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 0.9rem; font-weight: 700; color: #fff; flex-shrink: 0; }
-    .med-appt-info { flex: 1; min-width: 0; }
-    .med-appt-name { font-weight: 600; font-size: 0.9rem; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .med-appt-type { font-size: 0.78rem; color: #64748b; margin-bottom: 6px; }
-    .med-appt-actions { display: flex; gap: 6px; }
-    .med-appt-time { font-size: 1.5rem; font-weight: 700; color: #0f172a; }
-    .med-appt-date { font-size: 0.78rem; color: #94a3b8; }
-    .med-appt-footer { border-top: 1px solid #f1f5f9; padding-top: 10px; margin-top: 2px; }
-    .med-appt-link { font-size: 0.82rem; color: #2563eb; font-weight: 600; cursor: pointer; text-decoration: none; }
-    .med-appt-link:hover { text-decoration: underline; }
-    @media (max-width: 1200px) { .med-kpi-grid { grid-template-columns: repeat(2,1fr); } .med-appt-grid { grid-template-columns: repeat(2,1fr); } }
-    @media (max-width: 700px) { .med-kpi-grid { grid-template-columns: 1fr; } .med-appt-grid { grid-template-columns: 1fr; } }
+    .appt-panel { background: var(--surface); border: 1px solid var(--card-border); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow-card); }
+    .appt-panel-head { padding: 18px 22px; border-bottom: 1px solid var(--line); }
+    .appt-panel-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0; }
+    .appt-count { color: var(--text-muted); font-weight: 500; margin-inline-start: 6px; }
+    .appt-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--line); }
+    .appt-card { background: var(--surface); padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .appt-card-row { display: flex; align-items: flex-start; gap: 10px; }
+    .appt-avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 0.8rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .appt-info { flex: 1; min-width: 0; }
+    .appt-name { font-weight: 600; font-size: 0.875rem; color: var(--text-main); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .appt-type { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+    .appt-time { font-size: 1.35rem; font-weight: 700; color: var(--text-main); }
+    .appt-date { font-size: 0.75rem; color: var(--text-subtle); }
+    .appt-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 48px 24px; color: var(--text-subtle); }
+    .appt-empty .material-icons { font-size: 40px; opacity: 0.35; }
+    @media (max-width: 1200px) { .appt-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 700px) { .appt-grid { grid-template-columns: 1fr; } }
   `]
 })
 export class ClinicAdminDashboardComponent implements OnInit {
@@ -213,12 +157,6 @@ export class ClinicAdminDashboardComponent implements OnInit {
     });
   }
 
-  ringOffset(count: number, total: number): number {
-    if (!total) return 138.2;
-    const pct = Math.min(count / total, 1);
-    return 138.2 * (1 - pct);
-  }
-
   initials(name?: string): string {
     if (!name) return '?';
     return name.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase();
@@ -233,10 +171,14 @@ export class ClinicAdminDashboardComponent implements OnInit {
 @Component({
   selector: 'app-clinic-doctors',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, TranslateModule, MatChipsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatCardModule, PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule],
+  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, TranslateModule, MatChipsModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatCardModule, PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule],
   template: `
     <div class="app-page">
-      <app-page-header titleKey="NAV.DOCTORS"></app-page-header>
+      <app-page-header titleKey="NAV.DOCTORS">
+        <button mat-flat-button color="primary" type="button" (click)="openCreate()">
+          <mat-icon>person_add</mat-icon> {{ 'CLINIC.ADD_DOCTOR' | translate }}
+        </button>
+      </app-page-header>
       <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="medical_information" titleKey="COMMON.NO_DATA"></app-empty-state>
       <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
@@ -249,10 +191,11 @@ export class ClinicAdminDashboardComponent implements OnInit {
             </label>
           </div>
           <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
-            <th>{{ 'NAV.DOCTORS' | translate }}</th><th>{{ 'COMMON.EGP' | translate }}</th><th>{{ 'COMMON.STATUS' | translate }}</th><th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            <th>{{ 'LOOKUPS.NAME_AR' | translate }}</th><th>{{ 'COMMON.EMAIL' | translate }}</th><th>{{ 'COMMON.EGP' | translate }}</th><th>{{ 'COMMON.STATUS' | translate }}</th><th>{{ 'COMMON.ACTIONS' | translate }}</th>
           </tr></thead><tbody>
             <tr *ngFor="let d of rows">
-              <td>{{ d.titleAr || ('DOCTOR.DOCTOR' | translate) }} #{{ d.id }}</td>
+              <td>{{ d.user?.fullNameAr || d.user?.fullNameEn || ('DOCTOR.DOCTOR' | translate) + ' #' + d.id }}</td>
+              <td>{{ d.user?.email || '-' }}</td>
               <td>{{ d.consultationFee }}</td>
               <td><span class="status-badge" [attr.data-status]="d.verified ? 'ACTIVE' : 'INACTIVE'">{{ d.verified ? ('ADMIN.VERIFIED' | translate) : ('ADMIN.PENDING' | translate) }}</span></td>
               <td><button mat-stroked-button type="button" (click)="openEdit(d)">{{ 'COMMON.EDIT' | translate }}</button></td>
@@ -261,15 +204,41 @@ export class ClinicAdminDashboardComponent implements OnInit {
           <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
         </section>
       </div>
-      <div class="dialog-backdrop" *ngIf="showDialog" (click)="closeDialog()">
+
+      <!-- Create Doctor Dialog -->
+      <div class="dialog-backdrop" *ngIf="showCreateDialog" (click)="closeDialogs()">
+        <mat-card class="dialog-panel" (click)="$event.stopPropagation()">
+          <h3>{{ 'CLINIC.ADD_DOCTOR' | translate }}</h3>
+          <form [formGroup]="createForm" (ngSubmit)="submitCreate()" class="dialog-form">
+            <mat-form-field appearance="outline"><mat-label>{{ 'LOOKUPS.NAME_AR' | translate }}</mat-label><input matInput formControlName="fullNameAr"></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>{{ 'LOOKUPS.NAME_EN' | translate }}</mat-label><input matInput formControlName="fullNameEn"></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>{{ 'COMMON.EMAIL' | translate }}</mat-label><input matInput type="email" formControlName="email"></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>{{ 'COMMON.PHONE' | translate }}</mat-label><input matInput formControlName="phone"></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>{{ 'CLINIC.DOCTOR_TITLE' | translate }}</mat-label><input matInput formControlName="titleAr"></mat-form-field>
+            <mat-form-field appearance="outline"><mat-label>{{ 'COMMON.EGP' | translate }}</mat-label><input matInput type="number" formControlName="consultationFee"></mat-form-field>
+            <div class="checkbox-row">
+              <mat-checkbox formControlName="acceptsOnline">{{ 'DOCTOR.ACCEPTS_ONLINE' | translate }}</mat-checkbox>
+              <mat-checkbox formControlName="acceptsInClinic">{{ 'DOCTOR.ACCEPTS_IN_CLINIC' | translate }}</mat-checkbox>
+            </div>
+            <p class="hint-text">{{ 'CLINIC.DOCTOR_DEFAULT_PASS' | translate }}</p>
+            <div class="dialog-actions">
+              <button mat-button type="button" (click)="closeDialogs()">{{ 'COMMON.CANCEL' | translate }}</button>
+              <button mat-flat-button color="primary" type="submit" [disabled]="createForm.invalid || saving">{{ 'COMMON.SAVE' | translate }}</button>
+            </div>
+          </form>
+        </mat-card>
+      </div>
+
+      <!-- Edit Doctor Dialog -->
+      <div class="dialog-backdrop" *ngIf="showEditDialog" (click)="closeDialogs()">
         <mat-card class="dialog-panel" (click)="$event.stopPropagation()">
           <h3>{{ 'CLINIC.EDIT_DOCTOR' | translate }}</h3>
-          <form [formGroup]="doctorForm" (ngSubmit)="saveDoctor()" class="dialog-form">
-            <mat-form-field appearance="outline"><mat-label>{{ 'LOOKUPS.NAME_AR' | translate }}</mat-label><input matInput formControlName="titleAr"></mat-form-field>
+          <form [formGroup]="editForm" (ngSubmit)="saveDoctor()" class="dialog-form">
+            <mat-form-field appearance="outline"><mat-label>{{ 'CLINIC.DOCTOR_TITLE' | translate }}</mat-label><input matInput formControlName="titleAr"></mat-form-field>
             <mat-form-field appearance="outline"><mat-label>{{ 'COMMON.EGP' | translate }}</mat-label><input matInput type="number" formControlName="consultationFee"></mat-form-field>
             <div class="dialog-actions">
-              <button mat-button type="button" (click)="closeDialog()">{{ 'COMMON.CANCEL' | translate }}</button>
-              <button mat-flat-button color="primary" type="submit" [disabled]="doctorForm.invalid || saving">{{ 'COMMON.SAVE' | translate }}</button>
+              <button mat-button type="button" (click)="closeDialogs()">{{ 'COMMON.CANCEL' | translate }}</button>
+              <button mat-flat-button color="primary" type="submit" [disabled]="editForm.invalid || saving">{{ 'COMMON.SAVE' | translate }}</button>
             </div>
           </form>
         </mat-card>
@@ -278,9 +247,11 @@ export class ClinicAdminDashboardComponent implements OnInit {
   `,
   styles: [`
     .dialog-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-    .dialog-panel { padding: 1.5rem; min-width: 320px; max-width: 480px; width: 100%; }
+    .dialog-panel { padding: 1.5rem; min-width: 340px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; }
     .dialog-form { display: flex; flex-direction: column; gap: 0.5rem; }
     .dialog-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.5rem; }
+    .checkbox-row { display: flex; gap: 1.5rem; align-items: center; padding: 0.25rem 0; }
+    .hint-text { font-size: 0.78rem; color: var(--text-subtle); margin: 0; }
   `]
 })
 export class ClinicDoctorsComponent implements OnInit {
@@ -290,10 +261,12 @@ export class ClinicDoctorsComponent implements OnInit {
   pageSize = DEFAULT_TABLE_PAGE_SIZE;
   totalElements = 0;
   searchTerm = '';
-  showDialog = false;
+  showCreateDialog = false;
+  showEditDialog = false;
   editingDoctor: ClinicDoctor | null = null;
   saving = false;
-  doctorForm: FormGroup;
+  createForm: FormGroup;
+  editForm: FormGroup;
   private searchTimer?: ReturnType<typeof setTimeout>;
 
   constructor(
@@ -302,9 +275,21 @@ export class ClinicDoctorsComponent implements OnInit {
     private readonly snack: SnackService,
     private readonly i18n: I18nService
   ) {
-    this.doctorForm = fb.group({ titleAr: ['', Validators.required], consultationFee: [0, Validators.required] });
+    this.createForm = fb.group({
+      fullNameAr: ['', Validators.required],
+      fullNameEn: [''],
+      email: ['', [Validators.required, Validators.email]],
+      phone: [''],
+      titleAr: [''],
+      consultationFee: [0, Validators.required],
+      acceptsOnline: [true],
+      acceptsInClinic: [true]
+    });
+    this.editForm = fb.group({ titleAr: ['', Validators.required], consultationFee: [0, Validators.required] });
   }
+
   ngOnInit(): void { this.load(); }
+
   load(): void {
     this.listLoad.begin();
     this.clinicAdmin.getDoctors(withPageParams(this.pageIndex, this.pageSize, { q: this.searchTerm })).subscribe({
@@ -312,25 +297,46 @@ export class ClinicDoctorsComponent implements OnInit {
       error: () => { this.rows = []; this.totalElements = 0; this.listLoad.end(); }
     });
   }
-  openEdit(d: ClinicDoctor): void {
-    this.editingDoctor = d;
-    this.doctorForm.patchValue({ titleAr: d.titleAr ?? '', consultationFee: d.consultationFee ?? 0 });
-    this.showDialog = true;
-  }
-  closeDialog(): void { this.showDialog = false; this.editingDoctor = null; }
-  saveDoctor(): void {
-    if (!this.editingDoctor || this.doctorForm.invalid || this.saving) return;
+
+  openCreate(): void { this.createForm.reset({ consultationFee: 0, acceptsOnline: true, acceptsInClinic: true }); this.showCreateDialog = true; }
+
+  submitCreate(): void {
+    if (this.createForm.invalid || this.saving) return;
     this.saving = true;
-    this.clinicAdmin.updateDoctor(this.editingDoctor.id, this.doctorForm.getRawValue()).subscribe({
+    const req: CreateDoctorRequest = this.createForm.getRawValue();
+    this.clinicAdmin.createDoctor(req).subscribe({
       next: () => {
         this.snack.success(this.i18n.instant('COMMON.SAVE'));
         this.saving = false;
-        this.closeDialog();
+        this.closeDialogs();
         this.load();
       },
       error: () => { this.saving = false; }
     });
   }
+
+  openEdit(d: ClinicDoctor): void {
+    this.editingDoctor = d;
+    this.editForm.patchValue({ titleAr: d.titleAr ?? '', consultationFee: d.consultationFee ?? 0 });
+    this.showEditDialog = true;
+  }
+
+  closeDialogs(): void { this.showCreateDialog = false; this.showEditDialog = false; this.editingDoctor = null; }
+
+  saveDoctor(): void {
+    if (!this.editingDoctor || this.editForm.invalid || this.saving) return;
+    this.saving = true;
+    this.clinicAdmin.updateDoctor(this.editingDoctor.id, this.editForm.getRawValue()).subscribe({
+      next: () => {
+        this.snack.success(this.i18n.instant('COMMON.SAVE'));
+        this.saving = false;
+        this.closeDialogs();
+        this.load();
+      },
+      error: () => { this.saving = false; }
+    });
+  }
+
   onPageChange(i: number): void { this.pageIndex = i; this.load(); }
   onSearch(): void {
     clearTimeout(this.searchTimer);

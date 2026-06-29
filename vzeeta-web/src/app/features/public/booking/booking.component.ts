@@ -26,7 +26,7 @@ import { RmsDatePipe } from '../../../shared/pipes/rms-date.pipe';
   selector: 'app-booking',
   standalone: true,
   imports: [
-    NgFor, NgIf, RmsDatePipe, ReactiveFormsModule, TranslateModule,
+    NgFor, NgIf, RmsDatePipe, ReactiveFormsModule, TranslateModule, RouterLink,
     MatFormFieldModule, MatInputModule,
     MatButtonModule, MatIconModule, MatCardModule, MatChipsModule, MatButtonToggleModule,
     LoadingSpinnerComponent, DateFieldComponent

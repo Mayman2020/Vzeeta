@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgFor, NgIf } from '@angular/common';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
-import { of, switchMap } from 'rxjs';
+import { switchMap, timeout } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.service';
 import { PermissionService } from '../../../core/services/permission.service';
 import { SnackService } from '../../../core/services/snack.service';
@@ -27,7 +27,7 @@ export class LoginComponent {
   showPassword = false;
   rememberMe = false;
   error = '';
-  private returnUrl = '/';
+  private returnUrl: string | null = null;
 
   constructor(
     fb: FormBuilder,
@@ -43,7 +43,8 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
-    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || this.auth.getDashboardRoute();
+    this.returnUrl = this.getSafeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl'));
+    // إذا اليوزر logged in بالفعل، ودّيه للـ dashboard على طول
     if (this.auth.isAuthenticated()) {
       void this.router.navigateByUrl(this.auth.getDashboardRoute());
     }
@@ -54,18 +55,27 @@ export class LoginComponent {
     this.loading = true;
     this.error = '';
     this.auth.login(this.form.value).pipe(
-      switchMap(() => this.auth.mustChangePassword() ? of(null) : this.permissions.loadMine())
+      timeout(15000),
+      switchMap(() => this.permissions.loadMine())
     ).subscribe({
       next: () => {
         this.loading = false;
-        if (this.auth.mustChangePassword()) {
-          void this.router.navigateByUrl('/super-admin/profile?changePassword=1');
-          return;
-        }
-        void this.router.navigateByUrl(this.returnUrl);
+        const target = this.auth.mustChangePassword()
+          ? '/super-admin/profile?changePassword=1'
+          : (this.returnUrl || this.auth.getDashboardRoute());
+        // استخدام window.location لضمان full navigation بعد اللوجين
+        window.location.href = target;
       },
       error: (err: Error & { status?: number }) => {
         this.loading = false;
+        // لو الـ login نجح لكن الـ permissions فشلت، كمّل للـ dashboard
+        if (this.auth.isAuthenticated()) {
+          const target = this.auth.mustChangePassword()
+            ? '/super-admin/profile?changePassword=1'
+            : (this.returnUrl || this.auth.getDashboardRoute());
+          window.location.href = target;
+          return;
+        }
         this.error = err.status === 401 || err.status === 400
           ? this.i18n.instant('AUTH.INVALID_CREDENTIALS')
           : err.message || this.i18n.instant('AUTH.LOGIN_FAILED');
@@ -88,5 +98,12 @@ export class LoginComponent {
 
   get themeTooltipKey(): string {
     return this.theme.isDark ? 'TOPBAR.LIGHT_MODE' : 'TOPBAR.DARK_MODE';
+  }
+
+  private getSafeReturnUrl(returnUrl: string | null): string | null {
+    if (!returnUrl || !returnUrl.startsWith('/') || returnUrl.startsWith('/auth')) {
+      return null;
+    }
+    return returnUrl;
   }
 }

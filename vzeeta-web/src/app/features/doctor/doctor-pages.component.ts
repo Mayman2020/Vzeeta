@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, SlicePipe } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureShellComponent } from '../../shared/components/feature-shell/feature-shell.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
@@ -28,146 +29,104 @@ const APPOINTMENT_STATUSES = ['PENDING', 'CONFIRMED', 'RESCHEDULED', 'COMPLETED'
 @Component({
   selector: 'app-doctor-dashboard',
   standalone: true,
-  imports: [NgFor, NgIf, TranslateModule, MatProgressSpinnerModule, MatButtonModule, MatIconModule],
+  imports: [NgFor, NgIf, SlicePipe, TranslateModule, MatProgressSpinnerModule, MatButtonModule, MatIconModule],
   template: `
-    <div class="med-dashboard">
-      <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+    <div class="app-page dashboard-page">
+      <div *ngIf="loading" class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
       <ng-container *ngIf="!loading">
-        <div class="med-kpi-grid">
-          <div class="med-kpi-card">
-            <div class="med-kpi-body">
-              <div class="med-kpi-text">
-                <div class="med-kpi-label">{{ 'DOCTOR.TODAY_APPOINTMENTS' | translate }}</div>
-                <div class="med-kpi-value">{{ todayCount }}</div>
-                <div class="med-kpi-sub">{{ 'COMMON.TODAY' | translate }}</div>
-              </div>
-              <div class="med-kpi-ring blue">
-                <svg viewBox="0 0 56 56" width="56" height="56">
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#e2e8f0" stroke-width="5"/>
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#2563eb" stroke-width="5"
-                    stroke-dasharray="138.2" [attr.stroke-dashoffset]="ringOffset(todayCount, totalCount)" stroke-linecap="round" transform="rotate(-90 28 28)"/>
-                  <text x="28" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">{{ todayCount }}</text>
-                </svg>
-              </div>
+        <div class="estate-stat-grid">
+          <article class="estate-stat-card navy">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'DOCTOR.TODAY_APPOINTMENTS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">today</span></div>
             </div>
-            <div class="med-kpi-bar"><span class="med-badge blue">{{ 'DOCTOR.TODAY_APPOINTMENTS' | translate }}</span></div>
-          </div>
+            <div class="estate-stat-value">{{ todayCount }}</div>
+            <div class="estate-stat-foot">
+              <span class="material-icons kpi-nav-arrow">schedule</span>
+              <span>{{ 'COMMON.TODAY' | translate }}</span>
+            </div>
+          </article>
 
-          <div class="med-kpi-card">
-            <div class="med-kpi-body">
-              <div class="med-kpi-text">
-                <div class="med-kpi-label">{{ 'DOCTOR.WEEK_APPOINTMENTS' | translate }}</div>
-                <div class="med-kpi-value">{{ totalCount }}</div>
-                <div class="med-kpi-sub">{{ 'COMMON.TOTAL' | translate }}</div>
-              </div>
-              <div class="med-kpi-ring rose">
-                <svg viewBox="0 0 56 56" width="56" height="56">
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#fce7f3" stroke-width="5"/>
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#db2777" stroke-width="5"
-                    stroke-dasharray="138.2" stroke-dashoffset="40" stroke-linecap="round" transform="rotate(-90 28 28)"/>
-                  <text x="28" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">{{ totalCount }}</text>
-                </svg>
-              </div>
+          <article class="estate-stat-card teal">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'DOCTOR.WEEK_APPOINTMENTS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">event_note</span></div>
             </div>
-            <div class="med-kpi-bar"><span class="med-badge rose">{{ 'APPOINTMENT.ALL' | translate }}</span></div>
-          </div>
+            <div class="estate-stat-value">{{ totalCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ 'APPOINTMENT.ALL' | translate }}</span>
+            </div>
+          </article>
 
-          <div class="med-kpi-card">
-            <div class="med-kpi-body">
-              <div class="med-kpi-text">
-                <div class="med-kpi-label">{{ 'DOCTOR.MONTH_EARNINGS' | translate }}</div>
-                <div class="med-kpi-value">{{ totalEarnings }}</div>
-                <div class="med-kpi-sub">{{ 'COMMON.EGP' | translate }}</div>
-              </div>
-              <div class="med-kpi-ring teal">
-                <svg viewBox="0 0 56 56" width="56" height="56">
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#d1fae5" stroke-width="5"/>
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#059669" stroke-width="5"
-                    stroke-dasharray="138.2" stroke-dashoffset="55" stroke-linecap="round" transform="rotate(-90 28 28)"/>
-                  <text x="28" y="32" text-anchor="middle" font-size="9" font-weight="700" fill="#1e293b">EGP</text>
-                </svg>
-              </div>
+          <article class="estate-stat-card gold">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'DOCTOR.MONTH_EARNINGS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">payments</span></div>
             </div>
-            <div class="med-kpi-bar"><span class="med-badge teal">{{ 'DOCTOR.EARNINGS' | translate }}</span></div>
-          </div>
+            <div class="estate-stat-value">{{ totalEarnings }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ 'COMMON.EGP' | translate }}</span>
+            </div>
+          </article>
 
-          <div class="med-kpi-card">
-            <div class="med-kpi-body">
-              <div class="med-kpi-text">
-                <div class="med-kpi-label">{{ 'DOCTOR.PENDING_REQUESTS' | translate }}</div>
-                <div class="med-kpi-value">{{ pendingCount }}</div>
-                <div class="med-kpi-sub">{{ 'APPOINTMENT.STATUS_PENDING' | translate }}</div>
-              </div>
-              <div class="med-kpi-ring gold">
-                <svg viewBox="0 0 56 56" width="56" height="56">
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#fef9c3" stroke-width="5"/>
-                  <circle cx="28" cy="28" r="22" fill="none" stroke="#ca8a04" stroke-width="5"
-                    stroke-dasharray="138.2" [attr.stroke-dashoffset]="ringOffset(pendingCount, totalCount)" stroke-linecap="round" transform="rotate(-90 28 28)"/>
-                  <text x="28" y="32" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">{{ pendingCount }}</text>
-                </svg>
-              </div>
+          <article class="estate-stat-card danger">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'DOCTOR.PENDING_REQUESTS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">pending_actions</span></div>
             </div>
-            <div class="med-kpi-bar"><span class="med-badge gold">{{ 'APPOINTMENT.AWAITING' | translate }}</span></div>
-          </div>
+            <div class="estate-stat-value">{{ pendingCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ 'APPOINTMENT.STATUS_PENDING' | translate }}</span>
+            </div>
+          </article>
         </div>
 
-        <!-- Today's Appointments List -->
-        <div class="med-appts-section">
-          <div class="med-appts-header">
-            <h3 class="med-appts-title">{{ 'CLINIC.TODAY_APPOINTMENTS' | translate }} <span class="med-appts-count">({{ todayAppointments.length }})</span></h3>
+        <!-- Today's Appointments -->
+        <div class="appt-panel">
+          <div class="appt-panel-head">
+            <h3 class="appt-panel-title">{{ 'CLINIC.TODAY_APPOINTMENTS' | translate }} <span class="appt-count">({{ todayAppointments.length }})</span></h3>
           </div>
-          <div class="med-appt-grid" *ngIf="todayAppointments.length > 0; else noAppts">
-            <div class="med-appt-card" *ngFor="let a of todayAppointments">
-              <div class="med-appt-card-top">
-                <div class="med-appt-avatar" [style.background]="avatarColor(a.patientNameAr || a.patientNameEn || 'P')">
+          <div class="appt-grid" *ngIf="todayAppointments.length > 0; else noAppts">
+            <div class="appt-card" *ngFor="let a of todayAppointments">
+              <div class="appt-card-row">
+                <div class="appt-avatar" [style.background]="avatarColor(a.patientNameAr || a.patientNameEn || 'P')">
                   {{ initials(a.patientNameAr || a.patientNameEn) }}
                 </div>
-                <div class="med-appt-info">
-                  <div class="med-appt-name">{{ a.patientNameAr || a.patientNameEn || ('PATIENT.PATIENT' | translate) + ' #' + a.patientId }}</div>
-                  <div class="med-appt-type">{{ a.specialtyNameAr || a.consultationType }}</div>
+                <div class="appt-info">
+                  <div class="appt-name">{{ a.patientNameAr || a.patientNameEn || ('PATIENT.PATIENT' | translate) + ' #' + a.patientId }}</div>
+                  <div class="appt-type">{{ a.specialtyNameAr || a.consultationType }}</div>
                   <span class="status-badge" [attr.data-status]="a.status">{{ a.status }}</span>
                 </div>
               </div>
-              <div class="med-appt-time">{{ a.startTime | slice:0:5 }}</div>
-              <div class="med-appt-date">{{ a.appointmentDate }}</div>
+              <div class="appt-time">{{ a.startTime | slice:0:5 }}</div>
+              <div class="appt-date">{{ a.appointmentDate }}</div>
             </div>
           </div>
           <ng-template #noAppts>
-            <div class="app-empty-state"><span class="material-icons empty-icon">event_available</span><h4>{{ 'APPOINTMENT.NO_TODAY' | translate }}</h4></div>
+            <div class="appt-empty"><span class="material-icons">event_available</span><p>{{ 'APPOINTMENT.NO_TODAY' | translate }}</p></div>
           </ng-template>
         </div>
       </ng-container>
     </div>
   `,
   styles: [`
-    .med-dashboard { padding: 24px; min-height: calc(100vh - 64px); }
-    .med-kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
-    .med-kpi-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; box-shadow: 0 1px 4px rgba(15,23,42,.06); }
-    .med-kpi-body { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
-    .med-kpi-label { font-size: 13px; font-weight: 600; color: #64748b; margin-bottom: 4px; }
-    .med-kpi-value { font-size: 38px; font-weight: 700; color: #0f172a; line-height: 1; }
-    .med-kpi-sub { font-size: 12px; color: #94a3b8; margin-top: 4px; }
-    .med-kpi-bar { display: flex; align-items: center; gap: 8px; }
-    .med-badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px; font-size: 11.5px; font-weight: 600; }
-    .med-badge.blue { background: #dbeafe; color: #2563eb; }
-    .med-badge.rose { background: #fce7f3; color: #db2777; }
-    .med-badge.teal { background: #d1fae5; color: #059669; }
-    .med-badge.gold { background: #fef9c3; color: #ca8a04; }
-    .med-appts-section { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; overflow: hidden; }
-    .med-appts-header { display: flex; align-items: center; padding: 18px 22px; border-bottom: 1px solid #f1f5f9; }
-    .med-appts-title { font-size: 1rem; font-weight: 700; color: #0f172a; margin: 0; }
-    .med-appts-count { color: #64748b; font-weight: 500; margin-inline-start: 6px; }
-    .med-appt-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: #f1f5f9; }
-    .med-appt-card { background: #fff; padding: 16px; display: flex; flex-direction: column; gap: 8px; }
-    .med-appt-card-top { display: flex; align-items: flex-start; gap: 10px; }
-    .med-appt-avatar { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-size: 0.85rem; font-weight: 700; color: #fff; flex-shrink: 0; }
-    .med-appt-info { flex: 1; min-width: 0; }
-    .med-appt-name { font-weight: 600; font-size: 0.875rem; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .med-appt-type { font-size: 0.75rem; color: #64748b; margin-bottom: 4px; }
-    .med-appt-time { font-size: 1.4rem; font-weight: 700; color: #0f172a; }
-    .med-appt-date { font-size: 0.75rem; color: #94a3b8; }
-    @media (max-width: 1200px) { .med-kpi-grid, .med-appt-grid { grid-template-columns: repeat(2,1fr); } }
-    @media (max-width: 700px) { .med-kpi-grid, .med-appt-grid { grid-template-columns: 1fr; } }
+    .appt-panel { background: var(--surface); border: 1px solid var(--card-border); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow-card); }
+    .appt-panel-head { padding: 18px 22px; border-bottom: 1px solid var(--line); }
+    .appt-panel-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0; }
+    .appt-count { color: var(--text-muted); font-weight: 500; margin-inline-start: 6px; }
+    .appt-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--line); }
+    .appt-card { background: var(--surface); padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .appt-card-row { display: flex; align-items: flex-start; gap: 10px; }
+    .appt-avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 0.8rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .appt-info { flex: 1; min-width: 0; }
+    .appt-name { font-weight: 600; font-size: 0.875rem; color: var(--text-main); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .appt-type { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+    .appt-time { font-size: 1.35rem; font-weight: 700; color: var(--text-main); }
+    .appt-date { font-size: 0.75rem; color: var(--text-subtle); }
+    .appt-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 48px 24px; color: var(--text-subtle); }
+    .appt-empty .material-icons { font-size: 40px; opacity: 0.35; }
+    @media (max-width: 1200px) { .appt-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 700px) { .appt-grid { grid-template-columns: 1fr; } }
   `]
 })
 export class DoctorDashboardComponent implements OnInit {
@@ -200,11 +159,6 @@ export class DoctorDashboardComponent implements OnInit {
     });
   }
 
-  ringOffset(count: number, total: number): number {
-    if (!total) return 138.2;
-    return 138.2 * (1 - Math.min(count / total, 1));
-  }
-
   initials(name?: string): string {
     if (!name) return '?';
     return name.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase();
@@ -222,60 +176,142 @@ export class DoctorDashboardComponent implements OnInit {
   imports: [
     NgFor, NgIf, ReactiveFormsModule, TranslateModule, MatCardModule, MatButtonModule,
     MatFormFieldModule, MatInputModule, MatSelectModule, MatCheckboxModule,
-    PageHeaderComponent, MatProgressSpinnerModule
+    PageHeaderComponent, MatProgressSpinnerModule, MatIconModule
   ],
   template: `
-    <app-page-header titleKey="NAV.CALENDAR"></app-page-header>
-    <mat-card class="form-card">
-      <h3>{{ 'DOCTOR.ADD_AVAILABILITY' | translate }}</h3>
-      <form [formGroup]="slotForm" (ngSubmit)="saveSlot()">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'DOCTOR.DAY' | translate }}</mat-label>
-          <mat-select formControlName="dayOfWeek">
-            <mat-option *ngFor="let d of dayOptions" [value]="d.value">{{ d.label }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <div class="time-row">
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'DOCTOR.START_TIME' | translate }}</mat-label>
-            <input matInput type="time" formControlName="startTime">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'DOCTOR.END_TIME' | translate }}</mat-label>
-            <input matInput type="time" formControlName="endTime">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'DOCTOR.MIN_PER_SLOT' | translate }}</mat-label>
-            <input matInput type="number" formControlName="slotMinutes" min="5">
-          </mat-form-field>
+    <div class="cal-page">
+      <!-- Header -->
+      <div class="cal-header">
+        <div>
+          <h1 class="cal-title">{{ 'NAV.CALENDAR' | translate }}</h1>
+          <p class="cal-sub">{{ 'DOCTOR.SCHEDULE_SUBTITLE' | translate }}</p>
         </div>
-        <mat-checkbox formControlName="onlineOnly">{{ 'SEARCH.ONLINE' | translate }}</mat-checkbox>
-        <button mat-flat-button color="primary" type="submit" [disabled]="slotForm.invalid || saving">{{ 'COMMON.SAVE' | translate }}</button>
-      </form>
-    </mat-card>
-    <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
-    <div class="page-shell" *ngIf="!loading">
-      <div class="app-card entity-card" *ngFor="let s of slots">
-        <h3>{{ dayName(s.dayOfWeek) }}</h3>
-        <p>{{ formatTime(s.startTime) }} — {{ formatTime(s.endTime) }}</p>
-        <p class="muted">{{ s.slotMinutes }} {{ 'DOCTOR.MIN_PER_SLOT' | translate }} · {{ s.onlineOnly ? ('SEARCH.ONLINE' | translate) : ('SEARCH.IN_CLINIC' | translate) }}</p>
+        <button class="add-slot-btn" type="button" (click)="showForm = !showForm">
+          <span class="material-icons">{{ showForm ? 'close' : 'add' }}</span>
+          {{ (showForm ? 'COMMON.CANCEL' : 'DOCTOR.ADD_AVAILABILITY') | translate }}
+        </button>
       </div>
-      <div class="empty-state" *ngIf="!slots.length"><p>{{ 'DOCTOR.NO_AVAILABILITY' | translate }}</p></div>
+
+      <!-- Add Slot Form -->
+      <div class="slot-form-card" *ngIf="showForm">
+        <h3 class="form-title">
+          <span class="material-icons">event_available</span>
+          {{ 'DOCTOR.ADD_AVAILABILITY' | translate }}
+        </h3>
+        <form [formGroup]="slotForm" (ngSubmit)="saveSlot()" class="slot-form">
+          <div class="form-row">
+            <div class="form-field">
+              <label>{{ 'DOCTOR.DAY' | translate }}</label>
+              <select formControlName="dayOfWeek" class="sf-select">
+                <option *ngFor="let d of dayOptions" [value]="d.value">{{ d.label }}</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>{{ 'DOCTOR.START_TIME' | translate }}</label>
+              <input type="time" formControlName="startTime" class="sf-input">
+            </div>
+            <div class="form-field">
+              <label>{{ 'DOCTOR.END_TIME' | translate }}</label>
+              <input type="time" formControlName="endTime" class="sf-input">
+            </div>
+            <div class="form-field">
+              <label>{{ 'DOCTOR.MIN_PER_SLOT' | translate }}</label>
+              <input type="number" formControlName="slotMinutes" min="5" class="sf-input">
+            </div>
+          </div>
+          <div class="form-footer">
+            <label class="online-toggle">
+              <input type="checkbox" formControlName="onlineOnly">
+              <span class="material-icons">videocam</span>
+              {{ 'SEARCH.ONLINE' | translate }}
+            </label>
+            <button class="save-slot-btn" type="submit" [disabled]="slotForm.invalid || saving">
+              <span class="material-icons">save</span>
+              {{ 'COMMON.SAVE' | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Loading -->
+      <div class="cal-loading" *ngIf="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+
+      <!-- Weekly Grid -->
+      <div class="weekly-grid" *ngIf="!loading">
+        <div class="day-column" *ngFor="let day of dayOptions">
+          <div class="day-header" [class.has-slots]="slotsForDay(day.value).length > 0">
+            <span class="day-label">{{ day.label }}</span>
+            <span class="day-count" *ngIf="slotsForDay(day.value).length > 0">
+              {{ slotsForDay(day.value).length }}
+            </span>
+          </div>
+          <div class="day-body">
+            <div class="slot-block" *ngFor="let s of slotsForDay(day.value)" [class.online]="s.onlineOnly">
+              <div class="slot-time">{{ formatTime(s.startTime) }} — {{ formatTime(s.endTime) }}</div>
+              <div class="slot-meta">
+                <span class="slot-type">
+                  <span class="material-icons">{{ s.onlineOnly ? 'videocam' : 'local_hospital' }}</span>
+                  {{ s.onlineOnly ? ('SEARCH.ONLINE' | translate) : ('SEARCH.IN_CLINIC' | translate) }}
+                </span>
+                <span class="slot-duration">{{ s.slotMinutes }}m</span>
+              </div>
+            </div>
+            <div class="day-empty" *ngIf="slotsForDay(day.value).length === 0">
+              <span class="material-icons">block</span>
+              <span>{{ 'DOCTOR.OFF' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   `,
   styles: [`
-    .page-shell { display:flex; flex-direction:column; gap:0.75rem; margin-top:1rem; }
-    .entity-card, .form-card { padding:1rem; margin-bottom:0.75rem; }
-    .form-card form { display:flex; flex-direction:column; gap:0.5rem; }
-    .time-row { display:flex; flex-wrap:wrap; gap:0.5rem; }
-    .time-row mat-form-field { flex:1; min-width:120px; }
-    .muted { color:var(--tb-text-muted); }
+    .cal-page { padding: 24px; }
+    .cal-header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:24px; flex-wrap:wrap; }
+    .cal-title { margin:0 0 4px; font-size:1.5rem; font-weight:900; color:#0f172a; }
+    .cal-sub { margin:0; color:#64748b; font-size:0.88rem; }
+    .add-slot-btn { display:flex; align-items:center; gap:6px; padding:10px 18px; border-radius:10px; background:linear-gradient(135deg,#2563eb,#1d4ed8); border:none; color:#fff; font:inherit; font-weight:700; font-size:0.88rem; cursor:pointer; .material-icons{font-size:18px;} }
+
+    .slot-form-card { background:#fff; border:1px solid #e2e8f0; border-radius:14px; padding:20px; margin-bottom:24px; }
+    .form-title { display:flex; align-items:center; gap:8px; margin:0 0 18px; font-size:0.95rem; font-weight:800; color:#0f172a; .material-icons{font-size:20px; color:#2563eb;} }
+    .slot-form { display:flex; flex-direction:column; gap:14px; }
+    .form-row { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; }
+    .form-field { display:flex; flex-direction:column; gap:5px; label{font-size:0.8rem; font-weight:600; color:#475569;} }
+    .sf-select, .sf-input { padding:10px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font:inherit; font-size:0.88rem; color:#0f172a; width:100%; box-sizing:border-box; &:focus{outline:none; border-color:#2563eb;} }
+    .form-footer { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+    .online-toggle { display:flex; align-items:center; gap:6px; cursor:pointer; color:#475569; font-size:0.85rem; font-weight:600; input{accent-color:#2563eb;} .material-icons{font-size:18px; color:#2563eb;} }
+    .save-slot-btn { display:flex; align-items:center; gap:6px; padding:10px 22px; border:none; border-radius:10px; background:linear-gradient(135deg,#16a34a,#15803d); color:#fff; font:inherit; font-weight:700; cursor:pointer; .material-icons{font-size:18px;} &:disabled{opacity:0.5; cursor:not-allowed;} }
+
+    .cal-loading { display:flex; justify-content:center; padding:48px; }
+
+    /* Weekly grid */
+    .weekly-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
+    .day-column { background:#fff; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; min-height:200px; }
+    .day-header { background:#f8fafc; padding:10px 12px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #e2e8f0;
+      &.has-slots { background:linear-gradient(135deg,#eff6ff,#dbeafe); border-bottom-color:#bfdbfe; } }
+    .day-label { font-size:0.78rem; font-weight:800; color:#475569; }
+    .day-count { width:20px; height:20px; border-radius:50%; background:#2563eb; color:#fff; font-size:0.7rem; font-weight:800; display:grid; place-items:center; }
+    .day-body { padding:8px; display:flex; flex-direction:column; gap:6px; }
+    .slot-block { background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:8px; cursor:pointer; transition:box-shadow 0.15s;
+      &.online { background:#d1fae5; border-color:#a7f3d0; }
+      &:hover { box-shadow:0 2px 8px rgba(37,99,235,0.15); } }
+    .slot-time { font-size:0.76rem; font-weight:800; color:#0f172a; margin-bottom:5px; }
+    .slot-meta { display:flex; align-items:center; justify-content:space-between; }
+    .slot-type { display:flex; align-items:center; gap:3px; font-size:0.68rem; color:#64748b; .material-icons{font-size:12px;} }
+    .slot-duration { font-size:0.68rem; font-weight:700; color:#94a3b8; background:#fff; padding:1px 5px; border-radius:4px; }
+    .day-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; padding:20px 8px; color:#cbd5e1; text-align:center;
+      .material-icons{font-size:20px;} span:last-child{font-size:0.72rem;} }
+    @media (max-width: 900px) { .weekly-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 560px) { .weekly-grid { grid-template-columns: repeat(2, 1fr); } }
   `]
 })
 export class DoctorCalendarComponent implements OnInit {
   slots: DoctorAvailability[] = [];
   loading = true;
   saving = false;
+  showForm = false;
   dayOptions = DAY_NAMES.map((label, value) => ({ value, label }));
   slotForm: FormGroup;
 
@@ -318,10 +354,15 @@ export class DoctorCalendarComponent implements OnInit {
       next: () => {
         this.snack.success(this.i18n.instant('DOCTOR.AVAILABILITY_SAVED'));
         this.saving = false;
+        this.showForm = false;
         this.load();
       },
       error: () => { this.saving = false; }
     });
+  }
+
+  slotsForDay(dayOfWeek: number): DoctorAvailability[] {
+    return this.slots.filter(s => s.dayOfWeek === dayOfWeek);
   }
 
   dayName(d: number): string { return DAY_NAMES[d] ?? `${d}`; }

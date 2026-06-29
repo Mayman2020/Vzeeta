@@ -1,11 +1,11 @@
 {
   "APP": {
-    "TITLE": "Tabeebi | Medical Appointment Booking",
-    "NAME": "Tabeebi",
-    "BRAND": "Tabeebi",
-    "TAGLINE": "Tabeebi — Your Trusted Medical Platform",
-    "TAGLINE_SHORT": "Medical OS",
-    "FOOTER": "Tabeebi — All rights reserved"
+    "TITLE": "NABD | Medical Appointment Booking",
+    "NAME": "NABD",
+    "BRAND": "NABD",
+    "TAGLINE": "NABD — Your Trusted Health Platform",
+    "TAGLINE_SHORT": "Appointment OS",
+    "FOOTER": "NABD — All rights reserved"
   },
   "COMMON": {
     "LANGUAGE": "Language",
@@ -28,15 +28,14 @@
     "PAGINATION": "Pagination",
     "PAGE_OF": "Page {{current}} of {{total}}",
     "PREVIOUS": "Previous",
-    "USER_INITIAL": "U"
+    "USER_INITIAL": "U",
+    "CLEAR": "Clear all",
+    "TODAY": "Today",
+    "TOTAL": "Total"
   },
   "TOPBAR": {
-    "TOGGLE_MENU": "Toggle menu",
-    "LANGUAGE": "Language",
-    "LIGHT_MODE": "Light mode",
-    "DARK_MODE": "Dark mode",
-    "NOTIFICATIONS": "Notifications",
-    "SEARCH_PLACEHOLDER": "Search doctors, patients, clinics..."
+    "DARK_MODE": "Switch to dark mode",
+    "LIGHT_MODE": "Switch to light mode"
   },
   "AUTH": {
     "LOGIN": "Login",
@@ -48,7 +47,7 @@
     "PHONE": "Phone",
     "ROLE": "Account Type",
     "LOGIN_SUBTITLE": "Sign in to access your account",
-    "REGISTER_SUBTITLE": "Create a new Tabeebi account",
+    "REGISTER_SUBTITLE": "Create a new NABD account",
     "NO_ACCOUNT": "Don't have an account?",
     "HAVE_ACCOUNT": "Already have an account?",
     "INVALID_CREDENTIALS": "Invalid email or password",
@@ -59,22 +58,22 @@
     "FORGOT_PASSWORD": "Forgot password?"
   },
   "LOGIN": {
-    "BRAND_NAME": "Tabeebi",
-    "BRAND_SUB": "MEDICAL",
-    "HERO_HEADLINE": "Book and manage healthcare with ease",
-    "HERO_TAGLINE": "An integrated platform for appointments, doctors, and clinics — efficient and secure",
+    "BRAND_NAME": "NABD",
+    "BRAND_SUB": "HEALTH",
+    "HERO_HEADLINE": "Book your appointment with confidence",
+    "HERO_TAGLINE": "NABD connects patients, doctors, and clinics with a secure, premium booking experience",
     "FORM_SUBTITLE": "Sign in to access your dashboard",
     "EMAIL_PLACEHOLDER": "Enter your email",
     "PASSWORD_PLACEHOLDER": "Enter your password",
     "REMEMBER_ME": "Remember me",
     "OR_CONTINUE": "Or sign in with",
     "SECURE_LOGIN": "Secure & trusted",
-    "COPYRIGHT": "© 2026 Tabeebi Medical Platform",
+    "COPYRIGHT": "© 2026 NABD Health Platform",
     "FEATURE_APPOINTMENTS": "Appointments",
     "FEATURE_DOCTORS": "Doctors",
     "FEATURE_CLINICS": "Clinics",
     "WELCOME_BACK": "Welcome Back",
-    "HERO_SUBTITLE": "MEDICAL MANAGEMENT SUITE",
+    "HERO_SUBTITLE": "HEALTH APPOINTMENT OS",
     "FORGOT_PASSWORD": "Forgot password?"
   },
   "ROLES": {
@@ -89,8 +88,33 @@
   "HOME": {
     "HERO_TITLE": "Book Your Medical Appointment Easily",
     "HERO_SUBTITLE": "Find the best doctors and book in minutes — in-clinic or online",
+    "FIND_DOCTOR": "Find a Doctor",
+    "SEARCH": "Search Now",
+    "STAT_PATIENTS": "Patients",
+    "STAT_DOCTORS": "Doctors",
+    "STAT_CLINICS": "Clinics",
+    "STAT_BOOKING_TITLE": "Instant Booking",
+    "STAT_BOOKING_DESC": "Book in seconds",
+    "STAT_VERIFIED_TITLE": "Verified Doctors",
+    "STAT_VERIFIED_DESC": "All doctors are certified",
+    "STAT_ONLINE_TITLE": "Online Consultation",
+    "STAT_ONLINE_DESC": "Anytime, anywhere",
+    "STAT_SUPPORT_TITLE": "24/7 Support",
+    "STAT_SUPPORT_DESC": "Always here to help",
+    "BROWSE_BY": "Browse By",
     "SPECIALTIES_TITLE": "Medical Specialties",
-    "WHY_TABEEBI": "Why Tabeebi?",
+    "SPECIALTIES_DESC": "Choose your specialty and find the best doctor",
+    "VIEW_ALL_SPECIALTIES": "View All Specialties",
+    "HOW_EYEBROW": "How It Works",
+    "HOW_TITLE": "Book in 3 Simple Steps",
+    "STEP1_TITLE": "Find a Doctor",
+    "STEP1_DESC": "Search by name, specialty or area",
+    "STEP2_TITLE": "Choose a Slot",
+    "STEP2_DESC": "Pick the date and time that suits you",
+    "STEP3_TITLE": "Get Care",
+    "STEP3_DESC": "Meet your doctor in-clinic or online",
+    "WHY_EYEBROW": "Our Features",
+    "WHY_TABEEBI": "Why NABD?",
     "VALUE1_TITLE": "Instant Booking",
     "VALUE1_DESC": "Book anytime without waiting",
     "VALUE2_TITLE": "Trusted Doctors",
@@ -98,7 +122,9 @@
     "VALUE3_TITLE": "Many Specialties",
     "VALUE3_DESC": "Over 30 medical specialties",
     "VALUE4_TITLE": "24/7 Support",
-    "VALUE4_DESC": "Support team available around the clock"
+    "VALUE4_DESC": "Support team available around the clock",
+    "CTA_TITLE": "Ready to book your appointment?",
+    "CTA_DESC": "Join thousands of patients who trust NABD for their healthcare"
   },
   "SEARCH": {
     "DOCTOR_NAME": "Doctor Name",
@@ -116,15 +142,11 @@
     "BOTH": "Clinic & Online",
     "APPLY": "Apply",
     "DOCTORS_FOUND": "doctors found",
-    "NO_RESULTS": "No matching doctors found"
-  },
-  "DOCTOR": {
-    "ABOUT": "About the Doctor",
-    "LOCATION": "Location",
-    "REVIEWS": "reviews",
-    "YEARS_EXP": "years experience",
-    "AVAILABLE_TODAY": "Available Today",
-    "DEFAULT_BIO": "A specialized doctor providing high-quality healthcare."
+    "NO_RESULTS": "No matching doctors found",
+    "TRY_DIFFERENT": "Try adjusting your search filters",
+    "RELEVANCE": "Relevance",
+    "RATING": "Rating",
+    "SORT_BY": "Sort by"
   },
   "BOOKING": {
     "TITLE": "Book Appointment",
@@ -143,7 +165,13 @@
     "LOGIN_REQUIRED": "Please login to complete booking",
     "CONSULTATION_TYPE": "Consultation Type",
     "TYPE": "Type",
-    "NO_SLOTS": "No available slots on this day"
+    "NO_SLOTS": "No available slots on this day",
+    "AVAILABLE": "Available",
+    "BOOKED": "Booked",
+    "SELECTED": "Selected",
+    "SUMMARY": "Booking Summary",
+    "SELECT_SLOT": "Select Slot",
+    "NOTES_PLACEHOLDER": "Add notes for the doctor..."
   },
   "PAYMENT_STATUS": {
     "PAID": "Paid",
@@ -186,10 +214,6 @@
     "LOOKUPS": "Lookups",
     "PROFILE": "Profile"
   },
-  "TOPBAR": {
-    "DARK_MODE": "Switch to dark mode",
-    "LIGHT_MODE": "Switch to light mode"
-  },
   "PERMISSIONS": {
     "TITLE": "Role Permissions",
     "SUBTITLE": "Manage module permissions per role",
@@ -229,7 +253,7 @@
   "PATIENT": {
     "DASHBOARD_TITLE": "Patient Dashboard",
     "DASHBOARD_SUBTITLE": "Manage your appointments and medical file",
-    "WELCOME": "Welcome to Tabeebi — track appointments and prescriptions in one place",
+    "WELCOME": "Welcome to NABD — track appointments and prescriptions in one place",
     "UPCOMING_APPOINTMENTS": "Upcoming Appointments",
     "FAVORITE_DOCTORS": "Favorite Doctors",
     "ACTIVE_PRESCRIPTIONS": "Active Prescriptions",
@@ -244,10 +268,15 @@
     "NO_PRESCRIPTIONS": "No prescriptions",
     "NO_LAB_RESULTS": "No lab results",
     "NO_RECORDS": "No medical records",
+    "RECORDS_SUBTITLE": "Your medical records and test results",
     "NO_NOTIFICATIONS": "No notifications",
     "RESCHEDULE": "Reschedule",
     "RESCHEDULE_SUCCESS": "Appointment rescheduled",
-    "DOWNLOAD": "Download"
+    "DOWNLOAD": "Download",
+    "UPCOMING": "Upcoming",
+    "COMPLETED": "Completed",
+    "CANCELLED": "Cancelled",
+    "PATIENT": "Patient"
   },
   "DOCTOR": {
     "DASHBOARD_TITLE": "Doctor Dashboard",
@@ -278,7 +307,43 @@
     "DIAGNOSIS": "Diagnosis",
     "MEDICINE": "Medicine",
     "DOSAGE": "Dosage",
-    "PRESCRIPTION_SAVED": "Prescription saved"
+    "PRESCRIPTION_SAVED": "Prescription saved",
+    "EARNINGS": "Earnings",
+    "FAST": "Fast",
+    "BOOKING": "Booking",
+    "REVIEWS": "reviews",
+    "PATIENTS": "patients",
+    "YEARS_EXP": "yrs experience",
+    "ABOUT": "About",
+    "LOCATION": "Location",
+    "DEFAULT_BIO": "Experienced specialist doctor in their field",
+    "NO_LOCATION": "Not specified",
+    "MAP_PLACEHOLDER": "Map coming soon",
+    "PICK_SLOT": "Pick a convenient appointment",
+    "SECURE_BOOKING": "Secure and guaranteed booking",
+    "FREE_CANCEL": "Free cancellation",
+    "AVAILABLE_TODAY": "Available today",
+    "VIEW_PROFILE": "View profile",
+    "OFF": "Off",
+    "SCHEDULE_SUBTITLE": "Manage your weekly appointment schedule",
+    "ACCEPTS_ONLINE": "Accepts online consultations",
+    "ACCEPTS_IN_CLINIC": "Accepts in-clinic patients"
+  },
+  "VIDEO": {
+    "SESSION_WITH": "Consultation session with doctor",
+    "CONNECTED": "Connected",
+    "CONNECTING": "Connecting...",
+    "WAITING_DOCTOR": "Waiting for doctor...",
+    "YOU": "You",
+    "CHAT": "Chat",
+    "SESSION_STARTED": "Session started",
+    "TYPE_MESSAGE": "Type a message...",
+    "MUTE": "Mute",
+    "UNMUTE": "Unmute",
+    "STOP_CAM": "Stop camera",
+    "START_CAM": "Start camera",
+    "SHARE": "Share screen",
+    "END_CALL": "End call"
   },
   "CLINIC": {
     "DASHBOARD_TITLE": "Clinic Admin Dashboard",
@@ -289,7 +354,10 @@
     "REGISTERED_PATIENTS": "Registered Patients",
     "SPECIALTIES_READONLY": "Reference data — read only",
     "SPECIALTIES_READONLY_HINT": "Medical specialties are managed centrally. Contact platform admin to request changes.",
+    "ADD_DOCTOR": "Add doctor",
     "EDIT_DOCTOR": "Edit doctor",
+    "DOCTOR_TITLE": "Doctor title",
+    "DOCTOR_DEFAULT_PASS": "Default password: NABD@2026 (must be changed on first login)",
     "ADD_BRANCH": "Add branch",
     "ADD_SERVICE": "Add service",
     "ADD_LAB_RESULT": "Add lab result",
@@ -297,11 +365,18 @@
     "TEST_NAME_AR": "Test name (Arabic)",
     "TEST_NAME_EN": "Test name (English)",
     "RESULT_SUMMARY": "Result summary",
-    "RESULT_DATE": "Result date"
+    "RESULT_DATE": "Result date",
+    "TODAY_APPOINTMENTS": "Today's Appointments"
+  },
+  "APPOINTMENT": {
+    "ALL": "All",
+    "AWAITING": "Awaiting",
+    "NO_TODAY": "No appointments today",
+    "STATUS_PENDING": "Pending"
   },
   "ADMIN": {
     "DASHBOARD_TITLE": "Super Admin Dashboard",
-    "WELCOME": "Welcome — manage the Tabeebi platform",
+    "WELCOME": "Welcome — manage the NABD platform",
     "TOTAL_CLINICS": "Total Clinics",
     "TOTAL_USERS": "Total Users",
     "PENDING_VERIFICATION": "Doctors Pending Verification",

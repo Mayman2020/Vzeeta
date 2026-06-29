@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, catchError, of, tap } from 'rxjs';
+import { Observable, catchError, of, tap, timeout } from 'rxjs';
 import { ApiResponse, PermissionAction, PermissionMap, UserRole } from '../models/user.model';
 import { AuthService } from './auth.service';
 import { RolePermissionDto, RolePermissionService } from './role-permission.service';
@@ -21,6 +21,7 @@ export class PermissionService {
     }
     const selectedRole = role ?? this.auth.getRole() ?? undefined;
     return this.rolePermissionService.getMine(selectedRole).pipe(
+      timeout(8000),
       tap((res) => {
         const permissions = res.data?.permissions ?? {};
         this.permissions = permissions;

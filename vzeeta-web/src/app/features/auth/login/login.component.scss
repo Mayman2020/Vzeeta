@@ -16,11 +16,38 @@
   overflow: hidden;
 }
 
+.login-hero::before,
+.login-hero::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.login-hero::before {
+  width: 320px;
+  aspect-ratio: 1;
+  inset-inline-start: 10%;
+  bottom: 12%;
+  background: radial-gradient(circle, rgba(24,194,192,0.26), transparent 64%);
+  animation: authBubbleDrift 9s ease-in-out infinite;
+}
+
+.login-hero::after {
+  width: 190px;
+  aspect-ratio: 1;
+  inset-inline-end: 9%;
+  top: 12%;
+  border: 28px solid rgba(245,249,255,0.08);
+  animation: authBubbleDrift 11s ease-in-out infinite reverse;
+}
+
 .login-hero-bg {
   position: absolute;
   inset: 0;
   background: url('../../../../assets/illustrations/login-background.svg') center / cover no-repeat;
   transform: scale(1.03);
+  animation: authBgMove 18s ease-in-out infinite alternate;
 }
 
 .login-hero-overlay {
@@ -28,9 +55,9 @@
   inset: 0;
   background: linear-gradient(
     155deg,
-    rgba(37, 99, 235, 0.75) 0%,
-    rgba(12, 74, 138, 0.85) 55%,
-    rgba(8, 28, 70, 0.92) 100%
+    rgba(24, 194, 192, 0.32) 0%,
+    rgba(15, 76, 129, 0.86) 52%,
+    rgba(6, 33, 58, 0.96) 100%
   );
 }
 
@@ -70,12 +97,13 @@
 }
 
 .hero-tool-btn .material-icons {
-  color: #99f6e4;
+  color: #18c2c0;
 }
 
 .hero-brand-block {
   max-width: 520px;
   margin: auto 0;
+  animation: authContentIn 0.72s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .hero-logo-row {
@@ -87,6 +115,7 @@
 
 .hero-logo {
   filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.25));
+  animation: authLogoFloat 4.8s ease-in-out infinite;
 }
 
 .hero-brand-text {
@@ -106,7 +135,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.22em;
-  color: #93c5fd;
+  color: #18c2c0;
 }
 
 .hero-title {
@@ -140,7 +169,11 @@
   font-weight: 600;
   color: rgba(255, 255, 255, 0.92);
   text-align: center;
+  animation: authContentIn 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+.hero-feature:nth-child(2) { animation-delay: 0.08s; }
+.hero-feature:nth-child(3) { animation-delay: 0.16s; }
 
 .hero-feature-icon {
   width: 56px;
@@ -151,6 +184,7 @@
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.22);
   backdrop-filter: blur(6px);
+  animation: appIconPulse 2.6s ease-out infinite;
 }
 
 .hero-feature-icon .material-icons {
@@ -168,6 +202,7 @@
 .login-panel-inner {
   width: 100%;
   max-width: 420px;
+  animation: authPanelIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .panel-shield {
@@ -176,13 +211,17 @@
   border-radius: 14px;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  background: transparent;
   margin-bottom: 20px;
+  filter: drop-shadow(0 10px 22px rgba(15, 76, 129, 0.18));
 }
 
-.panel-shield .material-icons {
-  font-size: 32px;
-  color: #2563eb;
+.panel-shield img {
+  width: 56px;
+  height: 56px;
+  display: block;
+  border-radius: 14px;
+  animation: authLogoFloat 5.2s ease-in-out infinite;
 }
 
 .login-panel-inner h2 {
@@ -220,7 +259,7 @@
 .field-link {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #2563eb;
+  color: #0f4c81;
   text-decoration: none;
 }
 
@@ -241,8 +280,8 @@
 }
 
 .login-field:focus-within {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  border-color: #18c2c0;
+  box-shadow: 0 0 0 3px rgba(24, 194, 192, 0.16);
   background: var(--white);
 }
 
@@ -295,19 +334,46 @@
   margin-top: 8px;
   border: 0;
   border-radius: 12px;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: linear-gradient(135deg, #18c2c0, #0f4c81);
   color: #fff;
   font: inherit;
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
-  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.32);
+  box-shadow: 0 10px 24px rgba(15, 76, 129, 0.26);
   transition: transform 0.15s, box-shadow 0.15s;
 }
 
 .login-submit:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(15, 76, 129, 0.34);
+}
+
+@keyframes authBgMove {
+  from { transform: scale(1.03) translate3d(0, 0, 0); }
+  to { transform: scale(1.08) translate3d(-18px, 12px, 0); }
+}
+
+@keyframes authBubbleDrift {
+  0%,
+  100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.75; }
+  50% { transform: translate3d(26px, -22px, 0) scale(1.08); opacity: 1; }
+}
+
+@keyframes authContentIn {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes authPanelIn {
+  from { opacity: 0; transform: translateY(18px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes authLogoFloat {
+  0%,
+  100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(-1deg); }
 }
 
 .login-submit:disabled {
@@ -356,7 +422,7 @@
 }
 
 .social-btn .ms-icon {
-  color: #2563eb;
+  color: #0f4c81;
   font-size: 20px;
 }
 
@@ -368,7 +434,7 @@
 }
 
 .auth-register a {
-  color: #2563eb;
+  color: #18c2c0;
   font-weight: 600;
   text-decoration: none;
 }
@@ -395,7 +461,7 @@
 
 .panel-footer-secure .material-icons {
   font-size: 16px;
-  color: #2563eb;
+  color: #0f4c81;
 }
 
 .flag {
@@ -437,4 +503,109 @@ html[dir='rtl'] .login-panel {
   .hero-tagline {
     font-size: 0.9rem;
   }
+}
+
+:host-context(.dark-theme) .clinic-login-split,
+:host-context(html.dark-theme) .clinic-login-split {
+  background: #071b2e;
+}
+
+:host-context(.dark-theme) .login-panel,
+:host-context(html.dark-theme) .login-panel {
+  background: #071b2e;
+}
+
+:host-context(.dark-theme) .login-panel-inner h2,
+:host-context(html.dark-theme) .login-panel-inner h2 {
+  color: #f5f9ff;
+}
+
+:host-context(.dark-theme) .panel-sub,
+:host-context(html.dark-theme) .panel-sub,
+:host-context(.dark-theme) .field-label,
+:host-context(html.dark-theme) .field-label,
+:host-context(.dark-theme) .remember-row,
+:host-context(html.dark-theme) .remember-row,
+:host-context(.dark-theme) .auth-register,
+:host-context(html.dark-theme) .auth-register,
+:host-context(.dark-theme) .panel-footer,
+:host-context(html.dark-theme) .panel-footer {
+  color: #a8e7e6;
+}
+
+:host-context(.dark-theme) .login-field,
+:host-context(html.dark-theme) .login-field,
+:host-context(.dark-theme) .social-btn,
+:host-context(html.dark-theme) .social-btn {
+  background: #0f2d4d;
+  border-color: rgba(168, 231, 230, 0.18);
+  color: #f5f9ff;
+}
+
+:host-context(.dark-theme) .login-field:focus-within,
+:host-context(html.dark-theme) .login-field:focus-within {
+  border-color: #18c2c0;
+  box-shadow: 0 0 0 3px rgba(24, 194, 192, 0.18);
+  background: #12385f;
+}
+
+:host-context(.dark-theme) .login-field input,
+:host-context(html.dark-theme) .login-field input {
+  color: #f5f9ff !important;
+  -webkit-text-fill-color: #f5f9ff !important;
+  caret-color: #18c2c0;
+}
+
+:host-context(.dark-theme) .login-field input::placeholder,
+:host-context(html.dark-theme) .login-field input::placeholder {
+  color: rgba(245, 249, 255, 0.58);
+  -webkit-text-fill-color: rgba(245, 249, 255, 0.58);
+}
+
+:host-context(.dark-theme) .login-field input:-webkit-autofill,
+:host-context(.dark-theme) .login-field input:-webkit-autofill:hover,
+:host-context(.dark-theme) .login-field input:-webkit-autofill:focus,
+:host-context(html.dark-theme) .login-field input:-webkit-autofill,
+:host-context(html.dark-theme) .login-field input:-webkit-autofill:hover,
+:host-context(html.dark-theme) .login-field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f5f9ff !important;
+  caret-color: #18c2c0;
+  box-shadow: 0 0 0 1000px #0f2d4d inset !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+:host-context(.dark-theme) .login-field:focus-within input:-webkit-autofill,
+:host-context(html.dark-theme) .login-field:focus-within input:-webkit-autofill {
+  box-shadow: 0 0 0 1000px #12385f inset !important;
+}
+
+:host-context(.dark-theme) .login-field .material-icons,
+:host-context(html.dark-theme) .login-field .material-icons,
+:host-context(.dark-theme) .field-toggle,
+:host-context(html.dark-theme) .field-toggle {
+  color: #a8e7e6;
+}
+
+:host-context(.dark-theme) .field-link,
+:host-context(html.dark-theme) .field-link {
+  color: #18c2c0;
+}
+
+:host-context(.dark-theme) .social-btn,
+:host-context(html.dark-theme) .social-btn {
+  color: #f5f9ff;
+}
+
+:host-context(.dark-theme) .login-divider,
+:host-context(html.dark-theme) .login-divider {
+  color: #a8e7e6;
+}
+
+:host-context(.dark-theme) .login-divider::before,
+:host-context(.dark-theme) .login-divider::after,
+:host-context(html.dark-theme) .login-divider::before,
+:host-context(html.dark-theme) .login-divider::after,
+:host-context(.dark-theme) .panel-footer,
+:host-context(html.dark-theme) .panel-footer {
+  border-color: rgba(168, 231, 230, 0.16);
 }

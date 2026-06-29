@@ -1,60 +1,186 @@
+<!-- Hero Section -->
 <section class="hero">
+  <div class="hero-brand-watermark" aria-hidden="true">
+    <img src="assets/brand/tabeebi-mark.svg" alt="">
+    <div class="hero-pulse-line"></div>
+  </div>
   <div class="home-container hero-inner">
     <div class="hero-copy">
       <span class="eyebrow">{{ 'APP.TAGLINE_SHORT' | translate }}</span>
       <h1>{{ 'HOME.HERO_TITLE' | translate }}</h1>
       <p>{{ 'HOME.HERO_SUBTITLE' | translate }}</p>
+
+      <div class="hero-trust">
+        <div class="trust-item">
+          <span class="trust-num">10K+</span>
+          <span class="trust-label">{{ 'HOME.STAT_PATIENTS' | translate }}</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-item">
+          <span class="trust-num">500+</span>
+          <span class="trust-label">{{ 'HOME.STAT_DOCTORS' | translate }}</span>
+        </div>
+        <div class="trust-divider"></div>
+        <div class="trust-item">
+          <span class="trust-num">50+</span>
+          <span class="trust-label">{{ 'HOME.STAT_CLINICS' | translate }}</span>
+        </div>
+      </div>
     </div>
 
     <form class="search-panel" [formGroup]="searchForm" (ngSubmit)="search()">
-      <div class="search-fields">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'SEARCH.DOCTOR_NAME' | translate }}</mat-label>
-          <input matInput formControlName="name">
-          <mat-icon matPrefix>person_search</mat-icon>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'SEARCH.SPECIALTY' | translate }}</mat-label>
-          <input matInput formControlName="specialty">
-          <mat-icon matPrefix>medical_services</mat-icon>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'SEARCH.AREA' | translate }}</mat-label>
-          <input matInput formControlName="area">
-          <mat-icon matPrefix>location_on</mat-icon>
-        </mat-form-field>
+      <div class="search-panel-header">
+        <span class="material-icons search-panel-icon">search</span>
+        <h3>{{ 'HOME.FIND_DOCTOR' | translate }}</h3>
       </div>
-      <button mat-flat-button color="primary" type="submit" class="search-submit">
-        <mat-icon>search</mat-icon>
+      <div class="search-fields">
+        <div class="search-field-wrap">
+          <span class="sf-icon material-icons">person_search</span>
+          <input class="sf-input" formControlName="name" [placeholder]="'SEARCH.DOCTOR_NAME' | translate">
+        </div>
+        <div class="search-field-wrap">
+          <span class="sf-icon material-icons">medical_services</span>
+          <input class="sf-input" formControlName="specialty" [placeholder]="'SEARCH.SPECIALTY' | translate">
+        </div>
+        <div class="search-field-wrap">
+          <span class="sf-icon material-icons">location_on</span>
+          <input class="sf-input" formControlName="area" [placeholder]="'SEARCH.AREA' | translate">
+        </div>
+      </div>
+      <button class="search-submit" type="submit">
+        <span class="material-icons">search</span>
         {{ 'SEARCH.SEARCH' | translate }}
       </button>
     </form>
   </div>
 </section>
 
-<section class="home-container specialties-section">
-  <div class="section-heading">
-    <h2>{{ 'HOME.SPECIALTIES_TITLE' | translate }}</h2>
+<!-- Stats Bar -->
+<div class="stats-bar">
+  <div class="home-container stats-inner">
+    <div class="stat-item">
+      <span class="material-icons stat-icon">event_available</span>
+      <div>
+        <strong>{{ 'HOME.STAT_BOOKING_TITLE' | translate }}</strong>
+        <span>{{ 'HOME.STAT_BOOKING_DESC' | translate }}</span>
+      </div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-item">
+      <span class="material-icons stat-icon">verified_user</span>
+      <div>
+        <strong>{{ 'HOME.STAT_VERIFIED_TITLE' | translate }}</strong>
+        <span>{{ 'HOME.STAT_VERIFIED_DESC' | translate }}</span>
+      </div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-item">
+      <span class="material-icons stat-icon">videocam</span>
+      <div>
+        <strong>{{ 'HOME.STAT_ONLINE_TITLE' | translate }}</strong>
+        <span>{{ 'HOME.STAT_ONLINE_DESC' | translate }}</span>
+      </div>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat-item">
+      <span class="material-icons stat-icon">support_agent</span>
+      <div>
+        <strong>{{ 'HOME.STAT_SUPPORT_TITLE' | translate }}</strong>
+        <span>{{ 'HOME.STAT_SUPPORT_DESC' | translate }}</span>
+      </div>
+    </div>
   </div>
-  <div class="specialty-grid">
-    <button type="button" *ngFor="let s of specialties" class="specialty-card" (click)="browseSpecialty(s)">
-      <span class="specialty-icon"><mat-icon>{{ s.icon || 'medical_services' }}</mat-icon></span>
-      <span>{{ specialtyName(s) }}</span>
-    </button>
+</div>
+
+<!-- Specialties Section -->
+<section class="specialties-section">
+  <div class="home-container section-container">
+    <div class="section-heading">
+      <span class="section-eyebrow">{{ 'HOME.BROWSE_BY' | translate }}</span>
+      <h2>{{ 'HOME.SPECIALTIES_TITLE' | translate }}</h2>
+      <p>{{ 'HOME.SPECIALTIES_DESC' | translate }}</p>
+    </div>
+    <div class="specialty-grid">
+      <button type="button" *ngFor="let s of specialties" class="specialty-card" (click)="browseSpecialty(s)">
+        <span class="specialty-icon"><span class="material-icons">{{ s.icon || 'medical_services' }}</span></span>
+        <span class="specialty-name">{{ specialtyName(s) }}</span>
+      </button>
+    </div>
+    <div class="section-cta">
+      <a class="browse-all-link" [routerLink]="['/specialties']">
+        {{ 'HOME.VIEW_ALL_SPECIALTIES' | translate }}
+        <span class="material-icons">arrow_forward</span>
+      </a>
+    </div>
   </div>
 </section>
 
-<section class="home-container values-section">
-  <div class="section-heading">
-    <h2>{{ 'HOME.WHY_TABEEBI' | translate }}</h2>
-  </div>
-  <div class="values-grid">
-    <div class="value-card" *ngFor="let v of valueProps">
-      <span class="value-icon"><mat-icon>{{ v.icon }}</mat-icon></span>
-      <div>
-        <h3>{{ v.titleKey | translate }}</h3>
-        <p>{{ v.descKey | translate }}</p>
+<!-- How it Works -->
+<section class="how-section">
+  <div class="home-container">
+    <div class="section-heading light">
+      <span class="section-eyebrow light">{{ 'HOME.HOW_EYEBROW' | translate }}</span>
+      <h2>{{ 'HOME.HOW_TITLE' | translate }}</h2>
+    </div>
+    <div class="how-grid">
+      <div class="how-step">
+        <div class="how-num">01</div>
+        <div class="how-icon"><span class="material-icons">search</span></div>
+        <h3>{{ 'HOME.STEP1_TITLE' | translate }}</h3>
+        <p>{{ 'HOME.STEP1_DESC' | translate }}</p>
       </div>
+      <div class="how-connector"></div>
+      <div class="how-step">
+        <div class="how-num">02</div>
+        <div class="how-icon"><span class="material-icons">event</span></div>
+        <h3>{{ 'HOME.STEP2_TITLE' | translate }}</h3>
+        <p>{{ 'HOME.STEP2_DESC' | translate }}</p>
+      </div>
+      <div class="how-connector"></div>
+      <div class="how-step">
+        <div class="how-num">03</div>
+        <div class="how-icon"><span class="material-icons">medical_services</span></div>
+        <h3>{{ 'HOME.STEP3_TITLE' | translate }}</h3>
+        <p>{{ 'HOME.STEP3_DESC' | translate }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Value Props -->
+<section class="values-section">
+  <div class="home-container section-container">
+    <div class="section-heading">
+      <span class="section-eyebrow">{{ 'HOME.WHY_EYEBROW' | translate }}</span>
+      <h2>{{ 'HOME.WHY_TABEEBI' | translate }}</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-card" *ngFor="let v of valueProps">
+        <span class="value-icon"><span class="material-icons">{{ v.icon }}</span></span>
+        <div>
+          <h3>{{ v.titleKey | translate }}</h3>
+          <p>{{ v.descKey | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="home-container cta-inner">
+    <div class="cta-text">
+      <h2>{{ 'HOME.CTA_TITLE' | translate }}</h2>
+      <p>{{ 'HOME.CTA_DESC' | translate }}</p>
+    </div>
+    <div class="cta-actions">
+      <a class="cta-btn-primary" [routerLink]="['/doctors']">
+        <span class="material-icons">search</span>
+        {{ 'HOME.SEARCH' | translate }}
+      </a>
+      <a class="cta-btn-outline" [routerLink]="['/auth/register']">
+        {{ 'AUTH.REGISTER' | translate }}
+      </a>
     </div>
   </div>
 </section>

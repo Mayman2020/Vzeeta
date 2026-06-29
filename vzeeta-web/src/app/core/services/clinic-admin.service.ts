@@ -14,6 +14,18 @@ export interface ClinicDoctor {
   consultationFee?: number;
   verified?: boolean;
   clinicId?: number;
+  user?: { fullNameAr?: string; fullNameEn?: string; email?: string; phone?: string };
+}
+
+export interface CreateDoctorRequest {
+  fullNameAr: string;
+  fullNameEn?: string;
+  email: string;
+  phone?: string;
+  titleAr?: string;
+  consultationFee?: number;
+  acceptsOnline?: boolean;
+  acceptsInClinic?: boolean;
 }
 
 export interface ClinicBranch {
@@ -72,6 +84,12 @@ export class ClinicAdminService {
   getDoctors(params: Record<string, string | number | boolean> = {}): Observable<PagedResult<ClinicDoctor>> {
     return this.api.get<ApiResponse<unknown>>(AppConstants.API.CLINIC_DOCTORS, params).pipe(
       map((res) => parsePageResponse<ClinicDoctor>(res.data))
+    );
+  }
+
+  createDoctor(req: CreateDoctorRequest): Observable<ClinicDoctor> {
+    return this.api.post<ApiResponse<ClinicDoctor>>(AppConstants.API.CLINIC_DOCTORS, req).pipe(
+      map((res) => res.data!)
     );
   }
 

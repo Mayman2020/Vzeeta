@@ -8,7 +8,6 @@ import { DateFormatAdapter } from './core/adapters/date-format.adapter';
 import { DD_MM_YYYY_DATE_FORMATS } from './core/constants/date-formats';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader, provideTranslateHttpLoader } from '@ngx-translate/http-loader';
-import { firstValueFrom } from 'rxjs';
 
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
@@ -30,8 +29,8 @@ export const appConfig: ApplicationConfig = {
       provide: APP_INITIALIZER,
       useFactory: (auth: AuthService, permissions: PermissionService) => () => {
         auth.clearExpiredTokens();
-        if (!auth.isAuthenticated() || auth.mustChangePassword()) return Promise.resolve();
-        return firstValueFrom(permissions.loadMine());
+        if (!auth.isAuthenticated() || auth.mustChangePassword()) return;
+        permissions.loadMine().subscribe({ error: () => {} });
       },
       deps: [AuthService, PermissionService],
       multi: true

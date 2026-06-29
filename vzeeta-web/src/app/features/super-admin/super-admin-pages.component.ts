@@ -32,29 +32,203 @@ import { RmsDatePipe } from '../../shared/pipes/rms-date.pipe';
 @Component({
   selector: 'app-super-admin-dashboard',
   standalone: true,
-  imports: [FeatureShellComponent, TranslateModule, LoadingSpinnerComponent, NgIf],
+  imports: [NgFor, NgIf, TranslateModule, LoadingSpinnerComponent, MatIconModule, MatButtonModule, RouterLink],
   template: `
-    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
-    <app-feature-shell *ngIf="!loading" titleKey="ADMIN.DASHBOARD_TITLE" [stats]="stats" [empty]="false">
-      <p>{{ 'ADMIN.WELCOME' | translate }}</p>
-    </app-feature-shell>
-  `
+    <div class="sa-dashboard" *ngIf="!loading; else loadingTpl">
+
+      <!-- Welcome -->
+      <div class="sa-welcome-bar">
+        <div class="sa-welcome-left">
+          <div class="sa-welcome-icon"><mat-icon>admin_panel_settings</mat-icon></div>
+          <div>
+            <h1 class="sa-welcome-title">{{ 'ADMIN.DASHBOARD_TITLE' | translate }}</h1>
+            <p class="sa-welcome-sub">{{ 'ADMIN.WELCOME' | translate }}</p>
+          </div>
+        </div>
+        <div class="sa-welcome-actions">
+          <a mat-stroked-button routerLink="/super-admin/clinics" class="sa-action-btn">
+            <mat-icon>add_business</mat-icon>
+            {{ 'ADMIN.ADD_CLINIC' | translate }}
+          </a>
+          <a mat-flat-button routerLink="/super-admin/verification" class="sa-primary-btn">
+            <mat-icon>verified</mat-icon>
+            {{ 'NAV.VERIFICATION' | translate }}
+          </a>
+        </div>
+      </div>
+
+      <!-- KPI Grid -->
+      <div class="sa-kpi-grid">
+        <div class="sa-kpi-card">
+          <div class="sa-kpi-icon-wrap indigo"><mat-icon>local_hospital</mat-icon></div>
+          <div class="sa-kpi-body">
+            <div class="sa-kpi-value">{{ clinicCount }}</div>
+            <div class="sa-kpi-label">{{ 'ADMIN.TOTAL_CLINICS' | translate }}</div>
+            <a routerLink="/super-admin/clinics" class="sa-kpi-link">
+              {{ 'COMMON.VIEW_ALL' | translate }} <mat-icon>arrow_forward</mat-icon>
+            </a>
+          </div>
+        </div>
+
+        <div class="sa-kpi-card">
+          <div class="sa-kpi-icon-wrap blue"><mat-icon>people</mat-icon></div>
+          <div class="sa-kpi-body">
+            <div class="sa-kpi-value">{{ userCount }}</div>
+            <div class="sa-kpi-label">{{ 'ADMIN.TOTAL_USERS' | translate }}</div>
+            <a routerLink="/super-admin/users" class="sa-kpi-link">
+              {{ 'COMMON.VIEW_ALL' | translate }} <mat-icon>arrow_forward</mat-icon>
+            </a>
+          </div>
+        </div>
+
+        <div class="sa-kpi-card warn-card">
+          <div class="sa-kpi-icon-wrap orange"><mat-icon>pending</mat-icon></div>
+          <div class="sa-kpi-body">
+            <div class="sa-kpi-value">{{ pendingCount }}</div>
+            <div class="sa-kpi-label">{{ 'ADMIN.PENDING_VERIFICATION' | translate }}</div>
+            <a routerLink="/super-admin/verification" class="sa-kpi-link warn-link">
+              {{ 'ADMIN.REVIEW_NOW' | translate }} <mat-icon>arrow_forward</mat-icon>
+            </a>
+          </div>
+        </div>
+
+        <div class="sa-kpi-card">
+          <div class="sa-kpi-icon-wrap teal"><mat-icon>payments</mat-icon></div>
+          <div class="sa-kpi-body">
+            <div class="sa-kpi-value">{{ paymentCount }}</div>
+            <div class="sa-kpi-label">{{ 'ADMIN.TOTAL_PAYMENTS' | translate }}</div>
+            <a routerLink="/super-admin/payments" class="sa-kpi-link">
+              {{ 'COMMON.VIEW_ALL' | translate }} <mat-icon>arrow_forward</mat-icon>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Nav -->
+      <div class="sa-quick-nav">
+        <h2 class="sa-section-title">{{ 'ADMIN.MANAGEMENT' | translate }}</h2>
+        <div class="sa-nav-grid">
+          <a *ngFor="let nav of quickNav" [routerLink]="nav.route" class="sa-nav-card" [attr.data-tone]="nav.tone">
+            <span class="sa-nav-icon"><mat-icon>{{ nav.icon }}</mat-icon></span>
+            <span class="sa-nav-label">{{ nav.labelKey | translate }}</span>
+            <mat-icon class="sa-nav-arrow">chevron_right</mat-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+    <ng-template #loadingTpl><app-loading-spinner></app-loading-spinner></ng-template>
+  `,
+  styles: [`
+    .sa-dashboard { display: flex; flex-direction: column; gap: 24px; padding-bottom: 32px; }
+
+    .sa-welcome-bar {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      padding: 22px 28px;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border-radius: 16px; color: #fff;
+    }
+    .sa-welcome-left { display: flex; align-items: center; gap: 14px; }
+    .sa-welcome-icon {
+      width: 50px; height: 50px; background: rgba(255,255,255,0.12);
+      border-radius: 13px; display: grid; place-items: center;
+      mat-icon { font-size: 26px; width: 26px; height: 26px; color: #93c5fd; }
+    }
+    .sa-welcome-title { margin: 0 0 3px; font-size: 1.3rem; font-weight: 800; color: #fff; }
+    .sa-welcome-sub { margin: 0; color: rgba(255,255,255,0.6); font-size: 0.85rem; }
+    .sa-welcome-actions { display: flex; gap: 10px; }
+    .sa-action-btn {
+      border-color: rgba(255,255,255,0.25) !important; color: #fff !important;
+      border-radius: 10px !important;
+    }
+    .sa-primary-btn {
+      background: #2563eb !important; color: #fff !important;
+      border-radius: 10px !important;
+    }
+
+    .sa-kpi-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    }
+    .sa-kpi-card {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 14px;
+      padding: 20px; display: flex; align-items: flex-start; gap: 14px;
+      box-shadow: 0 2px 12px rgba(15,23,42,0.05);
+      transition: transform 0.18s, box-shadow 0.18s;
+    }
+    .sa-kpi-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(15,23,42,0.1); }
+    .sa-kpi-card.warn-card { border-color: #fed7aa; background: #fffbf5; }
+    .sa-kpi-icon-wrap {
+      width: 46px; height: 46px; border-radius: 12px;
+      display: grid; place-items: center; flex-shrink: 0;
+      mat-icon { font-size: 22px; width: 22px; height: 22px; }
+    }
+    .sa-kpi-icon-wrap.indigo { background: #e0e7ff; mat-icon { color: #4f46e5; } }
+    .sa-kpi-icon-wrap.blue { background: #dbeafe; mat-icon { color: #2563eb; } }
+    .sa-kpi-icon-wrap.orange { background: #ffedd5; mat-icon { color: #ea580c; } }
+    .sa-kpi-icon-wrap.teal { background: #d1fae5; mat-icon { color: #059669; } }
+    .sa-kpi-body { flex: 1; }
+    .sa-kpi-value { font-size: 2.1rem; font-weight: 800; color: #0f172a; line-height: 1.1; }
+    .sa-kpi-label { font-size: 0.8rem; color: #64748b; margin: 4px 0 10px; }
+    .sa-kpi-link {
+      display: inline-flex; align-items: center; gap: 2px;
+      color: #2563eb; font-size: 0.78rem; font-weight: 600; text-decoration: none;
+      mat-icon { font-size: 14px; width: 14px; height: 14px; }
+    }
+    .sa-kpi-link:hover { text-decoration: underline; }
+    .warn-link { color: #ea580c !important; }
+
+    .sa-section-title { margin: 0 0 14px; font-size: 1rem; font-weight: 800; color: #0f172a; }
+    .sa-nav-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    }
+    .sa-nav-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px; border: 1px solid #e2e8f0; border-radius: 12px;
+      background: #fff; text-decoration: none; color: #0f172a;
+      transition: border-color 0.15s, background 0.15s, transform 0.15s;
+    }
+    .sa-nav-card:hover {
+      border-color: #bfdbfe; background: #eff6ff;
+      transform: translateY(-1px);
+    }
+    .sa-nav-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: #f1f5f9; display: grid; place-items: center;
+      mat-icon { font-size: 20px; width: 20px; height: 20px; color: #475569; }
+    }
+    .sa-nav-label { flex: 1; font-size: 0.88rem; font-weight: 600; }
+    .sa-nav-arrow { font-size: 18px !important; width: 18px !important; height: 18px !important; color: #94a3b8; }
+
+    @media (max-width: 900px) { .sa-kpi-grid { grid-template-columns: repeat(2,1fr); } .sa-nav-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 560px) { .sa-kpi-grid { grid-template-columns: 1fr 1fr; } .sa-welcome-bar { flex-direction: column; align-items: flex-start; } }
+  `]
 })
 export class SuperAdminDashboardComponent implements OnInit {
   loading = true;
-  stats: { value: string | number; labelKey: string }[] = [];
+  clinicCount = 0;
+  userCount = 0;
+  pendingCount = 0;
+  paymentCount = 0;
+
+  readonly quickNav = [
+    { route: '/super-admin/clinics', icon: 'local_hospital', labelKey: 'NAV.CLINICS', tone: 'indigo' },
+    { route: '/super-admin/users', icon: 'people', labelKey: 'NAV.USERS', tone: 'blue' },
+    { route: '/super-admin/verification', icon: 'verified', labelKey: 'NAV.VERIFICATION', tone: 'orange' },
+    { route: '/super-admin/payments', icon: 'payments', labelKey: 'NAV.PAYMENTS', tone: 'teal' },
+    { route: '/super-admin/cities', icon: 'location_city', labelKey: 'NAV.CITIES', tone: 'slate' },
+    { route: '/super-admin/permissions', icon: 'security', labelKey: 'NAV.PERMISSIONS', tone: 'purple' },
+    { route: '/super-admin/lookups', icon: 'list_alt', labelKey: 'NAV.LOOKUPS', tone: 'green' },
+    { route: '/super-admin/settings', icon: 'settings', labelKey: 'NAV.SETTINGS', tone: 'slate' },
+  ];
 
   constructor(private readonly admin: SuperAdminService) {}
 
   ngOnInit(): void {
     this.admin.getDashboard().subscribe({
       next: (d) => {
-        this.stats = [
-          { value: d.clinicCount, labelKey: 'ADMIN.TOTAL_CLINICS' },
-          { value: d.userCount, labelKey: 'ADMIN.TOTAL_USERS' },
-          { value: d.unverifiedDoctorCount, labelKey: 'ADMIN.PENDING_VERIFICATION' },
-          { value: d.paymentCount, labelKey: 'ADMIN.TOTAL_PAYMENTS' }
-        ];
+        this.clinicCount = d.clinicCount;
+        this.userCount = d.userCount;
+        this.pendingCount = d.unverifiedDoctorCount;
+        this.paymentCount = d.paymentCount;
         this.loading = false;
       },
       error: () => { this.loading = false; }

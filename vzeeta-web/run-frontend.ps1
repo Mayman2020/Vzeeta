@@ -1,8 +1,10 @@
 [CmdletBinding()]
-param([switch]$SkipInstall)
+param(
+  [switch]$SkipInstall,
+  [int]$Port = 4200
+)
 
 $ErrorActionPreference = 'Stop'
-$DefaultPort = 4200
 
 $ScriptDir = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
 $ProjectRoot = $ScriptDir
@@ -12,6 +14,34 @@ $RuntimeConfigJs = Join-Path $ProjectRoot "src\assets\runtime-config.js"
 
 function Write-Step { param([string]$Message, [string]$Color = "Cyan")
   Write-Host "[$(Get-Date -Format 'HH:mm:ss')] $Message" -ForegroundColor $Color
+}
+
+function Restart-PortOwner {
+  param([int]$Port)
+
+  $owners = Get-NetTCPConnection -LocalPort $Port -ErrorAction SilentlyContinue |
+    Where-Object { $_.OwningProcess -and $_.OwningProcess -ne 0 -and $_.OwningProcess -ne $PID } |
+    Select-Object -ExpandProperty OwningProcess -Unique
+
+  if (-not $owners) { return }
+
+  foreach ($owner in $owners) {
+    try {
+      $process = Get-Process -Id $owner -ErrorAction Stop
+      Write-Step "Port $Port is busy by PID $owner ($($process.ProcessName)); restarting it..." "Yellow"
+      Stop-Process -Id $owner -Force -ErrorAction Stop
+    } catch {
+      Write-Step "Could not stop PID $owner on port ${Port}: $($_.Exception.Message)" "Yellow"
+    }
+  }
+
+  for ($i = 0; $i -lt 20; $i++) {
+    $stillBusy = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
+    if (-not $stillBusy) { return }
+    Start-Sleep -Milliseconds 300
+  }
+
+  Write-Step "Port $Port is still busy after restart attempt." "Red"
 }
 
 Set-Location $ProjectRoot
@@ -38,6 +68,8 @@ window.__TB_API_URL__ = '$backendApiUrl';
 window.__TB_FILE_URL__ = '$backendFileUrl';
 "@ | Set-Content -Path $RuntimeConfigJs -Encoding UTF8
 
-Write-Step "Starting Tabeebi frontend on port $DefaultPort..." "Green"
-Write-Step "URL: http://localhost:$DefaultPort" "Gray"
-npx ng serve --project vzeeta-web --port=$DefaultPort --proxy-config proxy.conf.json
+Restart-PortOwner -Port $Port
+
+Write-Step "Starting NABD frontend on port $Port..." "Green"
+Write-Step "URL: http://localhost:$Port" "Gray"
+npx ng serve --project vzeeta-web --port=$Port --proxy-config proxy.conf.json

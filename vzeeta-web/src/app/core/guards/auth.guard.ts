@@ -45,6 +45,8 @@ export const permissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot) =>
   const permissions = inject(PermissionService);
   const router = inject(Router);
   if (!auth.isAuthenticated()) return router.createUrlTree(['/auth/login']);
+  // SUPER_ADMIN bypasses all permission checks
+  if (auth.getRole() === 'SUPER_ADMIN') return true;
   const moduleKey = route.data['permission'] as string | undefined;
   const action = (route.data['permissionAction'] as PermissionAction | undefined) ?? 'view';
   if (!moduleKey || permissions.can(moduleKey, action)) return true;

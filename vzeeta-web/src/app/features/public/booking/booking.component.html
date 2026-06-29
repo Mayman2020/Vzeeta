@@ -1,73 +1,278 @@
-<div class="tb-container booking-page" *ngIf="!loading && doctor; else loadingTpl">
-  <header class="booking-header">
-    <span class="eyebrow">{{ 'BOOKING.BOOK_NOW' | translate }}</span>
-    <h1>{{ 'BOOKING.TITLE' | translate }}</h1>
-    <p class="doctor-name">{{ doctorName() }} - {{ doctor.specialty }}</p>
-  </header>
-  <h1>{{ 'BOOKING.TITLE' | translate }}</h1>
-  <p class="doctor-name">{{ doctorName() }} — {{ doctor.specialty }}</p>
+<div class="booking-page" *ngIf="!loading && doctor; else loadingTpl">
 
-  <mat-card class="booking-card">
-    <form [formGroup]="form">
-      <div *ngIf="step === 1">
-        <h2>{{ 'BOOKING.CONSULTATION_TYPE' | translate }}</h2>
-        <mat-button-toggle-group [value]="consultationType" (change)="onConsultationTypeChange($event.value)">
-          <mat-button-toggle value="IN_CLINIC" [disabled]="!doctor.acceptsInClinic">
-            {{ 'SEARCH.IN_CLINIC' | translate }}
-          </mat-button-toggle>
-          <mat-button-toggle value="ONLINE" [disabled]="!doctor.acceptsOnline">
-            {{ 'SEARCH.ONLINE' | translate }}
-          </mat-button-toggle>
-        </mat-button-toggle-group>
+  <!-- Page Header -->
+  <div class="booking-header">
+    <div class="bh-inner tb-container">
+      <div class="bh-back">
+        <a [routerLink]="['/doctors', doctor.id]" class="back-btn">
+          <span class="material-icons">arrow_back</span>
+        </a>
+      </div>
+      <div class="bh-info">
+        <div class="bh-avatar">{{ doctorName()[0] }}</div>
+        <div>
+          <h1 class="bh-name">{{ doctorName() }}</h1>
+          <p class="bh-spec">{{ doctor.specialty }}</p>
+        </div>
+      </div>
+      <!-- Step Progress -->
+      <div class="bh-steps">
+        <div class="step-item" [class.active]="step >= 1" [class.done]="step > 1">
+          <span class="step-circle">{{ step > 1 ? '✓' : '1' }}</span>
+          <span class="step-label">{{ 'BOOKING.SELECT_SLOT' | translate }}</span>
+        </div>
+        <div class="step-line" [class.active]="step > 1"></div>
+        <div class="step-item" [class.active]="step >= 2">
+          <span class="step-circle">2</span>
+          <span class="step-label">{{ 'BOOKING.CONFIRM' | translate }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        <h2>{{ 'BOOKING.SELECT_DATE' | translate }}</h2>
-        <app-date-field formControlName="date" labelKey="BOOKING.DATE" placeholder="DD/MM/YYYY"></app-date-field>
+  <div class="booking-body tb-container">
 
-        <h3>{{ 'BOOKING.SELECT_TIME' | translate }}</h3>
-        <p class="empty-slots" *ngIf="slots.length === 0">{{ 'BOOKING.NO_SLOTS' | translate }}</p>
-        <div class="slots-grid">
+    <!-- Step 1: Select Date & Time -->
+    <div class="booking-main" *ngIf="step === 1">
+
+      <!-- Consultation type -->
+      <div class="booking-card">
+        <h2 class="bcard-title">
+          <span class="material-icons">medical_services</span>
+          {{ 'BOOKING.CONSULTATION_TYPE' | translate }}
+        </h2>
+        <div class="consult-types">
+          <button
+            type="button"
+            class="ctype-btn"
+            [class.active]="consultationType === 'IN_CLINIC'"
+            [disabled]="!doctor.acceptsInClinic && doctor.consultationType !== 'IN_CLINIC'"
+            (click)="onConsultationTypeChange('IN_CLINIC')">
+            <span class="ctype-icon clinic">
+              <span class="material-icons">local_hospital</span>
+            </span>
+            <span class="ctype-text">
+              <strong>{{ 'SEARCH.IN_CLINIC' | translate }}</strong>
+              <span>{{ doctor.consultationFee }} {{ 'COMMON.EGP' | translate }}</span>
+            </span>
+          </button>
+          <button
+            type="button"
+            class="ctype-btn"
+            [class.active]="consultationType === 'ONLINE'"
+            [disabled]="!doctor.acceptsOnline && doctor.consultationType !== 'ONLINE'"
+            (click)="onConsultationTypeChange('ONLINE')">
+            <span class="ctype-icon online">
+              <span class="material-icons">videocam</span>
+            </span>
+            <span class="ctype-text">
+              <strong>{{ 'SEARCH.ONLINE' | translate }}</strong>
+              <span>{{ (doctor.onlineFee || doctor.consultationFee) }} {{ 'COMMON.EGP' | translate }}</span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Date picker -->
+      <div class="booking-card">
+        <h2 class="bcard-title">
+          <span class="material-icons">calendar_today</span>
+          {{ 'BOOKING.SELECT_DATE' | translate }}
+        </h2>
+        <form [formGroup]="form">
+          <div class="date-input-wrap">
+            <span class="date-icon material-icons">event</span>
+            <app-date-field
+              class="date-field"
+              formControlName="date"
+              labelKey="BOOKING.DATE"
+              placeholder="YYYY-MM-DD">
+            </app-date-field>
+          </div>
+        </form>
+      </div>
+
+      <!-- Time Slots -->
+      <div class="booking-card">
+        <h2 class="bcard-title">
+          <span class="material-icons">schedule</span>
+          {{ 'BOOKING.SELECT_TIME' | translate }}
+        </h2>
+
+        <p class="no-slots-msg" *ngIf="slots.length === 0">
+          <span class="material-icons">event_busy</span>
+          {{ 'BOOKING.NO_SLOTS' | translate }}
+        </p>
+
+        <div class="slots-grid" *ngIf="slots.length > 0">
           <button
             *ngFor="let slot of slots"
-            mat-stroked-button
+            type="button"
+            class="slot-btn"
             [class.selected]="selectedSlot?.id === slot.id"
+            [class.booked]="!slot.available"
             [disabled]="!slot.available"
-            (click)="selectSlot(slot)"
-            type="button">
-            {{ slot.time }}
+            (click)="selectSlot(slot)">
+            <span class="material-icons slot-icon">{{ slot.available ? 'check_circle' : 'block' }}</span>
+            {{ slot.time || slot.startTime }}
           </button>
         </div>
 
-        <button mat-flat-button color="primary" [disabled]="!selectedSlot" (click)="nextStep()" type="button">
+        <div class="slot-legend">
+          <span class="legend-item available">
+            <span class="legend-dot"></span>
+            {{ 'BOOKING.AVAILABLE' | translate }}
+          </span>
+          <span class="legend-item booked">
+            <span class="legend-dot"></span>
+            {{ 'BOOKING.BOOKED' | translate }}
+          </span>
+          <span class="legend-item selected">
+            <span class="legend-dot"></span>
+            {{ 'BOOKING.SELECTED' | translate }}
+          </span>
+        </div>
+      </div>
+
+      <div class="booking-footer-actions">
+        <button
+          type="button"
+          class="next-btn"
+          [disabled]="!selectedSlot"
+          (click)="nextStep()">
           {{ 'COMMON.NEXT' | translate }}
+          <span class="material-icons">arrow_forward</span>
         </button>
       </div>
+    </div>
 
-      <div *ngIf="step === 2">
-        <h2>{{ 'BOOKING.CONFIRM' | translate }}</h2>
-        <div class="summary">
-          <p><strong>{{ 'BOOKING.DOCTOR' | translate }}:</strong> {{ doctorName() }}</p>
-          <p><strong>{{ 'BOOKING.TYPE' | translate }}:</strong> {{ (consultationType === 'ONLINE' ? 'SEARCH.ONLINE' : 'SEARCH.IN_CLINIC') | translate }}</p>
-          <p><strong>{{ 'BOOKING.DATE' | translate }}:</strong> {{ form.get('date')?.value | rmsDate:'date' }}</p>
-          <p><strong>{{ 'BOOKING.TIME' | translate }}:</strong> {{ selectedSlot?.time }}</p>
-          <p><strong>{{ 'BOOKING.FEE' | translate }}:</strong> {{ displayFee() }} {{ 'COMMON.EGP' | translate }}</p>
+    <!-- Step 2: Confirm -->
+    <div class="booking-main" *ngIf="step === 2">
+      <div class="booking-card confirm-card">
+        <h2 class="bcard-title">
+          <span class="material-icons">check_circle</span>
+          {{ 'BOOKING.CONFIRM' | translate }}
+        </h2>
+
+        <div class="confirm-doctor-row">
+          <div class="confirm-avatar">{{ doctorName()[0] }}</div>
+          <div>
+            <div class="confirm-doctor-name">{{ doctorName() }}</div>
+            <div class="confirm-doctor-spec">{{ doctor.specialty }}</div>
+          </div>
         </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'BOOKING.NOTES' | translate }}</mat-label>
-          <textarea matInput formControlName="notes" rows="3"></textarea>
-        </mat-form-field>
+        <div class="confirm-details">
+          <div class="cd-row">
+            <span class="cd-label">
+              <span class="material-icons">medical_services</span>
+              {{ 'BOOKING.TYPE' | translate }}
+            </span>
+            <span class="cd-value">{{ (consultationType === 'ONLINE' ? 'SEARCH.ONLINE' : 'SEARCH.IN_CLINIC') | translate }}</span>
+          </div>
+          <div class="cd-row">
+            <span class="cd-label">
+              <span class="material-icons">calendar_today</span>
+              {{ 'BOOKING.DATE' | translate }}
+            </span>
+            <span class="cd-value">{{ form.get('date')?.value }}</span>
+          </div>
+          <div class="cd-row">
+            <span class="cd-label">
+              <span class="material-icons">schedule</span>
+              {{ 'BOOKING.TIME' | translate }}
+            </span>
+            <span class="cd-value">{{ selectedSlot?.time || selectedSlot?.startTime }}</span>
+          </div>
+          <div class="cd-row highlight">
+            <span class="cd-label">
+              <span class="material-icons">payments</span>
+              {{ 'BOOKING.FEE' | translate }}
+            </span>
+            <span class="cd-value fee">{{ displayFee() }} {{ 'COMMON.EGP' | translate }}</span>
+          </div>
+        </div>
 
-        <div class="actions">
-          <button mat-button type="button" (click)="step = 1">{{ 'COMMON.BACK' | translate }}</button>
-          <button mat-flat-button color="primary" type="button" [disabled]="booking" (click)="confirm()">
-            {{ booking ? ('COMMON.LOADING' | translate) : ('BOOKING.CONFIRM_BOOKING' | translate) }}
+        <!-- Notes -->
+        <div class="notes-wrap">
+          <label class="notes-label">
+            <span class="material-icons">note_alt</span>
+            {{ 'BOOKING.NOTES' | translate }}
+          </label>
+          <form [formGroup]="form">
+            <textarea
+              class="notes-input"
+              formControlName="notes"
+              rows="3"
+              [placeholder]="'BOOKING.NOTES_PLACEHOLDER' | translate">
+            </textarea>
+          </form>
+        </div>
+
+        <div class="confirm-actions">
+          <button type="button" class="back-step-btn" (click)="step = 1">
+            <span class="material-icons">arrow_back</span>
+            {{ 'COMMON.BACK' | translate }}
+          </button>
+          <button
+            type="button"
+            class="confirm-btn"
+            [disabled]="booking"
+            (click)="confirm()">
+            <span *ngIf="!booking">
+              <span class="material-icons">check</span>
+              {{ 'BOOKING.CONFIRM_BOOKING' | translate }}
+            </span>
+            <span *ngIf="booking" class="btn-loading">
+              <span class="material-icons spin">refresh</span>
+              {{ 'COMMON.LOADING' | translate }}
+            </span>
           </button>
         </div>
       </div>
-    </form>
-  </mat-card>
+    </div>
+
+    <!-- Sidebar Summary -->
+    <aside class="booking-sidebar">
+      <div class="bs-card">
+        <h3 class="bs-title">{{ 'BOOKING.SUMMARY' | translate }}</h3>
+        <div class="bs-doctor">
+          <div class="bs-avatar">{{ doctorName()[0] }}</div>
+          <div>
+            <strong>{{ doctorName() }}</strong>
+            <span>{{ doctor.specialty }}</span>
+          </div>
+        </div>
+        <div class="bs-rows">
+          <div class="bs-row" *ngIf="selectedSlot">
+            <span class="material-icons">schedule</span>
+            <span>{{ selectedSlot!.time || selectedSlot!.startTime }}</span>
+          </div>
+          <div class="bs-row" *ngIf="form.get('date')?.value">
+            <span class="material-icons">calendar_today</span>
+            <span>{{ form.get('date')?.value }}</span>
+          </div>
+          <div class="bs-row">
+            <span class="material-icons">{{ consultationType === 'ONLINE' ? 'videocam' : 'local_hospital' }}</span>
+            <span>{{ (consultationType === 'ONLINE' ? 'SEARCH.ONLINE' : 'SEARCH.IN_CLINIC') | translate }}</span>
+          </div>
+        </div>
+        <div class="bs-fee">
+          <span>{{ 'BOOKING.FEE' | translate }}</span>
+          <strong>{{ displayFee() }} {{ 'COMMON.EGP' | translate }}</strong>
+        </div>
+        <div class="bs-security">
+          <span class="material-icons">security</span>
+          {{ 'DOCTOR.SECURE_BOOKING' | translate }}
+        </div>
+      </div>
+    </aside>
+  </div>
 </div>
 
 <ng-template #loadingTpl>
-  <app-loading-spinner></app-loading-spinner>
+  <div class="booking-loading">
+    <div class="bl-spinner"></div>
+    <p>{{ 'COMMON.LOADING' | translate }}</p>
+  </div>
 </ng-template>

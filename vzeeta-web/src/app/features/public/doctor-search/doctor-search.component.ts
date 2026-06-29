@@ -34,6 +34,7 @@ export class DoctorSearchComponent implements OnInit {
   cities: LookupItem[] = [];
   areas: LookupItem[] = [];
   loading = false;
+  selectedSpecialtyId: number | null = null;
 
   constructor(
     fb: FormBuilder,
@@ -73,6 +74,7 @@ export class DoctorSearchComponent implements OnInit {
       if (params['areaId']) patch['areaId'] = Number(params['areaId']);
       if (params['cityId']) patch['cityId'] = Number(params['cityId']);
       this.filters.patchValue(patch, { emitEvent: false });
+      this.selectedSpecialtyId = (patch['specialtyId'] as number | undefined) ?? null;
       if (patch['cityId']) {
         this.doctorService.getAreas(Number(patch['cityId'])).subscribe((a) => (this.areas = a));
       }
@@ -120,8 +122,35 @@ export class DoctorSearchComponent implements OnInit {
     return this.i18n.currentLang === 'ar' ? s.nameAr : s.nameEn;
   }
 
+  selectedSpecialtyLabel(): string {
+    if (!this.selectedSpecialtyId) return '';
+    const specialty = this.specialties.find((s) => s.id === this.selectedSpecialtyId);
+    return specialty ? this.specialtyLabel(specialty) : '';
+  }
+
+  resultsTitle(): string {
+    const label = this.selectedSpecialtyLabel();
+    if (!label) return this.i18n.currentLang === 'ar' ? 'كل الأطباء المتاحين' : 'Available Doctors';
+    return this.i18n.currentLang === 'ar' ? `دكاترة ${label}` : `${label} Doctors`;
+  }
+
+  resultsSubtitle(): string {
+    return this.i18n.currentLang === 'ar'
+      ? 'استخدم الفلاتر لاختيار المدينة، نوع الاستشارة، والتقييم المناسب لك.'
+      : 'Use filters to refine city, consultation type, and rating.';
+  }
+
   lookupLabel(item: LookupItem): string {
     return this.i18n.currentLang === 'ar' ? item.nameAr : (item.nameEn || item.nameAr);
+  }
+
+  clearFilters(): void {
+    this.filters.reset({
+      name: '', specialtyId: null, cityId: null, areaId: null,
+      minPrice: 0, maxPrice: 2000, consultationType: 'ALL', minRating: 0
+    });
+    this.areas = [];
+    this.applyFilters();
   }
 
   consultationLabel(type: string): string {

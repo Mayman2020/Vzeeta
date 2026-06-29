@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, catchError, of, timeout } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { AppConstants } from '../constants/app-constants';
@@ -72,7 +72,9 @@ export class SuperAdminService {
 
   getDashboard(): Observable<AdminDashboard> {
     return this.api.get<ApiResponse<AdminDashboard>>(AppConstants.API.ADMIN_DASHBOARD).pipe(
-      map((res) => res.data ?? { userCount: 0, clinicCount: 0, doctorCount: 0, paymentCount: 0, unverifiedDoctorCount: 0 })
+      timeout(8000),
+      map((res) => res.data ?? { userCount: 0, clinicCount: 0, doctorCount: 0, paymentCount: 0, unverifiedDoctorCount: 0 }),
+      catchError(() => of({ userCount: 0, clinicCount: 0, doctorCount: 0, paymentCount: 0, unverifiedDoctorCount: 0 }))
     );
   }
 

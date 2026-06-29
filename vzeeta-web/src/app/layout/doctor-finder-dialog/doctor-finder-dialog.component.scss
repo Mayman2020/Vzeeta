@@ -1,0 +1,274 @@
+:host { display: block; }
+
+.finder-dialog {
+  position: relative;
+  width: min(920px, calc(100vw - 28px));
+  max-height: min(760px, calc(100vh - 32px));
+  overflow: auto;
+  border-radius: 8px;
+  background: #f5f9ff;
+  color: #0f2d4d;
+}
+
+.dialog-close {
+  position: absolute;
+  inset-block-start: 14px;
+  inset-inline-end: 14px;
+  z-index: 3;
+  color: #fff;
+  background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.18);
+}
+
+.finder-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+  padding: 34px;
+  background:
+    radial-gradient(circle at 82% 34%, rgba(24,194,192,0.26), transparent 34%),
+    linear-gradient(135deg, #06213a, #0f4c81 58%, #12619e);
+  color: #fff;
+}
+
+.finder-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 52px 52px;
+  opacity: 0.26;
+}
+
+.hero-mark {
+  position: absolute;
+  inset-inline-end: 44px;
+  top: 50%;
+  width: 260px;
+  aspect-ratio: 1;
+  translate: 0 -50%;
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.hero-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  animation: finderFloat 5s ease-in-out infinite;
+}
+
+.hero-mark span {
+  position: absolute;
+  inset-inline: 10%;
+  top: 48%;
+  height: 58px;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+
+.hero-mark span::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 200%;
+  background: #18c2c0;
+  clip-path: polygon(0 52%, 16% 52%, 20% 32%, 25% 72%, 30% 52%, 48% 52%, 52% 26%, 57% 80%, 62% 52%, 100% 52%, 100% 56%, 62% 56%, 57% 84%, 52% 30%, 48% 56%, 30% 56%, 25% 76%, 20% 36%, 16% 56%, 0 56%);
+  animation: finderPulse 3s linear infinite;
+}
+
+.hero-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+  animation: finderRise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.14);
+  border: 1px solid rgba(255,255,255,0.2);
+  font-weight: 800;
+}
+.eyebrow mat-icon { width: 18px; height: 18px; font-size: 18px; color: #18c2c0; }
+
+.finder-hero h2 {
+  margin: 18px 0 10px;
+  color: #fff;
+  font-size: clamp(1.6rem, 3vw, 2.7rem);
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.finder-hero p {
+  margin: 0;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.75;
+}
+
+.finder-form {
+  padding: 26px;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.finder-field {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1.5px solid #dce7f0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(15,76,129,0.06);
+  animation: finderRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.finder-field.primary {
+  border-color: rgba(24,194,192,0.38);
+}
+
+.finder-field span {
+  color: #0f2d4d;
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.finder-field select {
+  width: 100%;
+  min-height: 44px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fbff;
+  color: #0f2d4d;
+  font: inherit;
+  font-weight: 700;
+  padding: 0 12px;
+  outline: none;
+}
+
+.finder-field select:focus {
+  border-color: #18c2c0;
+  box-shadow: 0 0 0 3px rgba(24,194,192,0.14);
+}
+
+.doctor-strip {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1.5px solid #dce7f0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(15,76,129,0.06);
+  animation: finderRise 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.strip-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.strip-head strong { color: #0f2d4d; font-weight: 900; }
+.strip-head span { color: #607086; font-size: 0.84rem; font-weight: 800; }
+
+.doctor-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.doctor-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 10px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fbff;
+  color: #0f2d4d;
+  cursor: pointer;
+  font: inherit;
+  text-align: start;
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+}
+
+.doctor-chip:hover,
+.doctor-chip.active {
+  transform: translateY(-2px);
+  border-color: #18c2c0;
+  background: #ecffff;
+}
+
+.doctor-chip span {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #0f4c81;
+  color: #fff;
+  font-weight: 900;
+}
+.doctor-chip small { font-weight: 800; line-height: 1.35; }
+
+.no-doctors {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #607086;
+  font-weight: 800;
+}
+
+.finder-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 52px;
+  margin-top: 18px;
+  border: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0f4c81, #18c2c0);
+  color: #fff;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 18px 34px rgba(15,76,129,0.18);
+  transition: transform 0.16s ease, opacity 0.16s ease;
+}
+.finder-submit:hover:not(:disabled) { transform: translateY(-2px); }
+.finder-submit:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+
+@keyframes finderRise {
+  from { opacity: 0; transform: translateY(18px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes finderFloat {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-8px) scale(1.035); }
+}
+
+@keyframes finderPulse {
+  from { transform: translateX(34%); }
+  to { transform: translateX(-48%); }
+}
+
+@media (max-width: 720px) {
+  .finder-dialog { width: calc(100vw - 16px); }
+  .finder-hero { padding: 28px 20px; }
+  .hero-mark { inset-inline-end: 50%; translate: 50% -50%; opacity: 0.1; }
+  .finder-form { padding: 18px; }
+  .field-grid { grid-template-columns: 1fr; }
+}

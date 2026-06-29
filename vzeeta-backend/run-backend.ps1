@@ -72,8 +72,8 @@ window.__TB_FILE_URL__ = '$BaseUrl/files';
 "@ | Set-Content -Path $FrontendRuntimeConfigJs -Encoding UTF8
 }
 
-Write-Step "Starting Vzeeta backend on $BaseUrl" "Green"
-Write-Step "Default login: superadmin@tabeebi.com / 12345" "Gray"
+Write-Step "Starting NABD backend on $BaseUrl" "Green"
+Write-Step "Default login: superadmin@tabeebi.com / Dev@Local2026!" "Gray"
 Write-Step "Stop with Ctrl+C" "Gray"
 
 & $MvnwPath spring-boot:run "-Dspring-boot.run.arguments=--server.port=$Port"

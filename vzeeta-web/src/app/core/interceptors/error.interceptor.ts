@@ -13,7 +13,14 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
-      if (err.status === 401 && !req.url.includes(AppConstants.API.AUTH_LOGIN)) {
+      const isLoginRequest = req.url.includes(AppConstants.API.AUTH_LOGIN);
+      const isOnLoginPage = router.url.startsWith('/auth/login');
+
+      // فقط امسح الـ token وعمل redirect لو:
+      // 1. مش request اللوجين نفسه
+      // 2. مش على صفحة اللوجين بالفعل (علشان نتجنب الـ redirect loops)
+      // 3. في token فعلاً (يعني session expired وليس مجرد unauthorized)
+      if (err.status === 401 && !isLoginRequest && !isOnLoginPage && tokenStorage.getToken()) {
         tokenStorage.clearAll();
         void router.navigateByUrl('/auth/login');
       }

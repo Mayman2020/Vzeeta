@@ -39,6 +39,7 @@ export interface Doctor {
   acceptsOnline?: boolean;
   acceptsInClinic?: boolean;
   availableToday?: boolean;
+  patientCount?: number;
 }
 
 export interface TimeSlot {

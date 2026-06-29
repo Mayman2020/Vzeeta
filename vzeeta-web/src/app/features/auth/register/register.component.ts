@@ -27,6 +27,7 @@ import { UserRole } from '../../../core/models/user.model';
 export class RegisterComponent {
   form: FormGroup;
   loading = false;
+  showPassword = false;
   roles: { value: UserRole; labelKey: string }[] = [
     { value: 'PATIENT', labelKey: 'ROLES.PATIENT' },
     { value: 'DOCTOR', labelKey: 'ROLES.DOCTOR' }

@@ -7,6 +7,7 @@ import com.vzeeta.shared.enums.AppointmentStatus;
 import com.vzeeta.modules.clinic.entity.ClinicBranch;
 import com.vzeeta.modules.clinic.entity.ClinicService;
 import com.vzeeta.modules.clinic.repository.*;
+import com.vzeeta.modules.clinicadmin.dto.CreateDoctorRequest;
 import com.vzeeta.modules.doctor.entity.Doctor;
 import com.vzeeta.modules.doctor.repository.DoctorRepository;
 import com.vzeeta.modules.lab.entity.LabResult;
@@ -15,10 +16,14 @@ import com.vzeeta.modules.lookup.entity.Specialty;
 import com.vzeeta.modules.lookup.repository.SpecialtyRepository;
 import com.vzeeta.modules.patient.entity.Patient;
 import com.vzeeta.modules.patient.repository.PatientRepository;
+import com.vzeeta.modules.user.entity.User;
+import com.vzeeta.modules.user.repository.UserRepository;
+import com.vzeeta.shared.enums.UserRole;
 import com.vzeeta.shared.exception.AppException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +45,8 @@ public class ClinicAdminService {
     private final ClinicBranchRepository branchRepository;
     private final ClinicServiceRepository clinicServiceRepository;
     private final LabResultRepository labResultRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     private Long requireClinicId(Long userId) {
         return clinicAdminRepository.findByUserId(userId)
@@ -50,6 +57,32 @@ public class ClinicAdminService {
     @Transactional(readOnly = true)
     public Page<Doctor> listDoctors(Long userId, String q, Pageable pageable) {
         return doctorRepository.searchByClinicId(requireClinicId(userId), normalizeQ(q), pageable);
+    }
+
+    @Transactional
+    public Doctor createDoctor(Long userId, CreateDoctorRequest req) {
+        Long clinicId = requireClinicId(userId);
+        if (userRepository.existsByEmailIgnoreCase(req.getEmail()))
+            throw AppException.conflict("Email already registered");
+        User user = User.builder()
+                .email(req.getEmail())
+                .passwordHash(passwordEncoder.encode("Tabeebi@2025"))
+                .fullNameAr(req.getFullNameAr())
+                .fullNameEn(req.getFullNameEn())
+                .phone(req.getPhone())
+                .role(UserRole.DOCTOR)
+                .build();
+        user = userRepository.save(user);
+        Doctor doctor = Doctor.builder()
+                .user(user)
+                .clinicId(clinicId)
+                .titleAr(req.getTitleAr())
+                .consultationFee(req.getConsultationFee())
+                .acceptsOnline(req.isAcceptsOnline())
+                .acceptsInClinic(req.isAcceptsInClinic())
+                .verified(false)
+                .build();
+        return doctorRepository.save(doctor);
     }
 
     @Transactional

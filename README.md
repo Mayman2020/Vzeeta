@@ -1,4 +1,4 @@
-# Tabeebi (طبيبي) — Clinic & Doctor Booking Platform
+# NABD (نبض) — Clinic & Doctor Booking Platform
 
 Original Arabic RTL medical booking platform inspired by modern healthcare marketplaces.  
 Built following the **Property_Managments** project structure and conventions.
@@ -84,7 +84,7 @@ flutter run
 Default API for Android emulator: `http://10.0.2.2:8081/api/v1`  
 Change in Profile → API settings for physical devices (use your machine LAN IP).
 
-## Test Users (password: `12345`)
+## Test Users (password: `Dev@Local2026!`)
 
 | Role | Email |
 |------|-------|
@@ -141,7 +141,7 @@ flutter analyze
 
 ## Branding
 
-- **Name:** Tabeebi (طبيبي)
+- **Name:** NABD (نبض)
 - **Primary color:** `#1A6FD4` (medical blue)
 - **Layout:** Arabic RTL default
 - Original design — not a Vezeeta brand copy

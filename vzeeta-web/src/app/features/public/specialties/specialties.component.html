@@ -1,0 +1,61 @@
+<section class="specialties-page">
+  <div class="specialties-hero">
+    <div class="hero-watermark" aria-hidden="true">
+      <img src="assets/brand/tabeebi-mark.svg" alt="">
+      <span class="pulse-line"></span>
+    </div>
+    <div class="sp-container hero-content">
+      <span class="hero-kicker">
+        <mat-icon>medical_services</mat-icon>
+        {{ i18n.currentLang === 'ar' ? 'كل التخصصات' : 'All Specialties' }}
+      </span>
+      <h1>{{ i18n.currentLang === 'ar' ? 'اختار تخصصك الطبي' : 'Pick Your Medical Specialty' }}</h1>
+      <p>{{ subtitle() }}</p>
+
+      <div class="specialty-search">
+        <mat-icon>search</mat-icon>
+        <input [value]="query" (input)="updateQuery($event)" [placeholder]="searchPlaceholder()">
+        <span>{{ filteredSpecialties.length }} {{ countLabel() }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sp-container specialties-body">
+    <div class="body-heading">
+      <div>
+        <span>{{ i18n.currentLang === 'ar' ? 'ابدأ من هنا' : 'Start here' }}</span>
+        <h2>{{ i18n.currentLang === 'ar' ? 'التخصصات المتاحة' : 'Available Specialties' }}</h2>
+      </div>
+      <button type="button" class="clear-filter" *ngIf="query" (click)="query = ''">
+        <mat-icon>close</mat-icon>
+        {{ i18n.currentLang === 'ar' ? 'مسح البحث' : 'Clear search' }}
+      </button>
+    </div>
+
+    <div class="specialties-loading" *ngIf="loading">
+      <div class="skeleton-card" *ngFor="let _ of [1,2,3,4,5,6,7,8]"></div>
+    </div>
+
+    <div class="specialties-grid" *ngIf="!loading && filteredSpecialties.length">
+      <button type="button" class="specialty-tile" *ngFor="let s of filteredSpecialties; let i = index" (click)="openSpecialty(s)" [style.--delay]="(i * 45) + 'ms'">
+        <span class="tile-orbit" aria-hidden="true"></span>
+        <span class="tile-icon">
+          <mat-icon>{{ s.icon || 'health_and_safety' }}</mat-icon>
+        </span>
+        <span class="tile-copy">
+          <strong>{{ label(s) }}</strong>
+          <small>{{ i18n.currentLang === 'ar' ? 'اعرض الدكاترة المتخصصين' : 'View matching doctors' }}</small>
+        </span>
+        <span class="tile-action">
+          <mat-icon>arrow_forward</mat-icon>
+        </span>
+      </button>
+    </div>
+
+    <div class="empty-specialties" *ngIf="!loading && !filteredSpecialties.length">
+      <mat-icon>search_off</mat-icon>
+      <h3>{{ i18n.currentLang === 'ar' ? 'لا يوجد تخصص مطابق' : 'No matching specialty' }}</h3>
+      <p>{{ i18n.currentLang === 'ar' ? 'جرب اسم تخصص مختلف.' : 'Try another specialty name.' }}</p>
+    </div>
+  </div>
+</section>

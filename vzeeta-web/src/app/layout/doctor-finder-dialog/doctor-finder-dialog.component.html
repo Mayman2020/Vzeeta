@@ -1,0 +1,84 @@
+<div class="finder-dialog" [dir]="i18n.currentLang === 'ar' ? 'rtl' : 'ltr'">
+  <button type="button" class="dialog-close" mat-icon-button mat-dialog-close>
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <section class="finder-hero">
+    <div class="hero-mark" aria-hidden="true">
+      <img src="assets/brand/tabeebi-mark.svg" alt="">
+      <span></span>
+    </div>
+    <div class="hero-copy">
+      <span class="eyebrow">
+        <mat-icon>travel_explore</mat-icon>
+        {{ i18n.currentLang === 'ar' ? 'بحث ذكي' : 'Smart finder' }}
+      </span>
+      <h2>{{ i18n.currentLang === 'ar' ? 'اختار تخصصك ودكتورك بسهولة' : 'Find the right doctor faster' }}</h2>
+      <p>{{ i18n.currentLang === 'ar' ? 'ابدأ بالتخصص، وبعدها هنظهر لك الدكاترة المناسبين مع المحافظة والمنطقة.' : 'Start with a specialty, then pick a doctor and location.' }}</p>
+    </div>
+  </section>
+
+  <form class="finder-form" [formGroup]="form" (ngSubmit)="submit()">
+    <div class="field-grid">
+      <label class="finder-field primary">
+        <span>{{ i18n.currentLang === 'ar' ? 'التخصص' : 'Specialty' }}</span>
+        <select formControlName="specialtyId">
+          <option [ngValue]="null">{{ i18n.currentLang === 'ar' ? 'اختار التخصص أولا' : 'Choose specialty first' }}</option>
+          <option *ngFor="let s of specialties" [ngValue]="s.id">{{ labelSpecialty(s) }}</option>
+        </select>
+      </label>
+
+      <label class="finder-field primary">
+        <span>{{ i18n.currentLang === 'ar' ? 'الدكتور' : 'Doctor' }}</span>
+        <select formControlName="doctorId" [disabled]="!form.value.specialtyId || loadingDoctors">
+          <option [ngValue]="null">
+            {{ loadingDoctors
+              ? (i18n.currentLang === 'ar' ? 'جاري تحميل الدكاترة...' : 'Loading doctors...')
+              : (i18n.currentLang === 'ar' ? 'كل دكاترة التخصص' : 'All specialty doctors') }}
+          </option>
+          <option *ngFor="let d of doctors" [ngValue]="d.id">{{ labelDoctor(d) }}</option>
+        </select>
+      </label>
+
+      <label class="finder-field">
+        <span>{{ i18n.currentLang === 'ar' ? 'المحافظة' : 'Governorate' }}</span>
+        <select formControlName="cityId">
+          <option [ngValue]="null">{{ i18n.currentLang === 'ar' ? 'كل المحافظات' : 'All governorates' }}</option>
+          <option *ngFor="let c of cities" [ngValue]="c.id">{{ labelLookup(c) }}</option>
+        </select>
+      </label>
+
+      <label class="finder-field">
+        <span>{{ i18n.currentLang === 'ar' ? 'المنطقة' : 'Area' }}</span>
+        <select formControlName="areaId" [disabled]="!areas.length">
+          <option [ngValue]="null">{{ i18n.currentLang === 'ar' ? 'كل المناطق' : 'All areas' }}</option>
+          <option *ngFor="let a of areas" [ngValue]="a.id">{{ labelLookup(a) }}</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="doctor-strip" *ngIf="form.value.specialtyId">
+      <div class="strip-head">
+        <strong>{{ selectedSpecialtyName() }}</strong>
+        <span>{{ doctors.length }} {{ i18n.currentLang === 'ar' ? 'دكتور' : 'doctors' }}</span>
+      </div>
+      <div class="doctor-chips" *ngIf="doctors.length">
+        <button type="button" class="doctor-chip" *ngFor="let d of doctors.slice(0, 8)" [class.active]="form.value.doctorId === d.id" (click)="form.patchValue({ doctorId: d.id })">
+          <span>{{ labelDoctor(d).slice(0, 1) }}</span>
+          <small>{{ labelDoctor(d) }}</small>
+        </button>
+      </div>
+      <div class="no-doctors" *ngIf="!loadingDoctors && !doctors.length">
+        <mat-icon>person_off</mat-icon>
+        {{ i18n.currentLang === 'ar' ? 'لا يوجد دكاترة متاحين لهذا التخصص حاليا' : 'No doctors available for this specialty yet' }}
+      </div>
+    </div>
+
+    <button type="submit" class="finder-submit" [disabled]="!form.value.specialtyId">
+      <mat-icon>{{ form.value.doctorId ? 'person_search' : 'search' }}</mat-icon>
+      {{ form.value.doctorId
+        ? (i18n.currentLang === 'ar' ? 'افتح صفحة الدكتور' : 'Open doctor profile')
+        : (i18n.currentLang === 'ar' ? 'اعرض الدكاترة' : 'Show doctors') }}
+    </button>
+  </form>
+</div>

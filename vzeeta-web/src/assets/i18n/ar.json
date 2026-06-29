@@ -1,11 +1,11 @@
 {
   "APP": {
-    "TITLE": "طبيبي | Tabeebi - حجز مواعيد طبية",
-    "NAME": "طبيبي",
-    "BRAND": "طبيبي",
-    "TAGLINE": "طبيبي — منصتك الطبية الموثوقة",
-    "TAGLINE_SHORT": "المنصة الطبية",
-    "FOOTER": "طبيبي — جميع الحقوق محفوظة"
+    "TITLE": "نبض | NABD - حجز مواعيد طبية",
+    "NAME": "نبض",
+    "BRAND": "نبض",
+    "TAGLINE": "نبض — منصة مواعيدك الطبية الموثوقة",
+    "TAGLINE_SHORT": "احجز موعدك",
+    "FOOTER": "نبض — جميع الحقوق محفوظة"
   },
   "COMMON": {
     "LANGUAGE": "اللغة",
@@ -28,15 +28,14 @@
     "PAGINATION": "التصفح",
     "PAGE_OF": "صفحة {{current}} من {{total}}",
     "PREVIOUS": "السابق",
-    "USER_INITIAL": "م"
+    "USER_INITIAL": "م",
+    "CLEAR": "مسح الكل",
+    "TODAY": "اليوم",
+    "TOTAL": "الإجمالي"
   },
   "TOPBAR": {
-    "TOGGLE_MENU": "إظهار/إخفاء القائمة",
-    "LANGUAGE": "اللغة",
-    "LIGHT_MODE": "الوضع الفاتح",
-    "DARK_MODE": "الوضع الداكن",
-    "NOTIFICATIONS": "الإشعارات",
-    "SEARCH_PLACEHOLDER": "ابحث عن أطباء أو مرضى أو عيادات..."
+    "DARK_MODE": "التبديل للوضع الداكن",
+    "LIGHT_MODE": "التبديل للوضع الفاتح"
   },
   "AUTH": {
     "LOGIN": "تسجيل الدخول",
@@ -48,7 +47,7 @@
     "PHONE": "رقم الجوال",
     "ROLE": "نوع الحساب",
     "LOGIN_SUBTITLE": "سجّل دخولك للوصول إلى حسابك",
-    "REGISTER_SUBTITLE": "أنشئ حساباً جديداً على طبيبي",
+    "REGISTER_SUBTITLE": "أنشئ حساباً جديداً على نبض",
     "NO_ACCOUNT": "ليس لديك حساب؟",
     "HAVE_ACCOUNT": "لديك حساب بالفعل؟",
     "INVALID_CREDENTIALS": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
@@ -59,22 +58,22 @@
     "FORGOT_PASSWORD": "نسيت كلمة المرور؟"
   },
   "LOGIN": {
-    "BRAND_NAME": "طبيبي",
-    "BRAND_SUB": "طبي",
-    "HERO_HEADLINE": "احجز وأدر رعايتك الصحية بسهولة",
-    "HERO_TAGLINE": "منصة متكاملة للمواعيد والأطباء والعيادات — بكفاءة وأمان",
+    "BRAND_NAME": "نبض",
+    "BRAND_SUB": "NABD",
+    "HERO_HEADLINE": "احجز موعدك بثقة وراحة",
+    "HERO_TAGLINE": "نبض يربط المرضى والأطباء والعيادات بتجربة حجز آمنة وفخمة",
     "FORM_SUBTITLE": "سجّل الدخول للوصول إلى لوحة التحكم",
     "EMAIL_PLACEHOLDER": "أدخل بريدك الإلكتروني",
     "PASSWORD_PLACEHOLDER": "أدخل كلمة المرور",
     "REMEMBER_ME": "تذكرني",
     "OR_CONTINUE": "أو سجّل الدخول عبر",
     "SECURE_LOGIN": "دخول آمن وموثوق",
-    "COPYRIGHT": "© 2026 منصة طبيبي الطبية",
+    "COPYRIGHT": "© 2026 منصة نبض الصحية",
     "FEATURE_APPOINTMENTS": "المواعيد",
     "FEATURE_DOCTORS": "الأطباء",
     "FEATURE_CLINICS": "العيادات",
     "WELCOME_BACK": "مرحباً بعودتك",
-    "HERO_SUBTITLE": "منصة الإدارة الطبية",
+    "HERO_SUBTITLE": "نظام المواعيد الصحية",
     "FORGOT_PASSWORD": "نسيت كلمة المرور؟"
   },
   "ROLES": {
@@ -89,8 +88,33 @@
   "HOME": {
     "HERO_TITLE": "احجز موعدك الطبي بسهولة",
     "HERO_SUBTITLE": "ابحث عن أفضل الأطباء واحجز موعدك في دقائق — عيادة أو استشارة عن بُعد",
+    "FIND_DOCTOR": "ابحث عن طبيب",
+    "SEARCH": "ابحث الآن",
+    "STAT_PATIENTS": "مريض",
+    "STAT_DOCTORS": "طبيب",
+    "STAT_CLINICS": "عيادة",
+    "STAT_BOOKING_TITLE": "حجز فوري",
+    "STAT_BOOKING_DESC": "احجز موعدك في ثوانٍ",
+    "STAT_VERIFIED_TITLE": "أطباء موثوقون",
+    "STAT_VERIFIED_DESC": "جميع الأطباء معتمدون",
+    "STAT_ONLINE_TITLE": "استشارة عن بُعد",
+    "STAT_ONLINE_DESC": "من أي مكان وأي وقت",
+    "STAT_SUPPORT_TITLE": "دعم 24/7",
+    "STAT_SUPPORT_DESC": "فريق دعم متاح دائماً",
+    "BROWSE_BY": "تصفح حسب",
     "SPECIALTIES_TITLE": "التخصصات الطبية",
-    "WHY_TABEEBI": "لماذا طبيبي؟",
+    "SPECIALTIES_DESC": "اختر تخصصك وابدأ بحثك عن أفضل طبيب",
+    "VIEW_ALL_SPECIALTIES": "عرض جميع التخصصات",
+    "HOW_EYEBROW": "كيف يعمل",
+    "HOW_TITLE": "احجز موعدك في 3 خطوات",
+    "STEP1_TITLE": "ابحث عن طبيب",
+    "STEP1_DESC": "ابحث بالاسم أو التخصص أو المنطقة",
+    "STEP2_TITLE": "اختر الموعد",
+    "STEP2_DESC": "اختر التاريخ والوقت المناسب لك",
+    "STEP3_TITLE": "احصل على الرعاية",
+    "STEP3_DESC": "قابل طبيبك في العيادة أو عن بُعد",
+    "WHY_EYEBROW": "مميزاتنا",
+    "WHY_TABEEBI": "لماذا نبض؟",
     "VALUE1_TITLE": "حجز فوري",
     "VALUE1_DESC": "احجز موعدك في أي وقت دون انتظار",
     "VALUE2_TITLE": "أطباء موثوقون",
@@ -98,7 +122,9 @@
     "VALUE3_TITLE": "تخصصات متعددة",
     "VALUE3_DESC": "أكثر من 30 تخصصاً طبياً",
     "VALUE4_TITLE": "دعم متواصل",
-    "VALUE4_DESC": "فريق دعم متاح على مدار الساعة"
+    "VALUE4_DESC": "فريق دعم متاح على مدار الساعة",
+    "CTA_TITLE": "هل أنت مستعد لحجز موعدك؟",
+    "CTA_DESC": "انضم لآلاف المرضى الذين يثقون في نبض لرعايتهم الصحية"
   },
   "SEARCH": {
     "DOCTOR_NAME": "اسم الطبيب",
@@ -116,15 +142,11 @@
     "BOTH": "عيادة وعن بُعد",
     "APPLY": "تطبيق",
     "DOCTORS_FOUND": "طبيب",
-    "NO_RESULTS": "لم يتم العثور على أطباء مطابقين"
-  },
-  "DOCTOR": {
-    "ABOUT": "نبذة عن الطبيب",
-    "LOCATION": "الموقع",
-    "REVIEWS": "تقييم",
-    "YEARS_EXP": "سنوات خبرة",
-    "AVAILABLE_TODAY": "متاح اليوم",
-    "DEFAULT_BIO": "طبيب متخصص يقدم رعاية صحية عالية الجودة لمرضاه."
+    "NO_RESULTS": "لم يتم العثور على أطباء مطابقين",
+    "TRY_DIFFERENT": "جرب تغيير معايير البحث",
+    "RELEVANCE": "الأنسب",
+    "RATING": "التقييم",
+    "SORT_BY": "ترتيب حسب"
   },
   "BOOKING": {
     "TITLE": "حجز موعد",
@@ -143,7 +165,13 @@
     "LOGIN_REQUIRED": "يرجى تسجيل الدخول لإتمام الحجز",
     "CONSULTATION_TYPE": "نوع الاستشارة",
     "TYPE": "النوع",
-    "NO_SLOTS": "لا توجد مواعيد متاحة في هذا اليوم"
+    "NO_SLOTS": "لا توجد مواعيد متاحة في هذا اليوم",
+    "AVAILABLE": "متاح",
+    "BOOKED": "محجوز",
+    "SELECTED": "مختار",
+    "SUMMARY": "ملخص الحجز",
+    "SELECT_SLOT": "اختر الموعد",
+    "NOTES_PLACEHOLDER": "أضف ملاحظات للطبيب..."
   },
   "PAYMENT_STATUS": {
     "PAID": "مدفوع",
@@ -186,10 +214,6 @@
     "LOOKUPS": "البيانات المرجعية",
     "PROFILE": "الملف الشخصي"
   },
-  "TOPBAR": {
-    "DARK_MODE": "التبديل للوضع الداكن",
-    "LIGHT_MODE": "التبديل للوضع الفاتح"
-  },
   "PERMISSIONS": {
     "TITLE": "صلاحيات الأدوار",
     "SUBTITLE": "إدارة صلاحيات كل دور حسب الوحدة",
@@ -229,7 +253,7 @@
   "PATIENT": {
     "DASHBOARD_TITLE": "لوحة المريض",
     "DASHBOARD_SUBTITLE": "إدارة مواعيدك وملفك الطبي",
-    "WELCOME": "مرحباً بك في طبيبي — تابع مواعيدك ووصفاتك الطبية من مكان واحد",
+    "WELCOME": "مرحباً بك في نبض — تابع مواعيدك ووصفاتك الطبية من مكان واحد",
     "UPCOMING_APPOINTMENTS": "مواعيد قادمة",
     "FAVORITE_DOCTORS": "أطباء مفضلون",
     "ACTIVE_PRESCRIPTIONS": "وصفات نشطة",
@@ -244,10 +268,15 @@
     "NO_PRESCRIPTIONS": "لا توجد وصفات طبية",
     "NO_LAB_RESULTS": "لا توجد نتائج مختبر",
     "NO_RECORDS": "لا توجد سجلات طبية",
+    "RECORDS_SUBTITLE": "سجلاتك الطبية ونتائج الفحوصات",
     "NO_NOTIFICATIONS": "لا توجد إشعارات",
     "RESCHEDULE": "إعادة جدولة",
     "RESCHEDULE_SUCCESS": "تمت إعادة جدولة الموعد",
-    "DOWNLOAD": "تنزيل"
+    "DOWNLOAD": "تنزيل",
+    "UPCOMING": "القادمة",
+    "COMPLETED": "المكتملة",
+    "CANCELLED": "الملغية",
+    "PATIENT": "مريض"
   },
   "DOCTOR": {
     "DASHBOARD_TITLE": "لوحة الطبيب",
@@ -278,7 +307,27 @@
     "DIAGNOSIS": "التشخيص",
     "MEDICINE": "الدواء",
     "DOSAGE": "الجرعة",
-    "PRESCRIPTION_SAVED": "تم حفظ الوصفة"
+    "PRESCRIPTION_SAVED": "تم حفظ الوصفة",
+    "EARNINGS": "الأرباح",
+    "FAST": "سريع",
+    "BOOKING": "الحجز",
+    "REVIEWS": "تقييم",
+    "PATIENTS": "مريض",
+    "YEARS_EXP": "سنوات خبرة",
+    "ABOUT": "نبذة عن الطبيب",
+    "LOCATION": "الموقع",
+    "DEFAULT_BIO": "طبيب متخصص لديه خبرة واسعة في مجاله",
+    "NO_LOCATION": "غير محدد",
+    "MAP_PLACEHOLDER": "خريطة الموقع قريباً",
+    "PICK_SLOT": "اختر موعداً مناسباً",
+    "SECURE_BOOKING": "حجز آمن ومضمون",
+    "FREE_CANCEL": "إلغاء مجاني",
+    "AVAILABLE_TODAY": "متاح اليوم",
+    "VIEW_PROFILE": "عرض الملف",
+    "OFF": "إجازة",
+    "SCHEDULE_SUBTITLE": "إدارة جدول مواعيدك الأسبوعي",
+    "ACCEPTS_ONLINE": "يقبل استشارات عن بُعد",
+    "ACCEPTS_IN_CLINIC": "يقبل مرضى بالعيادة"
   },
   "CLINIC": {
     "DASHBOARD_TITLE": "لوحة إدارة العيادة",
@@ -289,7 +338,10 @@
     "REGISTERED_PATIENTS": "مرضى مسجلون",
     "SPECIALTIES_READONLY": "بيانات مرجعية — للقراءة فقط",
     "SPECIALTIES_READONLY_HINT": "التخصصات الطبية تُدار مركزياً. تواصل مع مدير المنصة لطلب تعديلات.",
+    "ADD_DOCTOR": "إضافة طبيب",
     "EDIT_DOCTOR": "تعديل طبيب",
+    "DOCTOR_TITLE": "لقب الطبيب",
+    "DOCTOR_DEFAULT_PASS": "كلمة المرور الافتراضية: NABD@2026 (يجب تغييرها عند أول دخول)",
     "ADD_BRANCH": "إضافة فرع",
     "ADD_SERVICE": "إضافة خدمة",
     "ADD_LAB_RESULT": "إضافة نتيجة مختبر",
@@ -297,11 +349,18 @@
     "TEST_NAME_AR": "اسم الفحص (عربي)",
     "TEST_NAME_EN": "اسم الفحص (إنجليزي)",
     "RESULT_SUMMARY": "ملخص النتيجة",
-    "RESULT_DATE": "تاريخ النتيجة"
+    "RESULT_DATE": "تاريخ النتيجة",
+    "TODAY_APPOINTMENTS": "مواعيد اليوم"
+  },
+  "APPOINTMENT": {
+    "ALL": "الكل",
+    "AWAITING": "في الانتظار",
+    "NO_TODAY": "لا توجد مواعيد اليوم",
+    "STATUS_PENDING": "معلق"
   },
   "ADMIN": {
     "DASHBOARD_TITLE": "لوحة مدير النظام",
-    "WELCOME": "مرحباً — إدارة منصة طبيبي",
+    "WELCOME": "مرحباً — إدارة منصة نبض",
     "TOTAL_CLINICS": "إجمالي العيادات",
     "TOTAL_USERS": "إجمالي المستخدمين",
     "PENDING_VERIFICATION": "أطباء بانتظار التحقق",
@@ -327,6 +386,22 @@
     "CITIES_LOOKUP_HINT": "لأنواع العيادات وحالات المواعيد، استخدم",
     "LOOKUPS_LINK": "إدارة القوائم المرجعية",
     "TOGGLE_ACTIVE": "تبديل التفعيل"
+  },
+  "VIDEO": {
+    "SESSION_WITH": "جلسة استشارة مع الطبيب",
+    "CONNECTED": "متصل",
+    "CONNECTING": "جار الاتصال...",
+    "WAITING_DOCTOR": "في انتظار الطبيب...",
+    "YOU": "أنت",
+    "CHAT": "المحادثة",
+    "SESSION_STARTED": "بدأت الجلسة",
+    "TYPE_MESSAGE": "اكتب رسالة...",
+    "MUTE": "كتم",
+    "UNMUTE": "إلغاء الكتم",
+    "STOP_CAM": "إيقاف الكاميرا",
+    "START_CAM": "تشغيل الكاميرا",
+    "SHARE": "مشاركة الشاشة",
+    "END_CALL": "إنهاء المكالمة"
   },
   "ERRORS": {
     "GENERIC": "حدث خطأ غير متوقع، يرجى المحاولة لاحقاً"

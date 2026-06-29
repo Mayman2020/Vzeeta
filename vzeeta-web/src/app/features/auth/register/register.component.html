@@ -1,47 +1,169 @@
-<div class="auth-page">
-  <mat-card class="auth-card">
-    <div class="auth-brand">
-      <span class="brand-icon"><span class="material-icons">medical_services</span></span>
-      <h1>{{ 'AUTH.REGISTER' | translate }}</h1>
-      <p>{{ 'AUTH.REGISTER_SUBTITLE' | translate }}</p>
+<div class="clinic-register-split">
+
+  <!-- Hero Left Panel -->
+  <div class="register-hero">
+    <div class="register-hero-bg"></div>
+    <div class="register-hero-overlay"></div>
+
+    <div class="hero-toolbar">
+      <a href="/" class="hero-tool-btn">
+        <span class="material-icons">arrow_back</span>
+        {{ 'COMMON.BACK' | translate }}
+      </a>
     </div>
 
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'AUTH.FULL_NAME' | translate }}</mat-label>
-        <input matInput formControlName="fullNameAr">
-      </mat-form-field>
+    <div class="hero-brand-block">
+      <div class="hero-logo">
+        <img src="assets/brand/tabeebi-mark.svg" alt="" width="60" height="60">
+      </div>
+      <h2 class="hero-title">{{ 'AUTH.REGISTER_HERO_TITLE' | translate }}</h2>
+      <p class="hero-subtitle">{{ 'AUTH.REGISTER_HERO_DESC' | translate }}</p>
 
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'AUTH.EMAIL' | translate }}</mat-label>
-        <input matInput type="email" formControlName="email">
-      </mat-form-field>
+      <div class="hero-steps">
+        <div class="hero-step">
+          <span class="step-num">01</span>
+          <div class="step-text">
+            <strong>{{ 'AUTH.STEP1_TITLE' | translate }}</strong>
+            <span>{{ 'AUTH.STEP1_DESC' | translate }}</span>
+          </div>
+        </div>
+        <div class="hero-step">
+          <span class="step-num">02</span>
+          <div class="step-text">
+            <strong>{{ 'AUTH.STEP2_TITLE' | translate }}</strong>
+            <span>{{ 'AUTH.STEP2_DESC' | translate }}</span>
+          </div>
+        </div>
+        <div class="hero-step">
+          <span class="step-num">03</span>
+          <div class="step-text">
+            <strong>{{ 'AUTH.STEP3_TITLE' | translate }}</strong>
+            <span>{{ 'AUTH.STEP3_DESC' | translate }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'AUTH.PHONE' | translate }}</mat-label>
-        <input matInput formControlName="phone">
-      </mat-form-field>
+    <div class="hero-bottom">
+      <span class="hero-tagline">{{ 'APP.TAGLINE_SHORT' | translate }}</span>
+    </div>
+  </div>
 
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'AUTH.ROLE' | translate }}</mat-label>
-        <mat-select formControlName="role">
-          <mat-option *ngFor="let r of roles" [value]="r.value">{{ r.labelKey | translate }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+  <!-- Form Right Panel -->
+  <div class="register-form-panel">
+    <div class="form-inner">
 
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'AUTH.PASSWORD' | translate }}</mat-label>
-        <input matInput type="password" formControlName="password">
-      </mat-form-field>
+      <!-- Mobile logo -->
+      <div class="mobile-brand">
+        <span class="mobile-logo-icon"><img src="assets/brand/tabeebi-mark.svg" alt="" width="38" height="38"></span>
+        <span class="mobile-logo-text">{{ 'APP.NAME' | translate }}</span>
+      </div>
 
-      <button mat-flat-button color="primary" class="submit-btn" type="submit" [disabled]="loading || form.invalid">
-        {{ 'AUTH.REGISTER' | translate }}
-      </button>
-    </form>
+      <div class="form-header">
+        <h1 class="form-title">{{ 'AUTH.CREATE_ACCOUNT' | translate }}</h1>
+        <p class="form-subtitle">{{ 'AUTH.REGISTER_SUBTITLE' | translate }}</p>
+      </div>
 
-    <p class="auth-footer">
-      {{ 'AUTH.HAVE_ACCOUNT' | translate }}
-      <a routerLink="/auth/login">{{ 'AUTH.LOGIN' | translate }}</a>
-    </p>
-  </mat-card>
+      <!-- Role selector -->
+      <div class="role-selector">
+        <button
+          *ngFor="let r of roles"
+          type="button"
+          class="role-btn"
+          [class.active]="form.get('role')?.value === r.value"
+          (click)="form.get('role')?.setValue(r.value)">
+          <span class="material-icons">{{ r.value === 'PATIENT' ? 'person' : 'medical_services' }}</span>
+          {{ r.labelKey | translate }}
+        </button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="register-form">
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">{{ 'AUTH.FULL_NAME' | translate }}</label>
+            <div class="field-input-wrap">
+              <span class="field-icon material-icons">person</span>
+              <input
+                class="field-input"
+                formControlName="fullNameAr"
+                [placeholder]="'AUTH.FULL_NAME_PLACEHOLDER' | translate"
+                autocomplete="name">
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'AUTH.FULL_NAME_EN' | translate }}</label>
+            <div class="field-input-wrap">
+              <span class="field-icon material-icons">person_outline</span>
+              <input
+                class="field-input"
+                formControlName="fullNameEn"
+                [placeholder]="'AUTH.FULL_NAME_EN_PLACEHOLDER' | translate"
+                autocomplete="given-name">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">{{ 'AUTH.EMAIL' | translate }}</label>
+            <div class="field-input-wrap">
+              <span class="field-icon material-icons">email</span>
+              <input
+                class="field-input"
+                type="email"
+                formControlName="email"
+                [placeholder]="'AUTH.EMAIL_PLACEHOLDER' | translate"
+                autocomplete="email">
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">{{ 'AUTH.PHONE' | translate }}</label>
+            <div class="field-input-wrap">
+              <span class="field-icon material-icons">phone</span>
+              <input
+                class="field-input"
+                type="tel"
+                formControlName="phone"
+                [placeholder]="'AUTH.PHONE_PLACEHOLDER' | translate"
+                autocomplete="tel">
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">{{ 'AUTH.PASSWORD' | translate }}</label>
+          <div class="field-input-wrap">
+            <span class="field-icon material-icons">lock</span>
+            <input
+              class="field-input"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              [placeholder]="'AUTH.PASSWORD_PLACEHOLDER' | translate"
+              autocomplete="new-password">
+            <button type="button" class="pw-toggle" (click)="showPassword = !showPassword">
+              <span class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="register-submit"
+          [disabled]="loading || form.invalid">
+          <span *ngIf="!loading">{{ 'AUTH.CREATE_ACCOUNT' | translate }}</span>
+          <span *ngIf="loading" class="btn-loading">
+            <span class="material-icons spin">refresh</span>
+            {{ 'COMMON.LOADING' | translate }}
+          </span>
+        </button>
+      </form>
+
+      <div class="divider"><span>{{ 'AUTH.OR' | translate }}</span></div>
+
+      <p class="login-link">
+        {{ 'AUTH.HAVE_ACCOUNT' | translate }}
+        <a routerLink="/auth/login">{{ 'AUTH.LOGIN' | translate }}</a>
+      </p>
+    </div>
+  </div>
 </div>

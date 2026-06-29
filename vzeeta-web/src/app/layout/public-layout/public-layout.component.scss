@@ -1,12 +1,12 @@
 .public-shell {
-  --public-primary: #0f5f9f;
-  --public-primary-dark: #0b3a66;
-  --public-accent: #0f9f7a;
-  --public-accent-soft: #e7f8f2;
-  --public-ink: #102033;
+  --public-primary: #0f4c81;
+  --public-primary-dark: #06213a;
+  --public-accent: #18c2c0;
+  --public-accent-soft: #ecffff;
+  --public-ink: #0f2d4d;
   --public-muted: #607086;
   --public-line: #dce7f0;
-  --public-paper: #f6fafc;
+  --public-paper: #f5f9ff;
   --public-surface: #ffffff;
   --mdc-outlined-text-field-input-text-color: var(--public-ink);
   --mdc-outlined-text-field-label-text-color: var(--public-muted);
@@ -59,14 +59,15 @@
   display: inline-grid;
   place-items: center;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--public-primary), var(--public-accent));
+  background: transparent;
   color: #fff;
-  box-shadow: 0 12px 24px rgba(15, 95, 159, 0.22);
+  box-shadow: 0 12px 24px rgba(15, 76, 129, 0.22);
 
-  mat-icon {
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
+  img {
+    width: 44px;
+    height: 44px;
+    display: block;
+    border-radius: 8px;
   }
 }
 
@@ -104,13 +105,43 @@
 
   a:not(.mat-mdc-button-base):hover {
     color: var(--public-primary);
-    background: rgba(15, 95, 159, 0.07);
+    background: rgba(24, 194, 192, 0.1);
   }
 }
 
 .language-btn {
   color: var(--public-primary);
   background: var(--public-accent-soft);
+}
+
+.find-doctor-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1.5px solid rgba(24, 194, 192, 0.36);
+  border-radius: 8px;
+  background: #ecffff;
+  color: #0f4c81;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+
+  mat-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 20px;
+  }
+}
+
+.find-doctor-btn:hover {
+  transform: translateY(-2px);
+  background: #18c2c0;
+  color: #06213a;
+  box-shadow: 0 12px 22px rgba(24, 194, 192, 0.18);
 }
 
 .login-btn {
@@ -128,12 +159,45 @@
   margin-top: 0;
   padding: 28px 0;
   color: #d9ecfb;
-  background: #0b2238;
+  background: #06213a;
   text-align: center;
 
   p {
     margin: 0;
   }
+}
+
+:host-context(.dark-theme) .public-shell,
+:host-context(html.dark-theme) .public-shell {
+  --public-primary: #0f4c81;
+  --public-primary-dark: #06213a;
+  --public-accent: #18c2c0;
+  --public-accent-soft: #ecffff;
+  --public-ink: #0f2d4d;
+  --public-muted: #607086;
+  --public-line: #dce7f0;
+  --public-paper: #f5f9ff;
+  --public-surface: #ffffff;
+}
+
+:host-context(.dark-theme) .public-header,
+:host-context(html.dark-theme) .public-header {
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom-color: rgba(16, 32, 51, 0.08);
+  box-shadow: 0 10px 30px rgba(16, 32, 51, 0.05);
+}
+
+:host-context(.dark-theme) .login-btn,
+:host-context(html.dark-theme) .login-btn {
+  background: #fff !important;
+  color: #06213a !important;
+  border-color: #dce7f0 !important;
+}
+
+:host-context(.dark-theme) .register-btn,
+:host-context(html.dark-theme) .register-btn {
+  background: #0f4c81 !important;
+  color: #fff !important;
 }
 
 @media (max-width: 720px) {

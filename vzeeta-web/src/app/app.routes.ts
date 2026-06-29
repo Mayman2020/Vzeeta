@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard, patientGuard, doctorGuard, clinicAdminGuard, superAdminGuard, mustChangePasswordGuard, permissionGuard } from './core/guards/auth.guard';
+import { authGuard, patientGuard, doctorGuard, clinicAdminGuard, superAdminGuard, mustChangePasswordGuard, permissionGuard } from './core/guards/auth.guard';
 import { PublicLayoutComponent } from './layout/public-layout/public-layout.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 import { HomeComponent } from './features/public/home/home.component';
 import { DoctorSearchComponent } from './features/public/doctor-search/doctor-search.component';
 import { DoctorProfileComponent } from './features/public/doctor-profile/doctor-profile.component';
 import { BookingComponent } from './features/public/booking/booking.component';
+import { SpecialtiesComponent } from './features/public/specialties/specialties.component';
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { PatientDashboardComponent } from './features/patient/patient-dashboard/patient-dashboard.component';
@@ -15,7 +16,8 @@ import {
   PatientPrescriptionsComponent,
   PatientLabResultsComponent,
   PatientMedicalRecordsComponent,
-  PatientNotificationsComponent
+  PatientNotificationsComponent,
+  PatientVideoConsultationComponent
 } from './features/patient/patient-pages.component';
 import {
   DoctorDashboardComponent,
@@ -54,6 +56,7 @@ export const routes: Routes = [
     component: PublicLayoutComponent,
     children: [
       { path: '', component: HomeComponent },
+      { path: 'specialties', component: SpecialtiesComponent },
       { path: 'doctors', component: DoctorSearchComponent },
       { path: 'doctors/:id', component: DoctorProfileComponent },
       { path: 'booking/:doctorId', component: BookingComponent }
@@ -62,8 +65,8 @@ export const routes: Routes = [
   {
     path: 'auth',
     children: [
-      { path: 'login', component: LoginComponent, canActivate: [guestGuard] },
-      { path: 'register', component: RegisterComponent, canActivate: [guestGuard] },
+      { path: 'login', component: LoginComponent },
+      { path: 'register', component: RegisterComponent },
       { path: '', redirectTo: 'login', pathMatch: 'full' }
     ]
   },
@@ -79,6 +82,7 @@ export const routes: Routes = [
       { path: 'lab-results', component: PatientLabResultsComponent },
       { path: 'medical-records', component: PatientMedicalRecordsComponent },
       { path: 'notifications', component: PatientNotificationsComponent },
+      { path: 'video/:appointmentId', component: PatientVideoConsultationComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

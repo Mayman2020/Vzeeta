@@ -2,14 +2,18 @@
 <header class="public-header">
   <div class="header-inner">
     <a routerLink="/" class="brand">
-      <span class="brand-icon"><mat-icon>medical_services</mat-icon></span>
+      <span class="brand-icon"><img src="assets/brand/tabeebi-mark.svg" alt="" width="44" height="44"></span>
       <span class="brand-copy">
         <strong>{{ 'APP.BRAND' | translate }}</strong>
         <small>{{ 'APP.TAGLINE_SHORT' | translate }}</small>
       </span>
     </a>
     <nav class="nav-links">
-      <a routerLink="/doctors">{{ 'PUBLIC.FIND_DOCTOR' | translate }}</a>
+      <a routerLink="/specialties">{{ 'NAV.SPECIALTIES' | translate }}</a>
+      <button type="button" class="find-doctor-btn" (click)="openDoctorFinder()">
+        <mat-icon>manage_search</mat-icon>
+        {{ 'PUBLIC.FIND_DOCTOR' | translate }}
+      </button>
       <button mat-icon-button type="button" class="language-btn" (click)="switchLang()" [attr.aria-label]="'COMMON.LANGUAGE' | translate">
         <mat-icon>language</mat-icon>
       </button>

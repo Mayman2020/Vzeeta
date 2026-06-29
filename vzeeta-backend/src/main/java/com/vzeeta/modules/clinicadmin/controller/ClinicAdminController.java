@@ -1,6 +1,7 @@
 package com.vzeeta.modules.clinicadmin.controller;
 
 import com.vzeeta.modules.appointment.dto.AppointmentDto;
+import com.vzeeta.modules.clinicadmin.dto.CreateDoctorRequest;
 import com.vzeeta.modules.clinic.entity.ClinicBranch;
 import com.vzeeta.modules.clinic.entity.ClinicService;
 import com.vzeeta.modules.clinicadmin.service.ClinicAdminService;
@@ -35,6 +36,11 @@ public class ClinicAdminController {
             @RequestParam(required = false) String q,
             Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.ok(clinicAdminService.listDoctors(SecurityUtils.currentUserId(), q, pageable)));
+    }
+
+    @PostMapping("/doctors")
+    public ResponseEntity<ApiResponse<Doctor>> createDoctor(@RequestBody CreateDoctorRequest request) {
+        return ResponseEntity.ok(ApiResponse.ok(clinicAdminService.createDoctor(SecurityUtils.currentUserId(), request)));
     }
 
     @PutMapping("/doctors/{id}")

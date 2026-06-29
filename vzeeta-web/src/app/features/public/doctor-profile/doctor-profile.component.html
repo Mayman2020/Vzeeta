@@ -1,32 +1,167 @@
-<div class="tb-container profile-page" *ngIf="doctor">
-  <mat-card class="profile-header">
-    <div class="profile-main">
-      <div class="avatar">{{ name()[0] }}</div>
-      <div>
-        <h1>{{ name() }}</h1>
-        <p class="specialty">{{ doctor.titleAr || doctor.specialty }}</p>
-        <p class="clinic" *ngIf="doctor.clinicName"><mat-icon>local_hospital</mat-icon> {{ doctor.clinicName }}</p>
-        <div class="stats">
-          <span><mat-icon>star</mat-icon> {{ doctor.rating }} ({{ doctor.reviewCount }} {{ 'DOCTOR.REVIEWS' | translate }})</span>
-          <span *ngIf="doctor.yearsExperience"><mat-icon>work</mat-icon> {{ doctor.yearsExperience }} {{ 'DOCTOR.YEARS_EXP' | translate }}</span>
+<div class="profile-page" *ngIf="doctor; else loadingTpl">
+
+  <!-- Profile Hero -->
+  <div class="profile-hero">
+    <div class="profile-hero-inner tb-container">
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar">{{ name()[0] }}</div>
+        <span class="availability-badge" *ngIf="doctor.availableToday">
+          <span class="avail-dot"></span>
+          {{ 'DOCTOR.AVAILABLE_TODAY' | translate }}
+        </span>
+      </div>
+
+      <div class="profile-main-info">
+        <div class="profile-tags">
+          <span class="profile-tag blue" *ngIf="doctor.consultationType === 'ONLINE' || doctor.acceptsOnline">
+            <span class="material-icons">videocam</span>
+            {{ 'SEARCH.ONLINE' | translate }}
+          </span>
+          <span class="profile-tag teal" *ngIf="doctor.consultationType === 'IN_CLINIC' || doctor.acceptsInClinic">
+            <span class="material-icons">local_hospital</span>
+            {{ 'SEARCH.IN_CLINIC' | translate }}
+          </span>
+        </div>
+
+        <h1 class="profile-name">{{ name() }}</h1>
+        <p class="profile-specialty">{{ doctor.titleAr || doctor.specialty }}</p>
+
+        <div class="profile-meta">
+          <span class="meta-item" *ngIf="doctor.clinicName">
+            <span class="material-icons">local_hospital</span>
+            {{ doctor.clinicName }}
+          </span>
+          <span class="meta-item" *ngIf="doctor.area">
+            <span class="material-icons">location_on</span>
+            {{ doctor.area }}
+          </span>
+          <span class="meta-item" *ngIf="doctor.yearsExperience">
+            <span class="material-icons">work</span>
+            {{ doctor.yearsExperience }} {{ 'DOCTOR.YEARS_EXP' | translate }}
+          </span>
+        </div>
+
+        <div class="profile-stats">
+          <div class="ps-item">
+            <span class="ps-icon star"><span class="material-icons">star</span></span>
+            <div>
+              <strong>{{ doctor.rating || '—' }}</strong>
+              <span>{{ doctor.reviewCount || 0 }} {{ 'DOCTOR.REVIEWS' | translate }}</span>
+            </div>
+          </div>
+          <div class="ps-divider"></div>
+          <div class="ps-item">
+            <span class="ps-icon blue"><span class="material-icons">people</span></span>
+            <div>
+              <strong>{{ doctor.patientCount || '100+' }}</strong>
+              <span>{{ 'DOCTOR.PATIENTS' | translate }}</span>
+            </div>
+          </div>
+          <div class="ps-divider"></div>
+          <div class="ps-item">
+            <span class="ps-icon teal"><span class="material-icons">event_available</span></span>
+            <div>
+              <strong>{{ 'DOCTOR.FAST' | translate }}</strong>
+              <span>{{ 'DOCTOR.BOOKING' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Book Panel -->
+      <div class="profile-book-panel">
+        <div class="book-fee">
+          <span class="fee-label">{{ 'BOOKING.FEE' | translate }}</span>
+          <span class="fee-value">{{ doctor.consultationFee }} <span class="fee-cur">{{ 'COMMON.EGP' | translate }}</span></span>
+        </div>
+        <a class="book-btn" [routerLink]="['/booking', doctor.id]">
+          <span class="material-icons">calendar_today</span>
+          {{ 'BOOKING.BOOK_NOW' | translate }}
+        </a>
+        <div class="book-note">
+          <span class="material-icons">check_circle</span>
+          {{ 'DOCTOR.FREE_CANCEL' | translate }}
         </div>
       </div>
     </div>
-    <div class="profile-actions">
-      <p class="fee">{{ doctor.consultationFee }} {{ 'COMMON.EGP' | translate }}</p>
-      <a mat-flat-button color="primary" [routerLink]="['/booking', doctor.id]">{{ 'BOOKING.BOOK_NOW' | translate }}</a>
-    </div>
-  </mat-card>
+  </div>
 
-  <div class="profile-details">
-    <mat-card>
-      <h2>{{ 'DOCTOR.ABOUT' | translate }}</h2>
-      <p>{{ doctor.bio || ('DOCTOR.DEFAULT_BIO' | translate) }}</p>
-    </mat-card>
-    <mat-card>
-      <h2>{{ 'DOCTOR.LOCATION' | translate }}</h2>
-      <p><mat-icon>location_on</mat-icon> {{ doctor.area }}</p>
-      <mat-chip *ngIf="doctor.availableToday" color="primary">{{ 'DOCTOR.AVAILABLE_TODAY' | translate }}</mat-chip>
-    </mat-card>
+  <!-- Profile Body -->
+  <div class="profile-body tb-container">
+    <div class="profile-content">
+
+      <!-- About -->
+      <div class="profile-card">
+        <h2 class="card-title">
+          <span class="card-title-icon"><span class="material-icons">info</span></span>
+          {{ 'DOCTOR.ABOUT' | translate }}
+        </h2>
+        <p class="about-text">{{ doctor.bio || ('DOCTOR.DEFAULT_BIO' | translate) }}</p>
+      </div>
+
+      <!-- Location -->
+      <div class="profile-card">
+        <h2 class="card-title">
+          <span class="card-title-icon"><span class="material-icons">location_on</span></span>
+          {{ 'DOCTOR.LOCATION' | translate }}
+        </h2>
+        <div class="location-info">
+          <div class="location-row">
+            <span class="material-icons">place</span>
+            <span>{{ doctor.area || ('DOCTOR.NO_LOCATION' | translate) }}</span>
+          </div>
+          <div class="location-row" *ngIf="doctor.clinicName">
+            <span class="material-icons">local_hospital</span>
+            <span>{{ doctor.clinicName }}</span>
+          </div>
+        </div>
+        <div class="map-placeholder">
+          <span class="material-icons">map</span>
+          <p>{{ 'DOCTOR.MAP_PLACEHOLDER' | translate }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar: Booking CTA -->
+    <aside class="profile-sidebar">
+      <div class="sidebar-book-card">
+        <div class="sbc-header">
+          <h3>{{ 'BOOKING.BOOK_NOW' | translate }}</h3>
+          <p>{{ 'DOCTOR.PICK_SLOT' | translate }}</p>
+        </div>
+        <div class="sbc-fee-row">
+          <span>{{ 'BOOKING.FEE' | translate }}</span>
+          <strong>{{ doctor.consultationFee }} {{ 'COMMON.EGP' | translate }}</strong>
+        </div>
+        <div class="sbc-types">
+          <span class="type-chip" *ngIf="doctor.acceptsInClinic || doctor.consultationType === 'IN_CLINIC'">
+            <span class="material-icons">local_hospital</span>
+            {{ 'SEARCH.IN_CLINIC' | translate }}
+          </span>
+          <span class="type-chip online" *ngIf="doctor.acceptsOnline || doctor.consultationType === 'ONLINE'">
+            <span class="material-icons">videocam</span>
+            {{ 'SEARCH.ONLINE' | translate }}
+          </span>
+        </div>
+        <a class="sbc-book-btn" [routerLink]="['/booking', doctor.id]">
+          {{ 'BOOKING.BOOK_NOW' | translate }}
+        </a>
+        <div class="sbc-footer">
+          <span class="material-icons">security</span>
+          {{ 'DOCTOR.SECURE_BOOKING' | translate }}
+        </div>
+      </div>
+    </aside>
   </div>
 </div>
+
+<ng-template #loadingTpl>
+  <div class="profile-loading">
+    <div class="loading-avatar"></div>
+    <div class="loading-lines">
+      <div class="loading-line lg"></div>
+      <div class="loading-line md"></div>
+      <div class="loading-line sm"></div>
+    </div>
+  </div>
+</ng-template>

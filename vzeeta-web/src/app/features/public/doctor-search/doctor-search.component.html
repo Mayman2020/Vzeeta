@@ -1,91 +1,215 @@
-<div class="tb-container search-page public-directory-page">
-  <header class="public-page-header">
-    <span class="eyebrow">{{ 'PUBLIC.FIND_DOCTOR' | translate }}</span>
-    <h1>{{ 'SEARCH.RESULTS_TITLE' | translate }}</h1>
-  </header>
+<div class="search-page">
 
-  <div class="search-layout">
-    <aside class="filters-sidebar tb-card">
-      <h3>{{ 'SEARCH.FILTERS' | translate }}</h3>
+  <!-- Page Hero -->
+  <div class="search-hero">
+    <div class="tb-container">
+      <span class="hero-eyebrow">
+        <span class="material-icons">search</span>
+        {{ 'PUBLIC.FIND_DOCTOR' | translate }}
+      </span>
+      <h1>{{ resultsTitle() }}</h1>
+      <p class="hero-subtitle">{{ resultsSubtitle() }}</p>
+      <!-- Quick search bar -->
+      <form class="qs-bar" [formGroup]="filters" (ngSubmit)="applyFilters()">
+        <div class="qs-field">
+          <span class="material-icons qs-icon">person_search</span>
+          <input class="qs-input" formControlName="name" [placeholder]="'SEARCH.DOCTOR_NAME' | translate">
+        </div>
+        <button class="qs-btn" type="submit">
+          <span class="material-icons">search</span>
+          {{ 'SEARCH.APPLY' | translate }}
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="tb-container search-layout">
+
+    <!-- Filters Sidebar -->
+    <aside class="filters-sidebar">
+      <div class="fs-header">
+        <h3>{{ 'SEARCH.FILTERS' | translate }}</h3>
+        <button type="button" class="clear-btn" (click)="clearFilters()">
+          {{ 'COMMON.CLEAR' | translate }}
+        </button>
+      </div>
       <form [formGroup]="filters" (ngSubmit)="applyFilters()">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'SEARCH.DOCTOR_NAME' | translate }}</mat-label>
-          <input matInput formControlName="name">
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'SEARCH.SPECIALTY' | translate }}</mat-label>
-          <mat-select formControlName="specialtyId">
-            <mat-option [value]="null">{{ 'SEARCH.ALL' | translate }}</mat-option>
-            <mat-option *ngFor="let s of specialties" [value]="s.id">{{ specialtyLabel(s) }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'SEARCH.CITY' | translate }}</mat-label>
-          <mat-select formControlName="cityId">
-            <mat-option [value]="null">{{ 'SEARCH.ALL' | translate }}</mat-option>
-            <mat-option *ngFor="let c of cities" [value]="c.id">{{ lookupLabel(c) }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'SEARCH.AREA' | translate }}</mat-label>
-          <mat-select formControlName="areaId" [disabled]="!areas.length">
-            <mat-option [value]="null">{{ 'SEARCH.ALL' | translate }}</mat-option>
-            <mat-option *ngFor="let a of areas" [value]="a.id">{{ lookupLabel(a) }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'SEARCH.CONSULTATION_TYPE' | translate }}</mat-label>
-          <mat-select formControlName="consultationType">
-            <mat-option value="ALL">{{ 'SEARCH.ALL' | translate }}</mat-option>
-            <mat-option value="IN_CLINIC">{{ 'SEARCH.IN_CLINIC' | translate }}</mat-option>
-            <mat-option value="ONLINE">{{ 'SEARCH.ONLINE' | translate }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'SEARCH.MIN_RATING' | translate }}</mat-label>
-          <mat-select formControlName="minRating">
-            <mat-option [value]="0">{{ 'SEARCH.ALL' | translate }}</mat-option>
-            <mat-option [value]="4">4+</mat-option>
-            <mat-option [value]="4.5">4.5+</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <button mat-flat-button color="primary" type="submit">
-          <mat-icon>tune</mat-icon>
+
+        <div class="filter-group">
+          <label class="fg-label">{{ 'SEARCH.SPECIALTY' | translate }}</label>
+          <select class="fg-select" formControlName="specialtyId">
+            <option [ngValue]="null">{{ 'SEARCH.ALL' | translate }}</option>
+            <option *ngFor="let s of specialties" [ngValue]="s.id">{{ specialtyLabel(s) }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="fg-label">{{ 'SEARCH.CITY' | translate }}</label>
+          <select class="fg-select" formControlName="cityId">
+            <option [ngValue]="null">{{ 'SEARCH.ALL' | translate }}</option>
+            <option *ngFor="let c of cities" [ngValue]="c.id">{{ lookupLabel(c) }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group" *ngIf="areas.length">
+          <label class="fg-label">{{ 'SEARCH.AREA' | translate }}</label>
+          <select class="fg-select" formControlName="areaId">
+            <option [ngValue]="null">{{ 'SEARCH.ALL' | translate }}</option>
+            <option *ngFor="let a of areas" [ngValue]="a.id">{{ lookupLabel(a) }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="fg-label">{{ 'SEARCH.CONSULTATION_TYPE' | translate }}</label>
+          <div class="type-pills">
+            <button type="button" class="type-pill" [class.active]="filters.get('consultationType')?.value === 'ALL'" (click)="filters.get('consultationType')?.setValue('ALL')">
+              {{ 'SEARCH.ALL' | translate }}
+            </button>
+            <button type="button" class="type-pill" [class.active]="filters.get('consultationType')?.value === 'IN_CLINIC'" (click)="filters.get('consultationType')?.setValue('IN_CLINIC')">
+              <span class="material-icons">local_hospital</span>
+              {{ 'SEARCH.IN_CLINIC' | translate }}
+            </button>
+            <button type="button" class="type-pill" [class.active]="filters.get('consultationType')?.value === 'ONLINE'" (click)="filters.get('consultationType')?.setValue('ONLINE')">
+              <span class="material-icons">videocam</span>
+              {{ 'SEARCH.ONLINE' | translate }}
+            </button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <label class="fg-label">{{ 'SEARCH.MIN_RATING' | translate }}</label>
+          <div class="type-pills">
+            <button type="button" class="type-pill" [class.active]="filters.get('minRating')?.value === 0" (click)="filters.get('minRating')?.setValue(0)">
+              {{ 'SEARCH.ALL' | translate }}
+            </button>
+            <button type="button" class="type-pill star" [class.active]="filters.get('minRating')?.value === 4" (click)="filters.get('minRating')?.setValue(4)">
+              ★ 4+
+            </button>
+            <button type="button" class="type-pill star" [class.active]="filters.get('minRating')?.value === 4.5" (click)="filters.get('minRating')?.setValue(4.5)">
+              ★ 4.5+
+            </button>
+          </div>
+        </div>
+
+        <button class="apply-btn" type="submit">
+          <span class="material-icons">tune</span>
           {{ 'SEARCH.APPLY' | translate }}
         </button>
       </form>
     </aside>
 
-    <div class="results">
-      <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+    <!-- Results -->
+    <div class="results-area">
 
-      <p class="results-count" *ngIf="!loading">{{ doctors.length }} {{ 'SEARCH.DOCTORS_FOUND' | translate }}</p>
+      <!-- Results bar -->
+      <div class="results-bar" *ngIf="!loading">
+        <span class="results-count">
+          <strong>{{ doctors.length }}</strong> {{ 'SEARCH.DOCTORS_FOUND' | translate }}
+        </span>
+        <div class="sort-row">
+          <span class="sort-label">{{ 'SEARCH.SORT_BY' | translate }}:</span>
+          <button type="button" class="sort-chip active">{{ 'SEARCH.RELEVANCE' | translate }}</button>
+          <button type="button" class="sort-chip">★ {{ 'SEARCH.RATING' | translate }}</button>
+        </div>
+      </div>
 
-      <mat-card *ngFor="let d of doctors" class="doctor-card">
-        <div class="doctor-info">
-          <div class="avatar">{{ doctorName(d)[0] }}</div>
-          <div>
-            <h3>
-              <a [routerLink]="['/doctors', d.id]">{{ doctorName(d) }}</a>
-            </h3>
-            <p class="specialty">{{ d.titleAr || d.specialty }}</p>
-            <p class="clinic" *ngIf="d.clinicName">{{ d.clinicName }}</p>
-            <p class="area" *ngIf="d.area"><mat-icon>location_on</mat-icon> {{ d.area }}</p>
-            <div class="meta">
-              <span class="rating"><mat-icon>star</mat-icon> {{ d.rating }} ({{ d.reviewCount }})</span>
-              <mat-chip>{{ consultationLabel(d.consultationType) | translate }}</mat-chip>
-            </div>
+      <!-- Loading -->
+      <div class="results-loading" *ngIf="loading">
+        <div class="rl-card" *ngFor="let _ of [1,2,3]">
+          <div class="rl-avatar shimmer"></div>
+          <div class="rl-lines">
+            <div class="rl-line lg shimmer"></div>
+            <div class="rl-line md shimmer"></div>
+            <div class="rl-line sm shimmer"></div>
           </div>
         </div>
-        <div class="doctor-actions">
-          <p class="fee">{{ d.consultationFee }} {{ 'COMMON.EGP' | translate }}</p>
-          <a mat-flat-button color="primary" [routerLink]="['/booking', d.id]">{{ 'BOOKING.BOOK_NOW' | translate }}</a>
-        </div>
-      </mat-card>
+      </div>
 
-      <div class="empty-state" *ngIf="!loading && !doctors.length">
-        <mat-icon>search_off</mat-icon>
-        <p>{{ 'SEARCH.NO_RESULTS' | translate }}</p>
+      <!-- Doctor Cards -->
+      <div class="doctors-list" *ngIf="!loading">
+        <div class="doctor-card" *ngFor="let d of doctors">
+
+          <!-- Left: Avatar -->
+          <div class="dc-avatar-wrap">
+            <div class="dc-avatar">{{ doctorName(d)[0] }}</div>
+            <span class="avail-badge" *ngIf="d.availableToday">
+              <span class="avail-dot"></span>
+              {{ 'DOCTOR.AVAILABLE_TODAY' | translate }}
+            </span>
+          </div>
+
+          <!-- Center: Info -->
+          <div class="dc-info">
+            <div class="dc-tags">
+              <span class="dc-tag online" *ngIf="d.consultationType === 'ONLINE' || d.acceptsOnline">
+                <span class="material-icons">videocam</span>
+                {{ 'SEARCH.ONLINE' | translate }}
+              </span>
+              <span class="dc-tag clinic" *ngIf="d.consultationType === 'IN_CLINIC' || d.acceptsInClinic">
+                <span class="material-icons">local_hospital</span>
+                {{ 'SEARCH.IN_CLINIC' | translate }}
+              </span>
+            </div>
+            <h3 class="dc-name">
+              <a [routerLink]="['/doctors', d.id]">{{ doctorName(d) }}</a>
+            </h3>
+            <p class="dc-specialty">{{ d.titleAr || d.specialty }}</p>
+
+            <div class="dc-meta">
+              <span class="meta-item" *ngIf="d.clinicName">
+                <span class="material-icons">local_hospital</span>
+                {{ d.clinicName }}
+              </span>
+              <span class="meta-item" *ngIf="d.area">
+                <span class="material-icons">location_on</span>
+                {{ d.area }}
+              </span>
+              <span class="meta-item" *ngIf="d.yearsExperience">
+                <span class="material-icons">work</span>
+                {{ d.yearsExperience }}y
+              </span>
+            </div>
+
+            <div class="dc-stats">
+              <span class="dc-rating" *ngIf="d.rating">
+                <span class="material-icons star-ic">star</span>
+                {{ d.rating }} ({{ d.reviewCount || 0 }})
+              </span>
+              <span class="dc-patients" *ngIf="d.patientCount">
+                <span class="material-icons">people</span>
+                {{ d.patientCount }}+ {{ 'DOCTOR.PATIENTS' | translate }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Right: Actions -->
+          <div class="dc-actions">
+            <div class="dc-fee-wrap">
+              <span class="fee-label">{{ 'BOOKING.FEE' | translate }}</span>
+              <span class="fee-value">{{ d.consultationFee }} <span class="fee-cur">{{ 'COMMON.EGP' | translate }}</span></span>
+            </div>
+            <a class="book-btn" [routerLink]="['/booking', d.id]">
+              <span class="material-icons">calendar_today</span>
+              {{ 'BOOKING.BOOK_NOW' | translate }}
+            </a>
+            <a class="profile-btn" [routerLink]="['/doctors', d.id]">
+              {{ 'DOCTOR.VIEW_PROFILE' | translate }}
+            </a>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="!doctors.length">
+          <div class="es-icon">
+            <span class="material-icons">search_off</span>
+          </div>
+          <h3>{{ 'SEARCH.NO_RESULTS' | translate }}</h3>
+          <p>{{ 'SEARCH.TRY_DIFFERENT' | translate }}</p>
+          <button type="button" class="apply-btn" (click)="clearFilters()">
+            <span class="material-icons">refresh</span>
+            {{ 'COMMON.CLEAR' | translate }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
