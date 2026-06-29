@@ -1,0 +1,92 @@
+<div class="tb-container search-page public-directory-page">
+  <header class="public-page-header">
+    <span class="eyebrow">{{ 'PUBLIC.FIND_DOCTOR' | translate }}</span>
+    <h1>{{ 'SEARCH.RESULTS_TITLE' | translate }}</h1>
+  </header>
+
+  <div class="search-layout">
+    <aside class="filters-sidebar tb-card">
+      <h3>{{ 'SEARCH.FILTERS' | translate }}</h3>
+      <form [formGroup]="filters" (ngSubmit)="applyFilters()">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SEARCH.DOCTOR_NAME' | translate }}</mat-label>
+          <input matInput formControlName="name">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SEARCH.SPECIALTY' | translate }}</mat-label>
+          <mat-select formControlName="specialtyId">
+            <mat-option [value]="null">{{ 'SEARCH.ALL' | translate }}</mat-option>
+            <mat-option *ngFor="let s of specialties" [value]="s.id">{{ specialtyLabel(s) }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SEARCH.CITY' | translate }}</mat-label>
+          <mat-select formControlName="cityId">
+            <mat-option [value]="null">{{ 'SEARCH.ALL' | translate }}</mat-option>
+            <mat-option *ngFor="let c of cities" [value]="c.id">{{ lookupLabel(c) }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SEARCH.AREA' | translate }}</mat-label>
+          <mat-select formControlName="areaId" [disabled]="!areas.length">
+            <mat-option [value]="null">{{ 'SEARCH.ALL' | translate }}</mat-option>
+            <mat-option *ngFor="let a of areas" [value]="a.id">{{ lookupLabel(a) }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SEARCH.CONSULTATION_TYPE' | translate }}</mat-label>
+          <mat-select formControlName="consultationType">
+            <mat-option value="ALL">{{ 'SEARCH.ALL' | translate }}</mat-option>
+            <mat-option value="IN_CLINIC">{{ 'SEARCH.IN_CLINIC' | translate }}</mat-option>
+            <mat-option value="ONLINE">{{ 'SEARCH.ONLINE' | translate }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SEARCH.MIN_RATING' | translate }}</mat-label>
+          <mat-select formControlName="minRating">
+            <mat-option [value]="0">{{ 'SEARCH.ALL' | translate }}</mat-option>
+            <mat-option [value]="4">4+</mat-option>
+            <mat-option [value]="4.5">4.5+</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <button mat-flat-button color="primary" type="submit">
+          <mat-icon>tune</mat-icon>
+          {{ 'SEARCH.APPLY' | translate }}
+        </button>
+      </form>
+    </aside>
+
+    <div class="results">
+      <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+      <p class="results-count" *ngIf="!loading">{{ doctors.length }} {{ 'SEARCH.DOCTORS_FOUND' | translate }}</p>
+
+      <mat-card *ngFor="let d of doctors" class="doctor-card">
+        <div class="doctor-info">
+          <div class="avatar">{{ doctorName(d)[0] }}</div>
+          <div>
+            <h3>
+              <a [routerLink]="['/doctors', d.id]">{{ doctorName(d) }}</a>
+            </h3>
+            <p class="specialty">{{ d.titleAr || d.specialty }}</p>
+            <p class="clinic" *ngIf="d.clinicName">{{ d.clinicName }}</p>
+            <p class="area" *ngIf="d.area"><mat-icon>location_on</mat-icon> {{ d.area }}</p>
+            <div class="meta">
+              <span class="rating"><mat-icon>star</mat-icon> {{ d.rating }} ({{ d.reviewCount }})</span>
+              <mat-chip>{{ consultationLabel(d.consultationType) | translate }}</mat-chip>
+            </div>
+          </div>
+        </div>
+        <div class="doctor-actions">
+          <p class="fee">{{ d.consultationFee }} {{ 'COMMON.EGP' | translate }}</p>
+          <a mat-flat-button color="primary" [routerLink]="['/booking', d.id]">{{ 'BOOKING.BOOK_NOW' | translate }}</a>
+        </div>
+      </mat-card>
+
+      <div class="empty-state" *ngIf="!loading && !doctors.length">
+        <mat-icon>search_off</mat-icon>
+        <p>{{ 'SEARCH.NO_RESULTS' | translate }}</p>
+      </div>
+    </div>
+  </div>
+</div>

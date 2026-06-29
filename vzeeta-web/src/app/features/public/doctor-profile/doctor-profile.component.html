@@ -1,0 +1,32 @@
+<div class="tb-container profile-page" *ngIf="doctor">
+  <mat-card class="profile-header">
+    <div class="profile-main">
+      <div class="avatar">{{ name()[0] }}</div>
+      <div>
+        <h1>{{ name() }}</h1>
+        <p class="specialty">{{ doctor.titleAr || doctor.specialty }}</p>
+        <p class="clinic" *ngIf="doctor.clinicName"><mat-icon>local_hospital</mat-icon> {{ doctor.clinicName }}</p>
+        <div class="stats">
+          <span><mat-icon>star</mat-icon> {{ doctor.rating }} ({{ doctor.reviewCount }} {{ 'DOCTOR.REVIEWS' | translate }})</span>
+          <span *ngIf="doctor.yearsExperience"><mat-icon>work</mat-icon> {{ doctor.yearsExperience }} {{ 'DOCTOR.YEARS_EXP' | translate }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="profile-actions">
+      <p class="fee">{{ doctor.consultationFee }} {{ 'COMMON.EGP' | translate }}</p>
+      <a mat-flat-button color="primary" [routerLink]="['/booking', doctor.id]">{{ 'BOOKING.BOOK_NOW' | translate }}</a>
+    </div>
+  </mat-card>
+
+  <div class="profile-details">
+    <mat-card>
+      <h2>{{ 'DOCTOR.ABOUT' | translate }}</h2>
+      <p>{{ doctor.bio || ('DOCTOR.DEFAULT_BIO' | translate) }}</p>
+    </mat-card>
+    <mat-card>
+      <h2>{{ 'DOCTOR.LOCATION' | translate }}</h2>
+      <p><mat-icon>location_on</mat-icon> {{ doctor.area }}</p>
+      <mat-chip *ngIf="doctor.availableToday" color="primary">{{ 'DOCTOR.AVAILABLE_TODAY' | translate }}</mat-chip>
+    </mat-card>
+  </div>
+</div>

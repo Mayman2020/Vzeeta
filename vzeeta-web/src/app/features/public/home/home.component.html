@@ -1,0 +1,60 @@
+<section class="hero">
+  <div class="home-container hero-inner">
+    <div class="hero-copy">
+      <span class="eyebrow">{{ 'APP.TAGLINE_SHORT' | translate }}</span>
+      <h1>{{ 'HOME.HERO_TITLE' | translate }}</h1>
+      <p>{{ 'HOME.HERO_SUBTITLE' | translate }}</p>
+    </div>
+
+    <form class="search-panel" [formGroup]="searchForm" (ngSubmit)="search()">
+      <div class="search-fields">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SEARCH.DOCTOR_NAME' | translate }}</mat-label>
+          <input matInput formControlName="name">
+          <mat-icon matPrefix>person_search</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SEARCH.SPECIALTY' | translate }}</mat-label>
+          <input matInput formControlName="specialty">
+          <mat-icon matPrefix>medical_services</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SEARCH.AREA' | translate }}</mat-label>
+          <input matInput formControlName="area">
+          <mat-icon matPrefix>location_on</mat-icon>
+        </mat-form-field>
+      </div>
+      <button mat-flat-button color="primary" type="submit" class="search-submit">
+        <mat-icon>search</mat-icon>
+        {{ 'SEARCH.SEARCH' | translate }}
+      </button>
+    </form>
+  </div>
+</section>
+
+<section class="home-container specialties-section">
+  <div class="section-heading">
+    <h2>{{ 'HOME.SPECIALTIES_TITLE' | translate }}</h2>
+  </div>
+  <div class="specialty-grid">
+    <button type="button" *ngFor="let s of specialties" class="specialty-card" (click)="browseSpecialty(s)">
+      <span class="specialty-icon"><mat-icon>{{ s.icon || 'medical_services' }}</mat-icon></span>
+      <span>{{ specialtyName(s) }}</span>
+    </button>
+  </div>
+</section>
+
+<section class="home-container values-section">
+  <div class="section-heading">
+    <h2>{{ 'HOME.WHY_TABEEBI' | translate }}</h2>
+  </div>
+  <div class="values-grid">
+    <div class="value-card" *ngFor="let v of valueProps">
+      <span class="value-icon"><mat-icon>{{ v.icon }}</mat-icon></span>
+      <div>
+        <h3>{{ v.titleKey | translate }}</h3>
+        <p>{{ v.descKey | translate }}</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,32 @@
+# Build outputs
+**/target/
+**/dist/
+**/node_modules/
+**/.angular/
+**/build/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Runtime
+.runtime/
+**/src/assets/runtime-config.js
+
+# Secrets
+**/*.secrets.ps1
+.env
+.env.*
+LOGIN-CREDENTIALS.txt
+
+# Flutter
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/pubspec.lock
+
+# OS
+.DS_Store
+Thumbs.db

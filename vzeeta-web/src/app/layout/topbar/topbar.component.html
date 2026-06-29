@@ -1,0 +1,43 @@
+<header class="topbar">
+  <div class="topbar-start">
+    <button class="tb-action-btn" type="button" (click)="sidebarToggle.emit()" [matTooltip]="'TOPBAR.TOGGLE_MENU' | translate">
+      <span class="material-icons">{{ sidebarCollapsed ? 'menu_open' : 'menu' }}</span>
+    </button>
+    <a [routerLink]="dashboardRoute" class="topbar-brand" (click)="onMenuNav()" [attr.aria-label]="'NAV.DASHBOARD' | translate">
+      <img src="assets/brand/tabeebi-mark.svg" alt="" class="topbar-brand-logo" />
+      <span class="topbar-brand-name">{{ 'APP.NAME' | translate }}</span>
+    </a>
+    <div class="topbar-search">
+      <span class="material-icons">search</span>
+      <input type="search" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()" [placeholder]="'TOPBAR.SEARCH_PLACEHOLDER' | translate" />
+    </div>
+  </div>
+  <div class="topbar-end">
+    <button class="tb-action-btn" type="button" [matMenuTriggerFor]="langMenu">
+      <img class="flag" [src]="activeLanguage.flagUrl" alt="">
+      <span class="lang-name">{{ activeLanguage.nativeLabel }}</span>
+    </button>
+    <mat-menu #langMenu="matMenu">
+      <button mat-menu-item *ngFor="let lang of languages" (click)="switchLang(lang)">
+        <img class="flag" [src]="lang.flagUrl" alt="">
+        <span>{{ lang.nativeLabel }}</span>
+      </button>
+    </mat-menu>
+    <button class="tb-action-btn tb-theme-btn" type="button" (click)="toggleTheme()" [matTooltip]="themeTooltipKey | translate">
+      <span class="material-icons">{{ theme.isDark ? 'light_mode' : 'dark_mode' }}</span>
+    </button>
+    <a class="tb-action-btn" [routerLink]="notificationsRoute"
+       [matBadge]="unreadCount > 0 ? unreadCount : null" matBadgeColor="warn" matBadgeSize="small"
+       [matTooltip]="'TOPBAR.NOTIFICATIONS' | translate">
+      <span class="material-icons">notifications</span>
+    </a>
+    <button class="tb-user-btn" type="button" [matMenuTriggerFor]="userMenu">
+      <div class="tb-avatar">{{ currentUser?.initials || ('COMMON.USER_INITIAL' | translate) }}</div>
+      <span class="tb-user-name">{{ currentUserDisplayName }}</span>
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <a mat-menu-item [routerLink]="profileRoute"><span class="material-icons">person</span>{{ 'NAV.PROFILE' | translate }}</a>
+      <button mat-menu-item type="button" (click)="logout()"><span class="material-icons">logout</span>{{ 'AUTH.LOGOUT' | translate }}</button>
+    </mat-menu>
+  </div>
+</header>

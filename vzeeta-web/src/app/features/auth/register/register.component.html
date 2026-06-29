@@ -1,0 +1,47 @@
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <div class="auth-brand">
+      <span class="brand-icon"><span class="material-icons">medical_services</span></span>
+      <h1>{{ 'AUTH.REGISTER' | translate }}</h1>
+      <p>{{ 'AUTH.REGISTER_SUBTITLE' | translate }}</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'AUTH.FULL_NAME' | translate }}</mat-label>
+        <input matInput formControlName="fullNameAr">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'AUTH.EMAIL' | translate }}</mat-label>
+        <input matInput type="email" formControlName="email">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'AUTH.PHONE' | translate }}</mat-label>
+        <input matInput formControlName="phone">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'AUTH.ROLE' | translate }}</mat-label>
+        <mat-select formControlName="role">
+          <mat-option *ngFor="let r of roles" [value]="r.value">{{ r.labelKey | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'AUTH.PASSWORD' | translate }}</mat-label>
+        <input matInput type="password" formControlName="password">
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" class="submit-btn" type="submit" [disabled]="loading || form.invalid">
+        {{ 'AUTH.REGISTER' | translate }}
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      {{ 'AUTH.HAVE_ACCOUNT' | translate }}
+      <a routerLink="/auth/login">{{ 'AUTH.LOGIN' | translate }}</a>
+    </p>
+  </mat-card>
+</div>

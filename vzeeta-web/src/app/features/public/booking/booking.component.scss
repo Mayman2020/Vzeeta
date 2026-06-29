@@ -1,0 +1,54 @@
+.booking-page {
+  padding: 34px 0 78px;
+  max-width: 760px;
+  color: var(--public-ink);
+}
+
+.booking-page > h1,
+.booking-page > .doctor-name {
+  display: none;
+}
+
+.booking-header {
+  margin-bottom: 18px;
+
+  .eyebrow {
+    display: inline-flex;
+    min-height: 30px;
+    align-items: center;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: var(--public-accent-soft);
+    color: var(--public-accent);
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+
+  h1 { margin: 12px 0 6px; color: var(--public-ink); font-weight: 800; }
+}
+
+.doctor-name { color: var(--public-muted); margin: 0; }
+.booking-card {
+  padding: clamp(20px, 4vw, 32px);
+
+  h2 { color: var(--public-primary-dark); margin: 0 0 16px; font-weight: 800; }
+  h3 { margin: 24px 0 10px; color: var(--public-ink); }
+}
+
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+  margin: 1rem 0 1.5rem;
+
+  button.selected {
+    background: var(--public-primary);
+    color: #fff;
+  }
+}
+
+.empty-slots { color: var(--public-muted); }
+.summary { padding: 16px; border-radius: 8px; background: #f8fbfd; border: 1px solid var(--public-line); }
+.summary p { margin: 0.5rem 0; }
+.actions { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1rem; flex-wrap: wrap; }
+mat-form-field { width: 100%; margin-top: 16px; }

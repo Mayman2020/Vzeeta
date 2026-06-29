@@ -1,0 +1,81 @@
+:host {
+  display: block;
+}
+
+.auth-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 32px 16px;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(15, 159, 122, 0.22), transparent 30%),
+    linear-gradient(135deg, #eef6ff 0%, #f6fafc 50%, #e7f8f2 100%);
+}
+
+.auth-card {
+  width: min(520px, 100%);
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid #dce7f0 !important;
+  border-radius: 8px !important;
+  background: #fff !important;
+  box-shadow: 0 24px 70px rgba(16, 32, 51, 0.12) !important;
+}
+
+.auth-brand {
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.brand-icon {
+  width: 54px;
+  height: 54px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0f5f9f, #0f9f7a);
+  color: #fff;
+  margin-bottom: 14px;
+}
+
+.auth-brand h1 {
+  margin: 0;
+  color: #102033;
+  font-weight: 800;
+}
+
+.auth-brand p {
+  margin: 8px 0 0;
+  color: #607086;
+}
+
+form {
+  display: grid;
+  gap: 12px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+:host ::ng-deep .mat-mdc-text-field-wrapper {
+  background: #f8fbfd !important;
+}
+
+.submit-btn {
+  min-height: 48px;
+  border-radius: 8px !important;
+  background: #0f5f9f !important;
+  color: #fff !important;
+}
+
+.auth-footer {
+  margin: 18px 0 0;
+  text-align: center;
+  color: #607086;
+}
+
+.auth-footer a {
+  color: #0f7f68;
+  font-weight: 800;
+}

@@ -1,0 +1,73 @@
+<div class="tb-container booking-page" *ngIf="!loading && doctor; else loadingTpl">
+  <header class="booking-header">
+    <span class="eyebrow">{{ 'BOOKING.BOOK_NOW' | translate }}</span>
+    <h1>{{ 'BOOKING.TITLE' | translate }}</h1>
+    <p class="doctor-name">{{ doctorName() }} - {{ doctor.specialty }}</p>
+  </header>
+  <h1>{{ 'BOOKING.TITLE' | translate }}</h1>
+  <p class="doctor-name">{{ doctorName() }} — {{ doctor.specialty }}</p>
+
+  <mat-card class="booking-card">
+    <form [formGroup]="form">
+      <div *ngIf="step === 1">
+        <h2>{{ 'BOOKING.CONSULTATION_TYPE' | translate }}</h2>
+        <mat-button-toggle-group [value]="consultationType" (change)="onConsultationTypeChange($event.value)">
+          <mat-button-toggle value="IN_CLINIC" [disabled]="!doctor.acceptsInClinic">
+            {{ 'SEARCH.IN_CLINIC' | translate }}
+          </mat-button-toggle>
+          <mat-button-toggle value="ONLINE" [disabled]="!doctor.acceptsOnline">
+            {{ 'SEARCH.ONLINE' | translate }}
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <h2>{{ 'BOOKING.SELECT_DATE' | translate }}</h2>
+        <app-date-field formControlName="date" labelKey="BOOKING.DATE" placeholder="DD/MM/YYYY"></app-date-field>
+
+        <h3>{{ 'BOOKING.SELECT_TIME' | translate }}</h3>
+        <p class="empty-slots" *ngIf="slots.length === 0">{{ 'BOOKING.NO_SLOTS' | translate }}</p>
+        <div class="slots-grid">
+          <button
+            *ngFor="let slot of slots"
+            mat-stroked-button
+            [class.selected]="selectedSlot?.id === slot.id"
+            [disabled]="!slot.available"
+            (click)="selectSlot(slot)"
+            type="button">
+            {{ slot.time }}
+          </button>
+        </div>
+
+        <button mat-flat-button color="primary" [disabled]="!selectedSlot" (click)="nextStep()" type="button">
+          {{ 'COMMON.NEXT' | translate }}
+        </button>
+      </div>
+
+      <div *ngIf="step === 2">
+        <h2>{{ 'BOOKING.CONFIRM' | translate }}</h2>
+        <div class="summary">
+          <p><strong>{{ 'BOOKING.DOCTOR' | translate }}:</strong> {{ doctorName() }}</p>
+          <p><strong>{{ 'BOOKING.TYPE' | translate }}:</strong> {{ (consultationType === 'ONLINE' ? 'SEARCH.ONLINE' : 'SEARCH.IN_CLINIC') | translate }}</p>
+          <p><strong>{{ 'BOOKING.DATE' | translate }}:</strong> {{ form.get('date')?.value | rmsDate:'date' }}</p>
+          <p><strong>{{ 'BOOKING.TIME' | translate }}:</strong> {{ selectedSlot?.time }}</p>
+          <p><strong>{{ 'BOOKING.FEE' | translate }}:</strong> {{ displayFee() }} {{ 'COMMON.EGP' | translate }}</p>
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'BOOKING.NOTES' | translate }}</mat-label>
+          <textarea matInput formControlName="notes" rows="3"></textarea>
+        </mat-form-field>
+
+        <div class="actions">
+          <button mat-button type="button" (click)="step = 1">{{ 'COMMON.BACK' | translate }}</button>
+          <button mat-flat-button color="primary" type="button" [disabled]="booking" (click)="confirm()">
+            {{ booking ? ('COMMON.LOADING' | translate) : ('BOOKING.CONFIRM_BOOKING' | translate) }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </mat-card>
+</div>
+
+<ng-template #loadingTpl>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:vzeeta_test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS vzeeta_mgmt
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  flyway:
+    enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        default_schema: vzeeta_mgmt
+    show-sql: false
+
+jwt:
+  secret: TestSecretKeyForVzeetaBackendUnitTestsOnlyMustBeLongEnough
+  expiration: 3600000
+  refresh-expiration: 7200000
+
+user:
+  default:
+    password: 12345
+
+vzeeta:
+  platform-commission-percent: 10
+
+server:
+  port: 0
+  servlet:
+    context-path: /api/v1

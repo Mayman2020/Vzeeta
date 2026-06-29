@@ -1,0 +1,65 @@
+.profile-page {
+  padding: 34px 0 78px;
+  color: var(--public-ink);
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(20px, 3vw, 32px);
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  background:
+    linear-gradient(135deg, rgba(15, 95, 159, 0.08), rgba(15, 159, 122, 0.08)),
+    #fff !important;
+}
+
+.profile-main {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.avatar {
+  width: 96px;
+  height: 96px;
+  flex: 0 0 96px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--public-primary), var(--public-accent));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.profile-main h1 { margin: 0 0 6px; color: var(--public-ink); font-weight: 800; }
+.specialty { color: var(--public-primary); font-weight: 800; font-size: 1.125rem; margin: 0 0 8px; }
+.clinic { display: flex; align-items: center; gap: 0.25rem; color: var(--public-muted); }
+.stats { display: flex; gap: 1.5rem; margin-top: 0.75rem; span { display: flex; align-items: center; gap: 0.25rem; } }
+
+.profile-actions { display: grid; gap: 12px; justify-items: end; }
+.profile-actions .fee { margin: 0; font-size: 1.5rem; font-weight: 800; color: var(--public-primary-dark); text-align: center; }
+
+.profile-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+
+  @media (max-width: 768px) { grid-template-columns: 1fr; }
+
+  mat-card {
+    padding: 1.5rem;
+
+    h2 { margin: 0 0 12px; color: var(--public-primary-dark); font-weight: 800; }
+    p { color: var(--public-muted); line-height: 1.8; }
+  }
+}
+
+@media (max-width: 620px) {
+  .profile-main { flex-direction: column; }
+  .profile-actions { justify-items: stretch; width: 100%; }
+}

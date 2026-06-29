@@ -1,0 +1,104 @@
+/* Estate card system for list pages */
+
+.page-shell,
+.app-page {
+  padding: var(--content-pad-block) var(--content-pad-inline) 48px;
+  min-height: calc(100vh - var(--topbar-height, 64px));
+  width: 100%;
+  max-width: var(--content-max-w);
+  margin-inline: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.app-list-surface {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.list-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.stat-pill {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(165deg, rgba(26, 39, 64, 0.9), var(--surface));
+}
+
+.stat-pill .stat-label {
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  font-weight: 700;
+}
+
+.stat-pill strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.7rem;
+  line-height: 1;
+  color: var(--ink-900);
+}
+
+.stat-pill--purple strong { color: #a78bfa; }
+.stat-pill--orange strong { color: #fb923c; }
+.stat-pill--cyan strong { color: #38bdf8; }
+
+.table-card {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.estate-table-toolbar {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--line-2);
+  background: color-mix(in srgb, var(--surface) 84%, transparent);
+}
+
+.estate-search-inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  min-width: 240px;
+  max-width: 420px;
+  padding: 0 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: var(--paper-2);
+}
+
+.estate-search-inline .material-icons {
+  font-size: 19px;
+  color: var(--ink-400);
+}
+
+.estate-search-inline input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink-900);
+  font: inherit;
+}
+
+@media (max-width: 768px) {
+  .page-shell,
+  .app-page {
+    padding: 20px 14px 32px;
+  }
+}
