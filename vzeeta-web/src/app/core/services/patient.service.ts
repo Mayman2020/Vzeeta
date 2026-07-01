@@ -16,6 +16,8 @@ export interface NotificationItem {
   bodyAr?: string;
   bodyEn?: string;
   readFlag: boolean;
+  referenceType?: string;
+  referenceId?: number;
   createdAt: string;
 }
 
@@ -52,8 +54,39 @@ export interface MedicalRecord {
   titleAr: string;
   titleEn?: string;
   descriptionAr?: string;
+  descriptionEn?: string;
   recordType: string;
   createdAt: string;
+}
+
+export type BloodType = 'A_POS' | 'A_NEG' | 'B_POS' | 'B_NEG' | 'AB_POS' | 'AB_NEG' | 'O_POS' | 'O_NEG';
+export type Gender = 'MALE' | 'FEMALE';
+export type AttachmentType = 'XRAY' | 'LAB' | 'SCAN' | 'OTHER';
+
+export interface PatientProfile {
+  id?: number;
+  fullNameAr?: string;
+  fullNameEn?: string;
+  email?: string;
+  phone?: string;
+  dateOfBirth?: string;
+  gender?: Gender;
+  bloodType?: BloodType;
+  nationalId?: string;
+  profileImageUrl?: string;
+  chiefComplaint?: string;
+  medicalHistory?: string;
+  allergies?: string;
+  chronicDiseases?: string;
+}
+
+export interface PatientAttachment {
+  id: number;
+  type: AttachmentType;
+  titleAr?: string;
+  fileUrl: string;
+  uploadedAt: string;
+  notes?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -113,6 +146,45 @@ export class PatientService {
 
   markNotificationRead(id: number): Observable<void> {
     return this.api.patch<ApiResponse<void>>(`${AppConstants.API.NOTIFICATIONS}/${id}/read`).pipe(map(() => undefined));
+  }
+
+  markAllNotificationsRead(): Observable<void> {
+    return this.api.patch<ApiResponse<void>>(`${AppConstants.API.NOTIFICATIONS}/read-all`).pipe(map(() => undefined));
+  }
+
+  getProfile(): Observable<PatientProfile> {
+    return this.api.get<ApiResponse<PatientProfile>>(AppConstants.API.PATIENT_PROFILE).pipe(
+      map((res) => res.data ?? {})
+    );
+  }
+
+  updateProfile(data: PatientProfile): Observable<PatientProfile> {
+    return this.api.put<ApiResponse<PatientProfile>>(AppConstants.API.PATIENT_PROFILE, data).pipe(
+      map((res) => res.data ?? data)
+    );
+  }
+
+  getAttachments(type?: AttachmentType): Observable<PatientAttachment[]> {
+    const params: Record<string, string> = type ? { type } : {};
+    return this.api.get<ApiResponse<PatientAttachment[]>>(AppConstants.API.PATIENT_ATTACHMENTS, params).pipe(
+      map((res) => res.data ?? [])
+    );
+  }
+
+  addAttachment(payload: { type: AttachmentType; fileUrl: string; titleAr?: string; notes?: string }): Observable<PatientAttachment> {
+    return this.api.post<ApiResponse<PatientAttachment>>(AppConstants.API.PATIENT_ATTACHMENTS, payload).pipe(
+      map((res) => res.data!)
+    );
+  }
+
+  deleteAttachment(id: number): Observable<void> {
+    return this.api.delete<ApiResponse<void>>(`${AppConstants.API.PATIENT_ATTACHMENTS}/${id}`).pipe(map(() => undefined));
+  }
+
+  createReview(payload: { appointmentId: number; rating: number; comment?: string }): Observable<unknown> {
+    return this.api.post<ApiResponse<unknown>>(AppConstants.API.PATIENT_REVIEWS, payload).pipe(
+      map((res) => res.data)
+    );
   }
 
   private paged<T>(path: string, params: Record<string, string | number | boolean>): Observable<PagedResult<T>> {

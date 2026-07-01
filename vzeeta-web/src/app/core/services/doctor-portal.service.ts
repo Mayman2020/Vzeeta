@@ -76,4 +76,22 @@ export class DoctorPortalService {
       map((res) => res.data ?? {})
     );
   }
+
+  getProfile(): Observable<Record<string, unknown>> {
+    return this.api.get<ApiResponse<Record<string, unknown>>>(AppConstants.API.DOCTOR_PROFILE).pipe(
+      map((res) => res.data ?? {})
+    );
+  }
+
+  getMedicalRecords(params: Record<string, string | number | boolean> = {}): Observable<PagedResult<Record<string, unknown>>> {
+    return this.api.get<ApiResponse<unknown>>(AppConstants.API.DOCTOR_MEDICAL_RECORDS, params).pipe(
+      map((res) => parsePageResponse<Record<string, unknown>>(res.data))
+    );
+  }
+
+  createMedicalRecord(body: Record<string, unknown>): Observable<Record<string, unknown>> {
+    return this.api.post<ApiResponse<Record<string, unknown>>>(AppConstants.API.DOCTOR_MEDICAL_RECORDS, body).pipe(
+      map((res) => res.data ?? {})
+    );
+  }
 }

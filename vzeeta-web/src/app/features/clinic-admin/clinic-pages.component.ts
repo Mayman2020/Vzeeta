@@ -10,6 +10,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureShellComponent } from '../../shared/components/feature-shell/feature-shell.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
@@ -18,6 +19,7 @@ import { TablePagerComponent } from '../../shared/components/table-pager/table-p
 import { ListLoadController } from '../../shared/utils/list-load.util';
 import { DEFAULT_TABLE_PAGE_SIZE, withPageParams } from '../../core/utils/pagination.util';
 import { RmsDatePipe } from '../../shared/pipes/rms-date.pipe';
+import { DateFieldComponent } from '../../shared/components/date-field/date-field.component';
 import {
   ClinicAdminService,
   ClinicAnalytics,
@@ -171,7 +173,7 @@ export class ClinicAdminDashboardComponent implements OnInit {
 @Component({
   selector: 'app-clinic-doctors',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, TranslateModule, MatChipsModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatCardModule, PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule],
+  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, TranslateModule, MatChipsModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatCardModule, MatTooltipModule, PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule],
   template: `
     <div class="app-page">
       <app-page-header titleKey="NAV.DOCTORS">
@@ -183,22 +185,30 @@ export class ClinicAdminDashboardComponent implements OnInit {
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="medical_information" titleKey="COMMON.NO_DATA"></app-empty-state>
       <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
         <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ totalElements }}</strong></article></section>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
         <section class="app-card table-card">
-          <div class="estate-table-toolbar">
+          <div class="estate-table-toolbar directory-toolbar">
             <label class="estate-search-inline"><span class="material-icons">search</span>
               <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.DOCTORS' | translate">
             </label>
           </div>
           <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
-            <th>{{ 'LOOKUPS.NAME_AR' | translate }}</th><th>{{ 'COMMON.EMAIL' | translate }}</th><th>{{ 'COMMON.EGP' | translate }}</th><th>{{ 'COMMON.STATUS' | translate }}</th><th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            <th class="table-index-col">#</th>
+            <th>{{ 'LOOKUPS.NAME_AR' | translate }}</th><th>{{ 'COMMON.EMAIL' | translate }}</th><th>{{ 'COMMON.EGP' | translate }}</th><th class="center-col">{{ 'COMMON.STATUS' | translate }}</th><th class="actions-col">{{ 'COMMON.ACTIONS' | translate }}</th>
           </tr></thead><tbody>
-            <tr *ngFor="let d of rows">
+            <tr *ngFor="let d of rows; let i = index">
+              <td class="table-index-col">{{ pageIndex * pageSize + i + 1 }}</td>
               <td>{{ d.user?.fullNameAr || d.user?.fullNameEn || ('DOCTOR.DOCTOR' | translate) + ' #' + d.id }}</td>
               <td>{{ d.user?.email || '-' }}</td>
               <td>{{ d.consultationFee }}</td>
-              <td><span class="status-badge" [attr.data-status]="d.verified ? 'ACTIVE' : 'INACTIVE'">{{ d.verified ? ('ADMIN.VERIFIED' | translate) : ('ADMIN.PENDING' | translate) }}</span></td>
-              <td><button mat-stroked-button type="button" (click)="openEdit(d)">{{ 'COMMON.EDIT' | translate }}</button></td>
+              <td class="center-col"><span class="status-badge" [attr.data-status]="d.verified ? 'ACTIVE' : 'INACTIVE'">{{ d.verified ? ('ADMIN.VERIFIED' | translate) : ('ADMIN.PENDING' | translate) }}</span></td>
+              <td class="actions-col">
+                <div class="table-actions app-row-actions">
+                  <button type="button" class="app-icon-btn info" (click)="openEdit(d)" [matTooltip]="'COMMON.EDIT' | translate">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                </div>
+              </td>
             </tr>
           </tbody></table></div>
           <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
@@ -360,9 +370,9 @@ export class ClinicDoctorsComponent implements OnInit {
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="store" titleKey="COMMON.NO_DATA"></app-empty-state>
       <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
         <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ totalElements }}</strong></article></section>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
         <section class="app-card table-card">
-          <div class="estate-table-toolbar">
+          <div class="estate-table-toolbar directory-toolbar">
             <label class="estate-search-inline"><span class="material-icons">search</span>
               <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.BRANCHES' | translate">
             </label>
@@ -460,13 +470,13 @@ export class ClinicBranchesComponent implements OnInit {
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="event" titleKey="COMMON.NO_DATA"></app-empty-state>
       <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
         <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ totalElements }}</strong></article></section>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
         <section class="app-card table-card">
-          <div class="estate-table-toolbar">
+          <div class="estate-table-toolbar directory-toolbar">
             <label class="estate-search-inline"><span class="material-icons">search</span>
               <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.APPOINTMENTS' | translate">
             </label>
-            <mat-form-field appearance="outline" class="filter-field">
+            <mat-form-field appearance="outline" class="filter-field" floatLabel="always" subscriptSizing="dynamic">
               <mat-label>{{ 'COMMON.FILTER_STATUS' | translate }}</mat-label>
               <mat-select [(ngModel)]="statusFilter" (selectionChange)="onStatusChange()">
                 <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
@@ -529,9 +539,9 @@ export class ClinicAppointmentsComponent implements OnInit {
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="groups" titleKey="COMMON.NO_DATA"></app-empty-state>
       <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
         <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ totalElements }}</strong></article></section>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
         <section class="app-card table-card">
-          <div class="estate-table-toolbar">
+          <div class="estate-table-toolbar directory-toolbar">
             <label class="estate-search-inline"><span class="material-icons">search</span>
               <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.PATIENTS' | translate">
             </label>
@@ -540,7 +550,7 @@ export class ClinicAppointmentsComponent implements OnInit {
             <th>{{ 'NAV.PATIENTS' | translate }}</th><th>{{ 'AUTH.EMAIL' | translate }}</th><th>{{ 'AUTH.PHONE' | translate }}</th>
           </tr></thead><tbody>
             <tr *ngFor="let p of rows">
-              <td>{{ p.user?.fullNameAr || ('PATIENT.DOCTOR' | translate) + ' #' + p.id }}</td>
+              <td>{{ p.user?.fullNameAr || ('PATIENT.PATIENT' | translate) + ' #' + p.id }}</td>
               <td>{{ p.user?.email }}</td><td>{{ p.user?.phone }}</td>
             </tr>
           </tbody></table></div>
@@ -587,9 +597,9 @@ export class ClinicPatientsComponent implements OnInit {
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="medical_services" titleKey="COMMON.NO_DATA"></app-empty-state>
       <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
         <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ totalElements }}</strong></article></section>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
         <section class="app-card table-card">
-          <div class="estate-table-toolbar">
+          <div class="estate-table-toolbar directory-toolbar">
             <label class="estate-search-inline"><span class="material-icons">search</span>
               <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.SERVICES' | translate">
             </label>
@@ -683,7 +693,7 @@ export class ClinicServicesComponent implements OnInit {
       <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0" icon="category" titleKey="COMMON.NO_DATA"></app-empty-state>
       <div class="app-list-surface" *ngIf="listLoad.showSurface && rows.length > 0">
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ rows.length }}</strong></article></section>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ rows.length }}</strong></article></section>
         <section class="app-card table-card">
           <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
             <th>{{ 'LOOKUPS.NAME_AR' | translate }}</th><th>{{ 'LOOKUPS.NAME_EN' | translate }}</th><th>{{ 'COMMON.STATUS' | translate }}</th>
@@ -714,7 +724,7 @@ export class ClinicSpecialtiesComponent implements OnInit {
 @Component({
   selector: 'app-clinic-lab-results',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, TranslateModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatCardModule, RmsDatePipe, PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule],
+  imports: [NgFor, NgIf, FormsModule, ReactiveFormsModule, TranslateModule, MatButtonModule, MatIconModule, MatFormFieldModule, MatInputModule, MatCardModule, RmsDatePipe, DateFieldComponent, PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule],
   template: `
     <div class="app-page">
       <app-page-header titleKey="NAV.LAB_RESULTS">
@@ -728,7 +738,7 @@ export class ClinicSpecialtiesComponent implements OnInit {
           <mat-form-field appearance="outline"><mat-label>{{ 'CLINIC.TEST_NAME_AR' | translate }}</mat-label><input matInput formControlName="testNameAr"></mat-form-field>
           <mat-form-field appearance="outline"><mat-label>{{ 'CLINIC.TEST_NAME_EN' | translate }}</mat-label><input matInput formControlName="testNameEn"></mat-form-field>
           <mat-form-field appearance="outline"><mat-label>{{ 'CLINIC.RESULT_SUMMARY' | translate }}</mat-label><input matInput formControlName="resultSummary"></mat-form-field>
-          <mat-form-field appearance="outline"><mat-label>{{ 'CLINIC.RESULT_DATE' | translate }}</mat-label><input matInput type="date" formControlName="resultDate"></mat-form-field>
+          <app-date-field labelKey="CLINIC.RESULT_DATE" formControlName="resultDate"></app-date-field>
           <div class="create-actions">
             <button mat-button type="button" (click)="showForm = false">{{ 'COMMON.CANCEL' | translate }}</button>
             <button mat-flat-button color="primary" type="submit" [disabled]="labForm.invalid || saving">{{ 'COMMON.SAVE' | translate }}</button>
@@ -739,9 +749,9 @@ export class ClinicSpecialtiesComponent implements OnInit {
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="science" titleKey="COMMON.NO_DATA"></app-empty-state>
       <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
         <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ totalElements }}</strong></article></section>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
         <section class="app-card table-card">
-          <div class="estate-table-toolbar">
+          <div class="estate-table-toolbar directory-toolbar">
             <label class="estate-search-inline"><span class="material-icons">search</span>
               <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.LAB_RESULTS' | translate">
             </label>

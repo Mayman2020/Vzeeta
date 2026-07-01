@@ -66,13 +66,13 @@ public class PublicService {
                 .map(this::toLookup).collect(Collectors.toList());
     }
 
-    public Page<DoctorSummaryDto> searchDoctors(String name, Long specialtyId, Long areaId,
+    public Page<DoctorSummaryDto> searchDoctors(String name, Long specialtyId, Long areaId, Long cityId,
                                                  BigDecimal minPrice, BigDecimal maxPrice,
                                                  BigDecimal minRating, ConsultationType consultationType,
                                                  Pageable pageable) {
         String normalizedName = name == null ? "" : name.trim();
         Boolean online = consultationType == null ? null : consultationType == ConsultationType.ONLINE;
-        return doctorRepository.searchVerifiedDoctors(normalizedName, specialtyId, areaId, minPrice, maxPrice, minRating, online, pageable)
+        return doctorRepository.searchVerifiedDoctors(normalizedName, specialtyId, areaId, cityId, minPrice, maxPrice, minRating, online, pageable)
                 .map(this::toSummary);
     }
 

@@ -90,6 +90,12 @@ public class SuperAdminController {
         return ResponseEntity.ok(ApiResponse.ok(superAdminService.saveArea(area)));
     }
 
+    @GetMapping("/areas")
+    @RequiresPermission(module = "settings", action = "view")
+    public ResponseEntity<ApiResponse<List<Area>>> areas(@RequestParam Long cityId) {
+        return ResponseEntity.ok(ApiResponse.ok(superAdminService.listAreas(cityId)));
+    }
+
     @GetMapping("/payments")
     @RequiresPermission(module = "payments", action = "view")
     public ResponseEntity<ApiResponse<Page<Payment>>> payments(

@@ -1,12 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule } from '@ngx-translate/core';
@@ -17,6 +19,7 @@ import { DateFieldComponent } from '../../shared/components/date-field/date-fiel
 import { ListLoadController } from '../../shared/utils/list-load.util';
 import { DEFAULT_TABLE_PAGE_SIZE, withPageParams } from '../../core/utils/pagination.util';
 import { PatientService } from '../../core/services/patient.service';
+import { NotificationService } from '../../core/services/notification.service';
 import { AppointmentService } from '../../core/services/appointment.service';
 import { Appointment } from '../../core/models/appointment.model';
 import { Doctor } from '../../core/models/doctor.model';
@@ -36,7 +39,7 @@ import { environment } from '../../../environments/environment';
     PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule
   ],
   template: `
-    <div class="appts-page">
+    <div class="app-page appts-page">
       <!-- Header -->
       <div class="appts-header">
         <div>
@@ -54,7 +57,6 @@ import { environment } from '../../../environments/environment';
         <button class="appt-tab" [class.active]="activeTab === 'upcoming'" (click)="switchTab('upcoming')">
           <span class="material-icons">upcoming</span>
           {{ 'PATIENT.UPCOMING' | translate }}
-          <span class="tab-badge" *ngIf="upcomingCount">{{ upcomingCount }}</span>
         </button>
         <button class="appt-tab" [class.active]="activeTab === 'completed'" (click)="switchTab('completed')">
           <span class="material-icons">check_circle</span>
@@ -72,8 +74,8 @@ import { environment } from '../../../environments/environment';
       </div>
 
       <!-- Cards -->
-      <div class="appts-list" *ngIf="listLoad.showSurface && filteredRows.length > 0">
-        <div class="appt-card" *ngFor="let a of filteredRows">
+      <div class="appts-list" *ngIf="listLoad.showSurface && rows.length > 0">
+        <div class="appt-card" *ngFor="let a of rows">
           <div class="appt-status-bar" [class]="'status-' + a.status.toLowerCase()"></div>
           <div class="appt-body">
             <div class="appt-doctor">
@@ -103,7 +105,7 @@ import { environment } from '../../../environments/environment';
             </div>
           </div>
           <!-- Actions -->
-          <div class="appt-actions" *ngIf="canReschedule(a) || canCancel(a)">
+          <div class="appt-actions" *ngIf="canReschedule(a) || canCancel(a) || canReview(a)">
             <button class="action-btn reschedule" *ngIf="canReschedule(a)" (click)="startReschedule(a)">
               <span class="material-icons">event_repeat</span>
               {{ 'PATIENT.RESCHEDULE' | translate }}
@@ -112,6 +114,34 @@ import { environment } from '../../../environments/environment';
               <span class="material-icons">cancel</span>
               {{ 'PATIENT.CANCEL' | translate }}
             </button>
+            <button class="action-btn review" *ngIf="canReview(a)" (click)="startReview(a)">
+              <span class="material-icons">star_rate</span>
+              {{ 'PATIENT.REVIEW_DOCTOR' | translate }}
+            </button>
+          </div>
+
+          <!-- Review inline form -->
+          <div class="reschedule-form" *ngIf="reviewTarget?.id === a.id">
+            <div class="rs-fields">
+              <label>{{ 'PATIENT.RATING' | translate }}</label>
+              <select [(ngModel)]="reviewRating" name="reviewRating" class="time-input">
+                <option [ngValue]="5">5</option>
+                <option [ngValue]="4">4</option>
+                <option [ngValue]="3">3</option>
+                <option [ngValue]="2">2</option>
+                <option [ngValue]="1">1</option>
+              </select>
+              <div class="rs-time" style="flex:1">
+                <label>{{ 'PATIENT.REVIEW_COMMENT' | translate }}</label>
+                <input type="text" [(ngModel)]="reviewComment" name="reviewComment" class="time-input">
+              </div>
+            </div>
+            <div class="rs-actions">
+              <button class="action-btn reschedule" (click)="submitReview()">
+                {{ 'COMMON.SAVE' | translate }}
+              </button>
+              <button class="action-btn cancel" (click)="cancelReview()">{{ 'COMMON.CANCEL' | translate }}</button>
+            </div>
           </div>
 
           <!-- Reschedule inline form -->
@@ -135,7 +165,7 @@ import { environment } from '../../../environments/environment';
       </div>
 
       <!-- Empty -->
-      <div class="appts-empty" *ngIf="listLoad.showSurface && filteredRows.length === 0">
+      <div class="appts-empty" *ngIf="listLoad.showSurface && rows.length === 0">
         <div class="empty-icon"><span class="material-icons">event_busy</span></div>
         <h3>{{ 'PATIENT.NO_APPOINTMENTS' | translate }}</h3>
         <a routerLink="/doctors" class="book-new-btn">{{ 'HOME.SEARCH' | translate }}</a>
@@ -143,7 +173,7 @@ import { environment } from '../../../environments/environment';
     </div>
   `,
   styles: [`
-    .appts-page { padding: 24px; max-width: 860px; margin: 0 auto; }
+    .appts-page { width: 100%; max-width: none; margin-inline: 0; }
     .appts-header { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:24px; flex-wrap:wrap; }
     .appts-title { margin:0 0 4px; font-size:1.5rem; font-weight:900; color:#0f172a; }
     .appts-sub { margin:0; color:#64748b; font-size:0.88rem; }
@@ -170,6 +200,7 @@ import { environment } from '../../../environments/environment';
     .action-btn { display:flex; align-items:center; gap:5px; padding:8px 14px; border-radius:8px; border:1.5px solid; font:inherit; font-size:0.82rem; font-weight:600; cursor:pointer; transition:all 0.15s; .material-icons{font-size:15px;}
       &.reschedule{border-color:#2563eb; color:#2563eb; background:#fff; &:hover{background:#eff6ff;}}
       &.cancel{border-color:#ef4444; color:#ef4444; background:#fff; &:hover{background:#fee2e2;}}
+      &.review{border-color:#f59e0b; color:#d97706; background:#fff; &:hover{background:#fffbeb;}}
       &:disabled{opacity:0.5; cursor:not-allowed;} }
     .reschedule-form { padding:14px 18px; background:#f8fafc; border-top:1px solid #e2e8f0; }
     .rs-fields { display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; margin-bottom:12px; }
@@ -179,7 +210,6 @@ import { environment } from '../../../environments/environment';
     .appts-empty { display:flex; flex-direction:column; align-items:center; gap:14px; padding:48px 24px; text-align:center; h3{margin:0; color:#0f172a;} }
     .empty-icon { width:64px; height:64px; border-radius:50%; background:#f1f5f9; display:grid; place-items:center; .material-icons{font-size:32px; color:#94a3b8;} }
     @media (max-width: 600px) {
-      .appts-page { padding: 16px; }
       .appt-body { grid-template-columns: 1fr; }
       .appt-right { align-items: flex-start; flex-direction: row; }
       .appts-tabs { .appt-tab .material-icons { display: none; } }
@@ -196,25 +226,16 @@ export class PatientAppointmentsComponent implements OnInit {
   rescheduleTarget: Appointment | null = null;
   rescheduleDate = formatApiDate(new Date());
   rescheduleTime = '09:00';
+  reviewTarget: Appointment | null = null;
+  reviewRating = 5;
+  reviewComment = '';
   activeTab: 'upcoming' | 'completed' | 'cancelled' = 'upcoming';
   private searchTimer?: ReturnType<typeof setTimeout>;
 
-  get upcomingStatuses() { return ['PENDING', 'CONFIRMED', 'RESCHEDULED']; }
-  get completedStatuses() { return ['COMPLETED']; }
-  get cancelledStatuses() { return ['CANCELLED']; }
-
-  get filteredRows(): Appointment[] {
-    if (this.activeTab === 'upcoming') return this.rows.filter(a => this.upcomingStatuses.includes(a.status));
-    if (this.activeTab === 'completed') return this.rows.filter(a => this.completedStatuses.includes(a.status));
-    return this.rows.filter(a => this.cancelledStatuses.includes(a.status));
-  }
-
-  get upcomingCount(): number {
-    return this.rows.filter(a => this.upcomingStatuses.includes(a.status)).length;
-  }
-
   switchTab(tab: 'upcoming' | 'completed' | 'cancelled'): void {
     this.activeTab = tab;
+    this.pageIndex = 0;
+    this.load();
   }
 
   constructor(
@@ -227,7 +248,10 @@ export class PatientAppointmentsComponent implements OnInit {
   ngOnInit(): void { this.load(); }
   load(): void {
     this.listLoad.begin();
-    this.patientService.getAppointments(withPageParams(this.pageIndex, this.pageSize, { q: this.searchTerm })).subscribe({
+    this.patientService.getAppointments(withPageParams(this.pageIndex, this.pageSize, {
+      q: this.searchTerm,
+      statusGroup: this.activeTab
+    })).subscribe({
       next: (res) => { this.rows = res.content; this.totalElements = res.totalElements; this.listLoad.end(); },
       error: () => { this.rows = []; this.totalElements = 0; this.listLoad.end(); }
     });
@@ -243,6 +267,30 @@ export class PatientAppointmentsComponent implements OnInit {
   }
   canReschedule(a: Appointment): boolean {
     return a.status === 'PENDING' || a.status === 'CONFIRMED' || a.status === 'RESCHEDULED';
+  }
+  canReview(a: Appointment): boolean {
+    return a.status === 'COMPLETED';
+  }
+  startReview(a: Appointment): void {
+    this.reviewTarget = a;
+    this.reviewRating = 5;
+    this.reviewComment = '';
+    this.rescheduleTarget = null;
+  }
+  cancelReview(): void { this.reviewTarget = null; }
+  submitReview(): void {
+    if (!this.reviewTarget) return;
+    this.patientService.createReview({
+      appointmentId: this.reviewTarget.id,
+      rating: this.reviewRating,
+      comment: this.reviewComment || undefined
+    }).subscribe({
+      next: () => {
+        this.snack.success(this.i18n.instant('PATIENT.REVIEW_SUCCESS'));
+        this.reviewTarget = null;
+      },
+      error: (e: Error) => this.snack.error(e.message)
+    });
   }
   startReschedule(a: Appointment): void {
     this.rescheduleTarget = a;
@@ -273,32 +321,35 @@ export class PatientAppointmentsComponent implements OnInit {
 @Component({
   selector: 'app-patient-favorites',
   standalone: true,
-  imports: [NgFor, NgIf, RouterLink, TranslateModule, MatCardModule, MatButtonModule, MatIconModule, PageHeaderComponent, MatProgressSpinnerModule],
+  imports: [NgFor, NgIf, RouterLink, TranslateModule, MatCardModule, MatButtonModule, MatIconModule, MatTooltipModule, PageHeaderComponent, MatProgressSpinnerModule],
   template: `
-    <app-page-header titleKey="NAV.FAVORITES"></app-page-header>
-    <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
-    <div class="page-shell" *ngIf="!loading">
-      <div class="app-card entity-card" *ngFor="let d of items">
-        <div class="card-row">
-          <div>
-            <h3>{{ d.fullNameAr || d.fullName }}</h3>
-            <p>{{ d.specialty }} · {{ d.area }}</p>
-            <p class="fee">{{ d.consultationFee }} {{ 'COMMON.EGP' | translate }}</p>
-          </div>
-          <div class="actions">
-            <a mat-flat-button color="primary" [routerLink]="['/booking', d.id]">{{ 'BOOKING.BOOK_NOW' | translate }}</a>
-            <button mat-icon-button (click)="remove(d)"><mat-icon>favorite</mat-icon></button>
+    <div class="app-page">
+      <app-page-header titleKey="NAV.FAVORITES"></app-page-header>
+      <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+      <ng-container *ngIf="!loading">
+        <div class="app-card entity-card" *ngFor="let d of items">
+          <div class="card-row">
+            <div>
+              <h3>{{ d.fullNameAr || d.fullName }}</h3>
+              <p>{{ d.specialty }} · {{ d.area }}</p>
+              <p class="fee">{{ d.consultationFee }} {{ 'COMMON.EGP' | translate }}</p>
+            </div>
+            <div class="actions">
+              <a mat-flat-button color="primary" [routerLink]="['/booking', d.id]">{{ 'BOOKING.BOOK_NOW' | translate }}</a>
+              <button type="button" class="app-icon-btn danger" (click)="remove(d)" [matTooltip]="'ACTIONS.DELETE' | translate">
+                <mat-icon>favorite</mat-icon>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="empty-state" *ngIf="!items.length">
-        <mat-icon>favorite_border</mat-icon>
-        <p>{{ 'PATIENT.NO_FAVORITES' | translate }}</p>
-      </div>
+        <div class="empty-state" *ngIf="!items.length">
+          <mat-icon>favorite_border</mat-icon>
+          <p>{{ 'PATIENT.NO_FAVORITES' | translate }}</p>
+        </div>
+      </ng-container>
     </div>
   `,
   styles: [`
-    .page-shell { display: flex; flex-direction: column; gap: 1rem; }
     .entity-card { padding: 1rem; }
     .card-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
     .fee { color: var(--tb-primary); font-weight: 600; }
@@ -338,9 +389,9 @@ export class PatientFavoritesComponent implements OnInit {
       <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="medication" titleKey="PATIENT.NO_PRESCRIPTIONS"></app-empty-state>
       <div class="app-list-surface" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ totalElements }}</strong></article></section>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
         <section class="app-card table-card">
-          <div class="estate-table-toolbar">
+          <div class="estate-table-toolbar directory-toolbar">
             <label class="estate-search-inline"><span class="material-icons">search</span>
               <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.PRESCRIPTIONS' | translate">
             </label>
@@ -394,7 +445,7 @@ export class PatientPrescriptionsComponent implements OnInit {
       <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0" icon="science" titleKey="PATIENT.NO_LAB_RESULTS"></app-empty-state>
       <div class="app-list-surface" *ngIf="listLoad.showSurface && rows.length > 0">
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ totalElements }}</strong></article></section>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
         <section class="app-card table-card">
           <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
             <th>{{ 'NAV.LAB_RESULTS' | translate }}</th><th>{{ 'COMMON.ALL' | translate }}</th><th>{{ 'COMMON.ACTIONS' | translate }}</th>
@@ -443,25 +494,25 @@ export class PatientLabResultsComponent implements OnInit {
 @Component({
   selector: 'app-patient-medical-records',
   standalone: true,
-  imports: [NgFor, NgIf, RmsDatePipe, TranslateModule, MatCardModule, MatButtonModule, MatIconModule, PageHeaderComponent, MatProgressSpinnerModule],
+  imports: [NgFor, NgIf, RmsDatePipe, TranslateModule, MatCardModule, MatButtonModule, MatIconModule, PageHeaderComponent, MatProgressSpinnerModule, TablePagerComponent],
   template: `
-    <div class="mr-page">
+    <div class="app-page mr-page">
       <div class="mr-header">
         <div>
           <h1 class="mr-title">{{ 'NAV.MEDICAL_RECORDS' | translate }}</h1>
           <p class="mr-sub">{{ 'PATIENT.RECORDS_SUBTITLE' | translate }}</p>
         </div>
       </div>
-      <div class="mr-loading" *ngIf="loading"><mat-spinner diameter="40"></mat-spinner></div>
-      <div class="mr-grid" *ngIf="!loading && items.length > 0">
+      <div class="mr-loading" *ngIf="listLoad.showInitialSpinner"><mat-spinner diameter="40"></mat-spinner></div>
+      <div class="mr-grid" *ngIf="listLoad.showSurface && items.length > 0">
         <div class="mr-card" *ngFor="let r of items">
           <div class="mr-card-icon" [class]="iconClass(r.recordType)">
             <span class="material-icons">{{ recordIcon(r.recordType) }}</span>
           </div>
           <div class="mr-card-body">
-            <div class="mr-card-type">{{ r.recordType }}</div>
-            <h3 class="mr-card-title">{{ r.titleAr }}</h3>
-            <p class="mr-card-desc">{{ r.descriptionAr }}</p>
+            <div class="mr-card-type">{{ 'RECORD_TYPE.' + r.recordType | translate }}</div>
+            <h3 class="mr-card-title">{{ recordTitle(r) }}</h3>
+            <p class="mr-card-desc">{{ recordDescription(r) }}</p>
             <div class="mr-card-date">
               <span class="material-icons">calendar_today</span>
               {{ r.createdAt | rmsDate:'date' }}
@@ -469,14 +520,16 @@ export class PatientLabResultsComponent implements OnInit {
           </div>
         </div>
       </div>
-      <div class="mr-empty" *ngIf="!loading && !items.length">
+      <app-table-pager *ngIf="listLoad.showSurface && totalElements > pageSize"
+        [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
+      <div class="mr-empty" *ngIf="listLoad.showSurface && !items.length">
         <div class="empty-icon"><span class="material-icons">folder_open</span></div>
         <h3>{{ 'PATIENT.NO_RECORDS' | translate }}</h3>
       </div>
     </div>
   `,
   styles: [`
-    .mr-page { padding: 24px; max-width: 960px; margin: 0 auto; }
+    .mr-page { width: 100%; max-width: none; margin-inline: 0; }
     .mr-header { margin-bottom: 24px; }
     .mr-title { margin: 0 0 4px; font-size: 1.5rem; font-weight: 900; color: #0f172a; }
     .mr-sub { margin: 0; color: #64748b; font-size: 0.88rem; }
@@ -499,14 +552,46 @@ export class PatientLabResultsComponent implements OnInit {
   `]
 })
 export class PatientMedicalRecordsComponent implements OnInit {
+  listLoad = new ListLoadController();
   items: MedicalRecord[] = [];
-  loading = true;
-  constructor(private readonly patientService: PatientService) {}
-  ngOnInit(): void {
-    this.patientService.getMedicalRecords(withPageParams(0, 50)).subscribe({
-      next: (res) => { this.items = res.content; this.loading = false; },
-      error: () => { this.loading = false; }
+  pageIndex = 0;
+  pageSize = DEFAULT_TABLE_PAGE_SIZE;
+  totalElements = 0;
+
+  constructor(
+    private readonly patientService: PatientService,
+    private readonly i18n: I18nService
+  ) {}
+
+  ngOnInit(): void { this.load(); }
+
+  load(): void {
+    this.listLoad.begin();
+    this.patientService.getMedicalRecords(withPageParams(this.pageIndex, this.pageSize)).subscribe({
+      next: (res) => {
+        this.items = res.content;
+        this.totalElements = res.totalElements;
+        this.listLoad.end();
+      },
+      error: () => {
+        this.items = [];
+        this.totalElements = 0;
+        this.listLoad.end();
+      }
     });
+  }
+
+  onPageChange(index: number): void {
+    this.pageIndex = index;
+    this.load();
+  }
+
+  recordTitle(r: MedicalRecord): string {
+    return this.i18n.currentLang === 'ar' ? r.titleAr : (r.titleEn || r.titleAr);
+  }
+
+  recordDescription(r: MedicalRecord): string {
+    return this.i18n.currentLang === 'ar' ? (r.descriptionAr ?? '') : (r.descriptionEn || r.descriptionAr || '');
   }
 
   recordIcon(type: string): string {
@@ -527,28 +612,74 @@ export class PatientMedicalRecordsComponent implements OnInit {
 @Component({
   selector: 'app-patient-notifications',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, RmsDatePipe, TranslateModule, PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule],
+  imports: [
+    NgFor, NgIf, NgClass, RmsDatePipe, TranslateModule, MatButtonModule, MatTabsModule, MatTooltipModule,
+    PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule
+  ],
   template: `
     <div class="app-page notifications-page">
-      <app-page-header titleKey="NAV.NOTIFICATIONS"></app-page-header>
+      <app-page-header
+        titleKey="NOTIFICATIONS.TITLE"
+        subtitleKey="NOTIFICATIONS.SUBTITLE">
+        <button mat-stroked-button type="button" (click)="markAllRead()">{{ 'NOTIFICATIONS.MARK_ALL_READ' | translate }}</button>
+      </app-page-header>
+
       <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
-      <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="notifications" titleKey="PATIENT.NO_NOTIFICATIONS"></app-empty-state>
-      <div class="app-list-surface" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ totalElements }}</strong></article></section>
-        <section class="app-card table-card">
-          <div class="estate-table-toolbar">
-            <label class="estate-search-inline"><span class="material-icons">search</span>
-              <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.NOTIFICATIONS' | translate">
-            </label>
+
+      <ng-container *ngIf="listLoad.showSurface">
+        <mat-tab-group
+          class="notify-scope-tabs"
+          animationDuration="0ms"
+          [selectedIndex]="tabIndex"
+          (selectedIndexChange)="onTabChange($event)">
+          <mat-tab [label]="'NOTIFICATIONS.TAB_RECENT' | translate"></mat-tab>
+          <mat-tab [label]="'NOTIFICATIONS.TAB_OLDER' | translate"></mat-tab>
+        </mat-tab-group>
+
+        <div class="app-card notifications-card" *ngIf="rows.length; else emptyTpl">
+          <div class="notification-list">
+            <button
+              type="button"
+              class="notification-row"
+              *ngFor="let n of rows"
+              [class.unread]="!n.readFlag"
+              (click)="open(n)">
+              <span class="notification-icon material-icons" [ngClass]="iconTone(n)">{{ notificationIcon(n) }}</span>
+              <span class="notification-copy">
+                <span class="notification-row-head">
+                  <strong>{{ notificationTitle(n) }}</strong>
+                  <span class="status-badge" [attr.data-status]="n.readFlag ? 'ACTIVE' : 'PENDING'">
+                    {{ (n.readFlag ? 'NOTIFICATIONS.READ' : 'NOTIFICATIONS.NEW') | translate }}
+                  </span>
+                </span>
+                <span class="notification-message">{{ notificationBody(n) }}</span>
+                <span class="notification-meta">
+                  {{ 'NOTIFICATIONS.DATE' | translate }} {{ n.createdAt | rmsDate }}
+                  <span aria-hidden="true">•</span>
+                  {{ 'NOTIFICATIONS.TIME' | translate }} {{ n.createdAt | rmsDate:'time' }}
+                </span>
+              </span>
+              <span class="app-icon-btn accent notification-open" [matTooltip]="'NOTIFICATIONS.OPEN_LINK' | translate">
+                <span class="material-icons">arrow_forward</span>
+              </span>
+            </button>
           </div>
-          <div class="notif-row" *ngFor="let n of rows" [class.is-unread]="!n.readFlag" (click)="markRead(n)">
-            <div class="notif-title">{{ n.titleAr }}</div>
-            <div class="notif-body">{{ n.bodyAr }}</div>
-            <div class="notif-date">{{ n.createdAt | rmsDate:'datetime' }}</div>
-          </div>
-          <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
-        </section>
-      </div>
+          <app-table-pager
+            [length]="totalElements"
+            [pageSize]="pageSize"
+            [pageIndex]="pageIndex"
+            (pageIndexChange)="onPageChange($event)">
+          </app-table-pager>
+        </div>
+
+        <ng-template #emptyTpl>
+          <app-empty-state
+            icon="notifications_none"
+            titleKey="NOTIFICATIONS.EMPTY"
+            messageKey="NOTIFICATIONS.EMPTY_TAB_HINT">
+          </app-empty-state>
+        </ng-template>
+      </ng-container>
     </div>
   `
 })
@@ -556,30 +687,106 @@ export class PatientNotificationsComponent implements OnInit {
   listLoad = new ListLoadController();
   rows: NotificationItem[] = [];
   pageIndex = 0;
-  pageSize = DEFAULT_TABLE_PAGE_SIZE;
+  readonly pageSize = 5;
   totalElements = 0;
-  searchTerm = '';
-  private searchTimer?: ReturnType<typeof setTimeout>;
-  constructor(private readonly patientService: PatientService) {}
+  tabIndex = 0;
+  private activeScope: 'recent' | 'older' = 'recent';
+
+  constructor(
+    private readonly patientService: PatientService,
+    private readonly notificationService: NotificationService,
+    private readonly i18n: I18nService,
+    private readonly router: Router
+  ) {}
+
   ngOnInit(): void { this.load(); }
+
+  onTabChange(index: number): void {
+    this.tabIndex = index;
+    this.activeScope = index === 0 ? 'recent' : 'older';
+    this.pageIndex = 0;
+    this.load();
+  }
+
+  notificationTitle(n: NotificationItem): string {
+    return this.i18n.currentLang === 'ar' ? n.titleAr : (n.titleEn || n.titleAr);
+  }
+
+  notificationBody(n: NotificationItem): string {
+    return this.i18n.currentLang === 'ar' ? (n.bodyAr ?? '') : (n.bodyEn || n.bodyAr || '');
+  }
+
+  notificationIcon(n: NotificationItem): string {
+    const type = (n.type || '').toUpperCase();
+    if (type.includes('APPOINTMENT') || type.includes('BOOKING')) return 'event';
+    if (type.includes('PRESCRIPTION') || type.includes('RX')) return 'medication';
+    if (type.includes('LAB')) return 'science';
+    if (type.includes('REMINDER')) return 'alarm';
+    if (type.includes('VIDEO')) return 'videocam';
+    return 'notifications';
+  }
+
+  iconTone(n: NotificationItem): string {
+    const type = (n.type || '').toUpperCase();
+    if (type.includes('APPOINTMENT') || type.includes('BOOKING')) return 'appointment';
+    if (type.includes('PRESCRIPTION') || type.includes('RX')) return 'prescription';
+    if (type.includes('LAB')) return 'lab';
+    if (type.includes('REMINDER')) return 'reminder';
+    return '';
+  }
+
   load(): void {
     this.listLoad.begin();
-    this.patientService.getNotifications(withPageParams(this.pageIndex, this.pageSize, { q: this.searchTerm })).subscribe({
-      next: (res) => { this.rows = res.content; this.totalElements = res.totalElements; this.listLoad.end(); },
-      error: () => { this.rows = []; this.totalElements = 0; this.listLoad.end(); }
+    this.patientService.getNotifications(withPageParams(this.pageIndex, this.pageSize, { scope: this.activeScope })).subscribe({
+      next: (res) => {
+        this.rows = res.content;
+        this.totalElements = res.totalElements;
+        this.listLoad.end();
+      },
+      error: () => {
+        this.rows = [];
+        this.totalElements = 0;
+        this.listLoad.end();
+      }
     });
   }
-  onPageChange(i: number): void { this.pageIndex = i; this.load(); }
-  onSearch(): void {
-    clearTimeout(this.searchTimer);
-    this.searchTimer = setTimeout(() => { this.pageIndex = 0; this.load(); }, 300);
+
+  onPageChange(i: number): void {
+    this.pageIndex = i;
+    this.load();
   }
-  hasActiveFilters(): boolean { return !!this.searchTerm?.trim(); }
-  markRead(n: NotificationItem): void {
-    if (n.readFlag) return;
-    this.patientService.markNotificationRead(n.id).subscribe({
-      next: () => { n.readFlag = true; }
+
+  markAllRead(): void {
+    this.patientService.markAllNotificationsRead().subscribe({
+      next: () => {
+        this.rows.forEach((n) => { n.readFlag = true; });
+        this.notificationService.setUnreadCount(0);
+        this.load();
+      }
     });
+  }
+
+  open(n: NotificationItem): void {
+    if (!n.readFlag) {
+      this.patientService.markNotificationRead(n.id).subscribe({
+        next: () => {
+          n.readFlag = true;
+          this.notificationService.refreshUnreadCount();
+        }
+      });
+    }
+    const ref = n.referenceType?.toUpperCase() ?? '';
+    if (ref.includes('APPOINTMENT')) {
+      void this.router.navigate(['/patient/appointments']);
+      return;
+    }
+    if (ref.includes('PRESCRIPTION')) {
+      void this.router.navigate(['/patient/prescriptions']);
+      return;
+    }
+    if (ref.includes('LAB')) {
+      void this.router.navigate(['/patient/lab-results']);
+    }
   }
 }
 

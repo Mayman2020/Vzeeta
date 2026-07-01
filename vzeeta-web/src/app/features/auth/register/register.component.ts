@@ -1,26 +1,17 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { NgFor, NgIf } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
-import { MatSelectModule } from '@angular/material/select';
+import { NgIf } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { SnackService } from '../../../core/services/snack.service';
 import { I18nService } from '../../../core/i18n/i18n.service';
-import { UserRole } from '../../../core/models/user.model';
+import { NabdLogoComponent } from '../../../shared/components/nabd-logo/nabd-logo.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [
-    NgIf, NgFor, ReactiveFormsModule, RouterLink, TranslateModule,
-    MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule, MatCardModule, MatSelectModule
-  ],
+  imports: [NgIf, ReactiveFormsModule, RouterLink, TranslateModule, NabdLogoComponent],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -28,19 +19,16 @@ export class RegisterComponent {
   form: FormGroup;
   loading = false;
   showPassword = false;
-  roles: { value: UserRole; labelKey: string }[] = [
-    { value: 'PATIENT', labelKey: 'ROLES.PATIENT' },
-    { value: 'DOCTOR', labelKey: 'ROLES.DOCTOR' }
-  ];
+  error = '';
 
   constructor(
-    fb: FormBuilder,
+    private readonly fb: FormBuilder,
     private readonly auth: AuthService,
     private readonly router: Router,
     private readonly snack: SnackService,
     readonly i18n: I18nService
   ) {
-    this.form = fb.group({
+    this.form = this.fb.group({
       fullNameAr: ['', Validators.required],
       fullNameEn: [''],
       email: ['', [Validators.required, Validators.email]],
@@ -53,6 +41,7 @@ export class RegisterComponent {
   submit(): void {
     if (this.form.invalid || this.loading) return;
     this.loading = true;
+    this.error = '';
     const v = this.form.value;
     this.auth.register({
       fullNameAr: v.fullNameAr,
@@ -69,7 +58,8 @@ export class RegisterComponent {
       },
       error: (err: Error) => {
         this.loading = false;
-        this.snack.error(err.message || this.i18n.instant('AUTH.REGISTER_FAILED'));
+        this.error = err.message || this.i18n.instant('AUTH.REGISTER_FAILED');
+        this.snack.error(this.error);
       }
     });
   }

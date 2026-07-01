@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, Subject, map, tap } from 'rxjs';
 import { ApiService } from './api.service';
 import { AppConstants } from '../constants/app-constants';
 import { TokenStorageService } from '../auth/token-storage.service';
@@ -18,6 +18,8 @@ import {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  readonly activeRoleChanged = new Subject<void>();
+
   constructor(
     private readonly api: ApiService,
     private readonly tokenStorage: TokenStorageService,
@@ -67,6 +69,26 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string): Observable<void> {
+    return this.api.post<ApiResponse<void>>(AppConstants.API.AUTH_FORGOT_PASSWORD, { email }).pipe(
+      map((res) => {
+        if (!res.success) throw new Error(res.message || 'Request failed');
+      })
+    );
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<void> {
+    return this.api.post<ApiResponse<void>>(AppConstants.API.AUTH_RESET_PASSWORD, { token, newPassword }).pipe(
+      map((res) => {
+        if (!res.success) throw new Error(res.message || 'Reset failed');
+      })
+    );
+  }
+
+  getChangePasswordRoute(): string {
+    return '/auth/change-password';
+  }
+
   logout(): void {
     this.api.post<ApiResponse<void>>(AppConstants.API.AUTH_LOGOUT, {}).subscribe({ error: () => {} });
     this.tokenStorage.clearAll();
@@ -100,6 +122,19 @@ export class AuthService {
     if (user) {
       this.tokenStorage.setUser({ ...user, mustChangePassword: false });
     }
+  }
+
+  syncCurrentUserFromDto(dto: UserDto): void {
+    const existing = this.getCurrentUser();
+    if (!existing) return;
+    const fullName = dto.fullNameAr || dto.fullNameEn || dto.fullName || dto.email;
+    this.tokenStorage.setUser({
+      ...existing,
+      ...dto,
+      fullName,
+      initials: this.buildInitials(fullName)
+    });
+    this.activeRoleChanged.next();
   }
 
   getPermissions(): PermissionMap {

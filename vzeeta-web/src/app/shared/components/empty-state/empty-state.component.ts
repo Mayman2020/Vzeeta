@@ -1,20 +1,20 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { TranslateModule } from '@ngx-translate/core';
+import { I18nService } from '../../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-empty-state',
   standalone: true,
-  imports: [NgIf, MatButtonModule, TranslateModule],
+  imports: [NgIf, MatButtonModule],
   template: `
     <div class="empty-state">
-      <img *ngIf="imageSrc" [src]="imageSrc" [alt]="titleKey | translate" class="empty-illustration" />
+      <img *ngIf="imageSrc" [src]="imageSrc" [alt]="titleText" class="empty-illustration" />
       <span *ngIf="!imageSrc && icon" class="material-icons empty-icon">{{ icon }}</span>
-      <h3>{{ titleKey | translate }}</h3>
-      <p *ngIf="messageKey">{{ messageKey | translate }}</p>
-      <button *ngIf="actionKey" mat-flat-button color="primary" (click)="actionClick.emit()">
-        {{ actionKey | translate }}
+      <h3 *ngIf="titleText">{{ titleText }}</h3>
+      <p *ngIf="messageText">{{ messageText }}</p>
+      <button *ngIf="actionText" mat-flat-button color="primary" (click)="actionClick.emit()">
+        {{ actionText }}
       </button>
     </div>
   `,
@@ -59,4 +59,18 @@ export class EmptyStateComponent {
   @Input() messageKey = '';
   @Input() actionKey = '';
   @Output() actionClick = new EventEmitter<void>();
+
+  constructor(private readonly i18n: I18nService) {}
+
+  get titleText(): string {
+    return this.i18n.label(this.titleKey);
+  }
+
+  get messageText(): string {
+    return this.i18n.label(this.messageKey);
+  }
+
+  get actionText(): string {
+    return this.i18n.label(this.actionKey);
+  }
 }

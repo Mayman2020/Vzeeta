@@ -10,10 +10,12 @@ import { AppointmentService } from '../../../core/services/appointment.service';
 import { Appointment } from '../../../core/models/appointment.model';
 import { withPageParams } from '../../../core/utils/pagination.util';
 
+import { StatCounterComponent } from '../../../shared/components/stat-counter/stat-counter.component';
+
 @Component({
   selector: 'app-patient-dashboard',
   standalone: true,
-  imports: [NgFor, NgIf, RouterLink, MatButtonModule, MatIconModule, TranslateModule, LoadingSpinnerComponent],
+  imports: [NgFor, NgIf, RouterLink, MatButtonModule, MatIconModule, TranslateModule, LoadingSpinnerComponent, StatCounterComponent],
   template: `
     <div class="app-page dashboard-page" *ngIf="!loading; else loadingTpl">
 
@@ -35,13 +37,15 @@ import { withPageParams } from '../../../core/utils/pagination.util';
       </div>
 
       <!-- KPI Cards -->
-      <div class="estate-stat-grid">
+      <div class="estate-stat-grid patient-kpi-grid">
         <article class="estate-stat-card navy" routerLink="/patient/appointments">
           <div class="estate-stat-top">
             <span class="estate-stat-label">{{ 'PATIENT.UPCOMING_APPOINTMENTS' | translate }}</span>
             <div class="estate-stat-icon"><span class="material-icons">event</span></div>
           </div>
-          <div class="estate-stat-value">{{ upcomingCount }}</div>
+          <div class="estate-stat-body">
+            <app-stat-counter [value]="upcomingCount" tone="navy"></app-stat-counter>
+          </div>
           <div class="estate-stat-foot">
             <span class="material-icons kpi-nav-arrow">arrow_forward</span>
             <span>{{ 'COMMON.UPCOMING' | translate }}</span>
@@ -53,7 +57,9 @@ import { withPageParams } from '../../../core/utils/pagination.util';
             <span class="estate-stat-label">{{ 'PATIENT.FAVORITE_DOCTORS' | translate }}</span>
             <div class="estate-stat-icon"><span class="material-icons">favorite</span></div>
           </div>
-          <div class="estate-stat-value">{{ favoritesCount }}</div>
+          <div class="estate-stat-body">
+            <app-stat-counter [value]="favoritesCount" tone="teal"></app-stat-counter>
+          </div>
           <div class="estate-stat-foot">
             <span class="material-icons kpi-nav-arrow">arrow_forward</span>
             <span>{{ 'COMMON.TOTAL' | translate }}</span>
@@ -65,7 +71,9 @@ import { withPageParams } from '../../../core/utils/pagination.util';
             <span class="estate-stat-label">{{ 'PATIENT.ACTIVE_PRESCRIPTIONS' | translate }}</span>
             <div class="estate-stat-icon"><span class="material-icons">medication</span></div>
           </div>
-          <div class="estate-stat-value">{{ prescriptionsCount }}</div>
+          <div class="estate-stat-body">
+            <app-stat-counter [value]="prescriptionsCount" tone="gold"></app-stat-counter>
+          </div>
           <div class="estate-stat-foot">
             <span class="material-icons kpi-nav-arrow">arrow_forward</span>
             <span>{{ 'COMMON.TOTAL' | translate }}</span>
@@ -77,7 +85,9 @@ import { withPageParams } from '../../../core/utils/pagination.util';
             <span class="estate-stat-label">{{ 'PATIENT.UNREAD_NOTIFICATIONS' | translate }}</span>
             <div class="estate-stat-icon"><span class="material-icons">notifications</span></div>
           </div>
-          <div class="estate-stat-value">{{ unreadCount }}</div>
+          <div class="estate-stat-body">
+            <app-stat-counter [value]="unreadCount" [tone]="unreadCount > 0 ? 'danger' : 'navy'"></app-stat-counter>
+          </div>
           <div class="estate-stat-foot">
             <span class="material-icons kpi-nav-arrow">{{ unreadCount > 0 ? 'priority_high' : 'done_all' }}</span>
             <span>{{ (unreadCount > 0 ? 'COMMON.NEW' : 'COMMON.ALL_READ') | translate }}</span>
@@ -156,7 +166,7 @@ import { withPageParams } from '../../../core/utils/pagination.util';
       </div>
     </div>
 
-    <ng-template #loadingTpl><app-loading-spinner></app-loading-spinner></ng-template>
+    <ng-template #loadingTpl><app-loading-spinner [local]="true"></app-loading-spinner></ng-template>
   `,
   styles: [`
     /* Welcome Banner */

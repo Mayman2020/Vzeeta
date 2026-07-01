@@ -39,4 +39,12 @@ export class ApiService {
   delete<T>(path: string): Observable<T> {
     return this.http.delete<T>(`${this.base}${path}`);
   }
+
+  uploadFile(file: File): Observable<{ url: string; filename?: string }> {
+    const fd = new FormData();
+    fd.append('file', file, file.name);
+    return this.http.post<{ url: string; filename?: string }>(`${this.base}${AppConstants.API.FILES_UPLOAD}`, fd).pipe(
+      map((res) => res)
+    );
+  }
 }

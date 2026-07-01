@@ -10,10 +10,12 @@ import com.vzeeta.modules.doctor.repository.DoctorRepository;
 import com.vzeeta.modules.patient.entity.Patient;
 import com.vzeeta.modules.patient.repository.PatientRepository;
 import com.vzeeta.modules.user.dto.ChangePasswordRequest;
+import com.vzeeta.modules.user.dto.UserProfileUpdateRequest;
 import com.vzeeta.modules.user.entity.User;
 import com.vzeeta.modules.user.repository.UserRepository;
 import com.vzeeta.shared.enums.UserRole;
 import com.vzeeta.shared.exception.AppException;
+import com.vzeeta.shared.mail.PasswordResetDeliveryService;
 import com.vzeeta.shared.security.JwtUtil;
 import com.vzeeta.shared.security.TokenBlacklistService;
 import com.vzeeta.shared.util.SecurityUtils;
@@ -49,6 +51,7 @@ public class AuthService {
     private final TokenBlacklistService tokenBlacklist;
     private final PasswordEncoder passwordEncoder;
     private final MessageSource messageSource;
+    private final PasswordResetDeliveryService passwordResetDeliveryService;
 
     @Value("${jwt.expiration}")
     private long jwtExpiration;
@@ -141,7 +144,26 @@ public class AuthService {
                     .expiresAt(LocalDateTime.now().plusHours(24))
                     .used(false)
                     .build());
+            passwordResetDeliveryService.deliver(user, token);
         });
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        PasswordResetToken resetToken = passwordResetTokenRepository.findByTokenAndUsedFalse(request.getToken())
+                .orElseThrow(() -> AppException.badRequest(msg("auth.reset.invalid_token")));
+        if (resetToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw AppException.badRequest(msg("auth.reset.expired_token"));
+        }
+        User user = resetToken.getUser();
+        if (!user.isActive()) {
+            throw AppException.badRequest(msg("auth.error.account_inactive"));
+        }
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        user.setMustChangePassword(false);
+        userRepository.save(user);
+        resetToken.setUsed(true);
+        passwordResetTokenRepository.save(resetToken);
     }
 
     @Transactional(readOnly = true)
@@ -161,6 +183,20 @@ public class AuthService {
         doctorRepository.findByUserId(user.getId()).ifPresent(d -> dto.doctorId(d.getId()));
         clinicAdminRepository.findByUserId(user.getId()).ifPresent(ca -> dto.clinicId(ca.getClinicId()));
         return dto.build();
+    }
+
+    @Transactional
+    public LoginResponse.UserDto updateProfileForCurrentUser(UserProfileUpdateRequest request) {
+        User user = userRepository.findById(SecurityUtils.currentUserId())
+                .orElseThrow(() -> AppException.notFound(msg("auth.refresh.user_not_found")));
+        user.setFullNameAr(request.getFullNameAr().trim());
+        user.setFullNameEn(request.getFullNameEn() != null ? request.getFullNameEn().trim() : null);
+        user.setPhone(request.getPhone() != null && !request.getPhone().isBlank() ? request.getPhone().trim() : null);
+        if (request.getProfileImage() != null) {
+            user.setProfileImage(request.getProfileImage().isBlank() ? null : request.getProfileImage().trim());
+        }
+        userRepository.save(user);
+        return currentUser();
     }
 
     @Transactional

@@ -19,6 +19,7 @@ export interface Doctor {
   fullNameAr?: string;
   fullNameEn?: string;
   titleAr?: string;
+  titleEn?: string;
   specialty: string;
   specialtyNames?: string[];
   specialtyId?: number;
@@ -53,6 +54,7 @@ export interface TimeSlot {
 export interface DoctorSearchParams {
   name?: string;
   specialtyId?: number;
+  cityId?: number;
   areaId?: number;
   minPrice?: number;
   maxPrice?: number;

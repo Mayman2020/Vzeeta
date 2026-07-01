@@ -40,14 +40,15 @@
 .nav-icon-wrap[data-tone='indigo'] { background: linear-gradient(135deg, #4338ca, #818cf8); box-shadow: 0 4px 16px rgba(67, 56, 202, 0.45); }
 .nav-icon-wrap[data-tone='teal'] { background: linear-gradient(135deg, #0d9488, #2dd4bf); box-shadow: 0 4px 16px rgba(13, 148, 136, 0.45); }
 .nav-icon-wrap[data-tone='slate'] { background: linear-gradient(135deg, #475569, #94a3b8); box-shadow: 0 4px 16px rgba(71, 85, 105, 0.4); }
+.nav-icon-wrap[data-tone='blue']  { background: linear-gradient(135deg, #1d4ed8, #60a5fa); box-shadow: 0 4px 16px rgba(29, 78, 216, 0.45); }
 
 .sidebar .nav-item.active {
-  background: rgba(13, 148, 136, 0.12);
-  color: #5eead4;
+  background: var(--ds-accent-soft, rgba(18, 194, 192, 0.1));
+  color: var(--sidebar-text-active, var(--ds-text));
 }
 
 .sidebar .nav-item.active .nav-label {
-  color: #e8f0fa;
+  color: var(--ds-text, #0f2d4d);
   font-weight: 600;
 }
 

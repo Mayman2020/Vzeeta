@@ -37,18 +37,34 @@
     </div>
 
     <div class="specialties-grid" *ngIf="!loading && filteredSpecialties.length">
-      <button type="button" class="specialty-tile" *ngFor="let s of filteredSpecialties; let i = index" (click)="openSpecialty(s)" [style.--delay]="(i * 45) + 'ms'">
-        <span class="tile-orbit" aria-hidden="true"></span>
-        <span class="tile-icon">
-          <mat-icon>{{ s.icon || 'health_and_safety' }}</mat-icon>
-        </span>
-        <span class="tile-copy">
-          <strong>{{ label(s) }}</strong>
-          <small>{{ i18n.currentLang === 'ar' ? 'اعرض الدكاترة المتخصصين' : 'View matching doctors' }}</small>
-        </span>
-        <span class="tile-action">
-          <mat-icon>arrow_forward</mat-icon>
-        </span>
+      <button
+        type="button"
+        class="sp-card"
+        *ngFor="let s of filteredSpecialties; let i = index"
+        (click)="openSpecialty(s)"
+        [style.--c]="meta(s).color"
+        [style.--l]="meta(s).light"
+        [style.--delay]="(i * 40) + 'ms'">
+
+        <!-- Colored top band -->
+        <div class="sp-card-band">
+          <div class="sp-card-icon">
+            <mat-icon>{{ meta(s).icon }}</mat-icon>
+          </div>
+          <div class="sp-card-wave" aria-hidden="true"></div>
+        </div>
+
+        <!-- Card body -->
+        <div class="sp-card-body">
+          <h3 class="sp-card-name">{{ label(s) }}</h3>
+          <p class="sp-card-sub">
+            {{ i18n.currentLang === 'ar' ? 'اعرض الأطباء المتخصصين' : 'View specialist doctors' }}
+          </p>
+          <div class="sp-card-cta">
+            <span>{{ i18n.currentLang === 'ar' ? 'احجز الآن' : 'Book now' }}</span>
+            <span class="sp-card-arrow"><mat-icon>arrow_forward</mat-icon></span>
+          </div>
+        </div>
       </button>
     </div>
 

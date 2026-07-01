@@ -96,6 +96,7 @@ async function runPublicChecks() {
   await check('GET /public/cities', 'GET', '/public/cities');
   await check('GET /public/areas', 'GET', '/public/areas?cityId=1');
   await check('GET /public/doctors', 'GET', '/public/doctors?page=0&size=5');
+  await check('GET /public/doctors?city=1', 'GET', '/public/doctors?page=0&size=5&city=1');
   await check('GET /public/doctors/featured', 'GET', '/public/doctors/featured');
   await check('GET /public/doctors/{id}', 'GET', '/public/doctors/1');
   await check('GET /public/doctors/{id}/slots', 'GET', `/public/doctors/1/slots?date=${today}`);
@@ -156,6 +157,7 @@ async function runSuperAdminChecks(token) {
   await check('GET /role-permissions/me', 'GET', '/role-permissions/me', { token });
   await check('GET /role-permissions/{role}', 'GET', '/role-permissions/SUPER_ADMIN', { token });
   await check('GET /lookups/admin/by-type', 'GET', '/lookups/admin/by-type?type=CLINIC_TYPE', { token });
+  await check('GET /super-admin/areas', 'GET', '/super-admin/areas?cityId=1', { token });
 }
 
 async function runClinicAdminChecks(token) {
@@ -179,17 +181,81 @@ async function runDoctorChecks(token) {
   await checkPaged('GET /doctor/appointments', 'GET', '/doctor/appointments?page=0&size=5', { token });
   await checkPaged('GET /doctor/prescriptions', 'GET', '/doctor/prescriptions?page=0&size=5', { token });
   await checkPaged('GET /doctor/medical-records', 'GET', '/doctor/medical-records?page=0&size=5', { token });
+  await check('POST /doctor/medical-records', 'POST', '/doctor/medical-records', {
+    token,
+    body: { patientId: 1, recordType: 'DIAGNOSIS', titleAr: 'Smoke test record', descriptionAr: 'API smoke' }
+  });
   await check('GET /doctor/earnings', 'GET', '/doctor/earnings', { token });
+}
+
+async function checkUpload(name, token) {
+  try {
+    const form = new FormData();
+    const blob = new Blob(['%PDF-1.4 smoke test'], { type: 'application/pdf' });
+    form.append('file', blob, 'smoke-test.pdf');
+    const response = await fetch(`${BASE}/files/upload`, {
+      method: 'POST',
+      headers: { Accept: 'application/json', Authorization: `Bearer ${token}` },
+      body: form
+    });
+    const json = await response.json();
+    if (response.status !== 200 || !json?.url) {
+      fail(name, `HTTP ${response.status} ${json?.message || ''}`.trim());
+      return null;
+    }
+    pass(name, `${response.status}`);
+    return json;
+  } catch (error) {
+    fail(name, error instanceof Error ? error.message : String(error));
+    return null;
+  }
 }
 
 async function runPatientChecks(token) {
   await check('GET /patient/profile', 'GET', '/patient/profile', { token });
   await checkPaged('GET /patient/appointments', 'GET', '/patient/appointments?page=0&size=5', { token });
+  await checkPaged('GET /patient/appointments?statusGroup=upcoming', 'GET', '/patient/appointments?page=0&size=5&statusGroup=upcoming', { token });
+  await checkPaged('GET /patient/appointments?statusGroup=completed', 'GET', '/patient/appointments?page=0&size=5&statusGroup=completed', { token });
   await check('GET /patient/favorites', 'GET', '/patient/favorites', { token });
   await checkPaged('GET /patient/prescriptions', 'GET', '/patient/prescriptions?page=0&size=5', { token });
   await checkPaged('GET /patient/lab-results', 'GET', '/patient/lab-results?page=0&size=5', { token });
   await checkPaged('GET /patient/medical-records', 'GET', '/patient/medical-records?page=0&size=5', { token });
   await checkPaged('GET /patient/notifications', 'GET', '/patient/notifications?page=0&size=5', { token });
+
+  const apptsRes = await checkPaged('GET /patient/appointments?statusGroup=completed', 'GET', '/patient/appointments?page=0&size=5&statusGroup=completed', { token });
+  const completedAppt = apptsRes?.data?.content?.[0];
+  if (completedAppt?.id) {
+    await check('POST /patient/reviews', 'POST', '/patient/reviews', {
+      token,
+      body: { appointmentId: completedAppt.id, rating: 5, comment: 'Smoke test review' },
+      expect: [200, 400, 409]
+    });
+    await check('GET /payments/appointment/{id}', 'GET', `/payments/appointment/${completedAppt.id}`, {
+      token,
+      expect: [200, 404]
+    });
+    await check('POST /payments', 'POST', '/payments', {
+      token,
+      body: { appointmentId: completedAppt.id, paymentMethod: 'ONLINE' },
+      expect: [200, 409]
+    });
+  } else {
+    fail('POST /patient/reviews', 'no completed appointment for review test');
+    fail('POST /payments', 'no completed appointment for payment test');
+  }
+
+  const uploaded = await checkUpload('POST /files/upload', token);
+  await check('GET /patient/attachments', 'GET', '/patient/attachments', { token });
+  if (uploaded?.url) {
+    const created = await check('POST /patient/attachments', 'POST', '/patient/attachments', {
+      token,
+      body: { type: 'LAB', fileUrl: uploaded.url, titleAr: 'smoke-test.pdf' }
+    });
+    const attachmentId = created?.data?.id;
+    if (attachmentId) {
+      await check('DELETE /patient/attachments/{id}', 'DELETE', `/patient/attachments/${attachmentId}`, { token });
+    }
+  }
 }
 
 async function run() {
@@ -212,6 +278,11 @@ async function run() {
   await check('POST /auth/logout (PATIENT)', 'POST', '/auth/logout', {
     token: patientToken,
     body: {},
+    expect: [200]
+  });
+
+  await check('POST /auth/forgot-password', 'POST', '/auth/forgot-password', {
+    body: { email: CREDS.patient.email },
     expect: [200]
   });
 

@@ -3,7 +3,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable, tap } from 'rxjs';
 import { AppConstants } from '../constants/app-constants';
-import { formatDateLatin, formatDateTimeLatin } from './locale-format';
+import { formatDateLatin, formatDateTimeLatin, formatTimeLatin } from './locale-format';
 
 export type LangCode = 'ar' | 'en';
 export type Direction = 'rtl' | 'ltr';
@@ -52,12 +52,23 @@ export class I18nService {
     return this.translate.instant(key, params);
   }
 
+  /** Translated label, or empty when the key is missing from loaded catalogs. */
+  label(key: string | undefined, params?: Record<string, unknown>): string {
+    if (!key?.trim()) return '';
+    const translated = this.instant(key, params);
+    return translated === key ? '' : translated;
+  }
+
   formatDate(value: Date | string | number | null | undefined): string {
     return formatDateLatin(value, this.currentLang);
   }
 
   formatDateTime(value: Date | string | number | null | undefined): string {
     return formatDateTimeLatin(value, this.currentLang);
+  }
+
+  formatTime(value: Date | string | number | null | undefined): string {
+    return formatTimeLatin(value, this.currentLang);
   }
 
   private applyLang(code: LangCode): void {

@@ -95,6 +95,68 @@
     color: var(--text-muted);
   }
 
+  /* Patient dashboard — centered colored animated KPI numbers */
+  .patient-kpi-grid .estate-stat-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .patient-kpi-grid .estate-stat-top {
+    width: 100%;
+  }
+
+  .patient-kpi-grid .estate-stat-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 96px;
+    padding: 10px 0 6px;
+    width: 100%;
+  }
+
+  .patient-kpi-grid .estate-stat-foot {
+    width: 100%;
+    justify-content: center;
+    padding-top: 10px;
+    margin-top: 2px;
+    border-top: 1px solid var(--ds-line, var(--line));
+  }
+
+  .patient-kpi-grid .stat-counter {
+    font-family: var(--font-ui) !important;
+    font-size: clamp(2.35rem, 4.2vw, 3.35rem) !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    letter-spacing: -0.03em;
+    text-align: center;
+  }
+
+  .patient-kpi-grid .stat-counter[data-tone='navy'] {
+    color: var(--ds-info, #2563eb) !important;
+    text-shadow: 0 10px 28px color-mix(in srgb, var(--ds-info, #2563eb) 32%, transparent);
+  }
+
+  .patient-kpi-grid .stat-counter[data-tone='teal'] {
+    color: var(--ds-accent-2, #16b3c6) !important;
+    text-shadow: 0 10px 28px color-mix(in srgb, var(--ds-accent-2, #16b3c6) 32%, transparent);
+  }
+
+  .patient-kpi-grid .stat-counter[data-tone='gold'] {
+    color: var(--ds-warning, #f59e0b) !important;
+    text-shadow: 0 10px 28px color-mix(in srgb, var(--ds-warning, #f59e0b) 32%, transparent);
+  }
+
+  .patient-kpi-grid .stat-counter[data-tone='danger'] {
+    color: var(--ds-danger, #ef4444) !important;
+    text-shadow: 0 10px 28px color-mix(in srgb, var(--ds-danger, #ef4444) 32%, transparent);
+  }
+
   .estate-stat-delta {
     display: inline-flex;
     align-items: center;

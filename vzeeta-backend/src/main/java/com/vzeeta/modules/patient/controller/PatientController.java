@@ -7,7 +7,9 @@ import com.vzeeta.modules.appointment.service.AppointmentService;
 import com.vzeeta.modules.lab.entity.LabResult;
 import com.vzeeta.modules.medicalrecord.entity.MedicalRecord;
 import com.vzeeta.modules.notification.entity.Notification;
+import com.vzeeta.modules.patient.dto.CreatePatientAttachmentRequest;
 import com.vzeeta.modules.patient.dto.CreateReviewRequest;
+import com.vzeeta.modules.patient.dto.PatientAttachmentDto;
 import com.vzeeta.modules.patient.dto.PatientProfileDto;
 import com.vzeeta.modules.patient.service.PatientService;
 import com.vzeeta.modules.prescription.dto.PrescriptionDto;
@@ -52,8 +54,9 @@ public class PatientController {
     @GetMapping("/appointments")
     public ResponseEntity<ApiResponse<Page<AppointmentDto>>> appointments(
             @RequestParam(required = false) String q,
+            @RequestParam(required = false) String statusGroup,
             Pageable pageable) {
-        return ResponseEntity.ok(ApiResponse.ok(appointmentService.listForPatient(SecurityUtils.currentUserId(), q, pageable)));
+        return ResponseEntity.ok(ApiResponse.ok(appointmentService.listForPatient(SecurityUtils.currentUserId(), q, statusGroup, pageable)));
     }
 
     @GetMapping("/appointments/{id}")
@@ -123,13 +126,38 @@ public class PatientController {
     @GetMapping("/notifications")
     public ResponseEntity<ApiResponse<Page<Notification>>> notifications(
             @RequestParam(required = false) String q,
+            @RequestParam(defaultValue = "recent") String scope,
             Pageable pageable) {
-        return ResponseEntity.ok(ApiResponse.ok(patientService.listNotifications(SecurityUtils.currentUserId(), q, pageable)));
+        return ResponseEntity.ok(ApiResponse.ok(patientService.listNotifications(SecurityUtils.currentUserId(), q, scope, pageable)));
+    }
+
+    @PatchMapping("/notifications/read-all")
+    public ResponseEntity<ApiResponse<Void>> markAllRead() {
+        patientService.markAllNotificationsRead(SecurityUtils.currentUserId());
+        return ResponseEntity.ok(ApiResponse.ok(null));
     }
 
     @PatchMapping("/notifications/{id}/read")
     public ResponseEntity<ApiResponse<Void>> markRead(@PathVariable Long id) {
         patientService.markNotificationRead(SecurityUtils.currentUserId(), id);
+        return ResponseEntity.ok(ApiResponse.ok(null));
+    }
+
+    @GetMapping("/attachments")
+    public ResponseEntity<ApiResponse<List<PatientAttachmentDto>>> attachments(
+            @RequestParam(required = false) String type) {
+        return ResponseEntity.ok(ApiResponse.ok(patientService.listAttachments(SecurityUtils.currentUserId(), type)));
+    }
+
+    @PostMapping("/attachments")
+    public ResponseEntity<ApiResponse<PatientAttachmentDto>> addAttachment(
+            @Valid @RequestBody CreatePatientAttachmentRequest request) {
+        return ResponseEntity.ok(ApiResponse.ok(patientService.addAttachment(SecurityUtils.currentUserId(), request)));
+    }
+
+    @DeleteMapping("/attachments/{id}")
+    public ResponseEntity<ApiResponse<Void>> deleteAttachment(@PathVariable Long id) {
+        patientService.deleteAttachment(SecurityUtils.currentUserId(), id);
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
 }

@@ -8,9 +8,6 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [NgFor, NgIf, TranslateModule],
   template: `
     <nav class="srs-pager-shell table-pager-shell" *ngIf="length > 0" [attr.aria-label]="'COMMON.PAGINATION' | translate">
-      <div class="srs-pager__info">
-        {{ 'COMMON.PAGE_OF' | translate:{ current: pageIndex + 1, total: totalPages } }}
-      </div>
       <div class="srs-pager__controls">
         <button type="button" class="srs-pager__nav" (click)="previousPage()" [disabled]="pageIndex === 0" [attr.aria-label]="'COMMON.PREVIOUS' | translate">
           <span class="material-icons">chevron_left</span>
@@ -41,7 +38,7 @@ import { TranslateModule } from '@ngx-translate/core';
     }
 
     .table-pager-shell {
-      justify-content: space-between;
+      justify-content: center;
       padding: 18px 16px 16px;
       border-top: 0;
     }

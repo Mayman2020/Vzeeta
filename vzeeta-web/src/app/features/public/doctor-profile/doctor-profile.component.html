@@ -68,21 +68,6 @@
         </div>
       </div>
 
-      <!-- Book Panel -->
-      <div class="profile-book-panel">
-        <div class="book-fee">
-          <span class="fee-label">{{ 'BOOKING.FEE' | translate }}</span>
-          <span class="fee-value">{{ doctor.consultationFee }} <span class="fee-cur">{{ 'COMMON.EGP' | translate }}</span></span>
-        </div>
-        <a class="book-btn" [routerLink]="['/booking', doctor.id]">
-          <span class="material-icons">calendar_today</span>
-          {{ 'BOOKING.BOOK_NOW' | translate }}
-        </a>
-        <div class="book-note">
-          <span class="material-icons">check_circle</span>
-          {{ 'DOCTOR.FREE_CANCEL' | translate }}
-        </div>
-      </div>
     </div>
   </div>
 

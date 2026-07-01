@@ -43,6 +43,9 @@ public class PaymentService {
         paymentRepository.findByAppointmentId(appointment.getId()).ifPresent(p -> {
             throw AppException.conflict("Payment already exists for appointment");
         });
+        if (request.getPaymentMethod() == PaymentMethod.CASH) {
+            throw AppException.badRequest("Prepaid online payment is required before booking");
+        }
 
         BigDecimal amount = appointment.getFeeAmount() != null ? appointment.getFeeAmount() : BigDecimal.ZERO;
         BigDecimal commissionPercent = systemSettingRepository.findBySettingKey("platform_commission_percent")
@@ -51,8 +54,7 @@ public class PaymentService {
         BigDecimal commission = amount.multiply(commissionPercent)
                 .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
 
-        PaymentStatus status = request.getPaymentMethod() == PaymentMethod.CASH
-                ? PaymentStatus.PAID : PaymentStatus.PENDING;
+        PaymentStatus status = PaymentStatus.PAID;
 
         Payment payment = Payment.builder()
                 .appointmentId(appointment.getId())

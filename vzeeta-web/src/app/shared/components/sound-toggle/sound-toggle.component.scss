@@ -1,0 +1,47 @@
+.tb-sound-btn {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
+  max-width: 42px;
+  padding: 0;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.tb-sound-icon-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.tb-sound-icon-wrap .material-icons {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+}
+
+.tb-sound-muted-mark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--ds-danger, #ef4444);
+  transform: translate(-50%, -50%) rotate(-45deg);
+  pointer-events: none;
+}
+
+:host(.login-sound-toggle) .tb-sound-btn {
+  background: color-mix(in srgb, var(--surface, #fff) 88%, transparent);
+  border-color: var(--ds-line, var(--line));
+  box-shadow: 0 8px 24px rgba(15, 45, 77, 0.12);
+}

@@ -43,6 +43,12 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.ok("If the email exists, a reset link was sent", null));
     }
 
+    @PostMapping("/reset-password")
+    public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.ok(ApiResponse.ok("Password updated successfully", null));
+    }
+
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<LoginResponse.UserDto>> me() {
         return ResponseEntity.ok(ApiResponse.ok(authService.currentUser()));

@@ -26,13 +26,18 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       const body = err.error;
-      let message = err.message ?? '';
-      if (body && typeof body === 'object' && 'message' in body) {
+      let message = '';
+      if (err.status === 0) {
+        message = translate.instant('ERRORS.NETWORK_ERROR');
+      } else if (body && typeof body === 'object' && 'message' in body) {
         message = String((body as { message: string }).message);
+        const key = `ERRORS.${message}`;
+        const translated = translate.instant(key);
+        message = translated !== key ? translated : message;
+      } else {
+        message = translate.instant('ERRORS.GENERIC');
       }
-      const key = `ERRORS.${message}`;
-      const translated = translate.instant(key);
-      const finalMsg = translated !== key ? translated : (message || translate.instant('ERRORS.GENERIC'));
+      const finalMsg = message || translate.instant('ERRORS.GENERIC');
       const normalized = new Error(finalMsg) as Error & { status?: number };
       normalized.status = err.status;
       return throwError(() => normalized);

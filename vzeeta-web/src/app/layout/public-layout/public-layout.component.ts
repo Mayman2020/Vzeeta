@@ -30,9 +30,11 @@ export class PublicLayoutComponent {
   openDoctorFinder(): void {
     this.dialog.open(DoctorFinderDialogComponent, {
       panelClass: 'doctor-finder-panel',
+      backdropClass: 'finder-blur-backdrop',
       autoFocus: false,
       restoreFocus: false,
-      maxWidth: 'calc(100vw - 24px)'
+      maxWidth: '960px',
+      width: 'calc(100vw - 32px)'
     });
   }
 }

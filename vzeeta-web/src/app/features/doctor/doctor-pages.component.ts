@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgFor, NgIf, SlicePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -10,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { FeatureShellComponent } from '../../shared/components/feature-shell/feature-shell.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
@@ -23,13 +25,13 @@ import { SnackService } from '../../core/services/snack.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { RmsDatePipe } from '../../shared/pipes/rms-date.pipe';
 
-const DAY_NAMES = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+const DAY_NAME_KEYS = ['COMMON.DAY_SUN', 'COMMON.DAY_MON', 'COMMON.DAY_TUE', 'COMMON.DAY_WED', 'COMMON.DAY_THU', 'COMMON.DAY_FRI', 'COMMON.DAY_SAT'];
 const APPOINTMENT_STATUSES = ['PENDING', 'CONFIRMED', 'RESCHEDULED', 'COMPLETED', 'CANCELLED', 'REJECTED'] as const;
 
 @Component({
   selector: 'app-doctor-dashboard',
   standalone: true,
-  imports: [NgFor, NgIf, SlicePipe, TranslateModule, MatProgressSpinnerModule, MatButtonModule, MatIconModule],
+  imports: [NgFor, NgIf, SlicePipe, TranslateModule, MatProgressSpinnerModule, MatButtonModule, MatIconModule, RmsDatePipe],
   template: `
     <div class="app-page dashboard-page">
       <div *ngIf="loading" class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
@@ -95,11 +97,11 @@ const APPOINTMENT_STATUSES = ['PENDING', 'CONFIRMED', 'RESCHEDULED', 'COMPLETED'
                 <div class="appt-info">
                   <div class="appt-name">{{ a.patientNameAr || a.patientNameEn || ('PATIENT.PATIENT' | translate) + ' #' + a.patientId }}</div>
                   <div class="appt-type">{{ a.specialtyNameAr || a.consultationType }}</div>
-                  <span class="status-badge" [attr.data-status]="a.status">{{ a.status }}</span>
+                  <span class="status-badge" [attr.data-status]="a.status">{{ 'STATUS.' + a.status | translate }}</span>
                 </div>
               </div>
               <div class="appt-time">{{ a.startTime | slice:0:5 }}</div>
-              <div class="appt-date">{{ a.appointmentDate }}</div>
+              <div class="appt-date">{{ a.appointmentDate | rmsDate:'date' }}</div>
             </div>
           </div>
           <ng-template #noAppts>
@@ -312,7 +314,9 @@ export class DoctorCalendarComponent implements OnInit {
   loading = true;
   saving = false;
   showForm = false;
-  dayOptions = DAY_NAMES.map((label, value) => ({ value, label }));
+  get dayOptions() {
+    return DAY_NAME_KEYS.map((key, value) => ({ value, label: this.i18n.instant(key) }));
+  }
   slotForm: FormGroup;
 
   constructor(
@@ -365,14 +369,14 @@ export class DoctorCalendarComponent implements OnInit {
     return this.slots.filter(s => s.dayOfWeek === dayOfWeek);
   }
 
-  dayName(d: number): string { return DAY_NAMES[d] ?? `${d}`; }
+  dayName(d: number): string { return this.i18n.instant(DAY_NAME_KEYS[d] ?? 'COMMON.DAY_SUN'); }
   formatTime(t: string): string { return (t ?? '').substring(0, 5); }
 }
 
 @Component({
   selector: 'app-doctor-appointments',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, TranslateModule, MatButtonModule, MatChipsModule, RmsDatePipe, PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule],
+  imports: [NgFor, NgIf, FormsModule, TranslateModule, MatButtonModule, MatIconModule, MatTooltipModule, RmsDatePipe, PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule],
   template: `
     <div class="app-page">
       <app-page-header titleKey="NAV.APPOINTMENTS"></app-page-header>
@@ -380,9 +384,9 @@ export class DoctorCalendarComponent implements OnInit {
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="event" titleKey="DOCTOR.NO_APPOINTMENTS"></app-empty-state>
       <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
         <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ totalElements }}</strong></article></section>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
         <section class="app-card table-card">
-          <div class="estate-table-toolbar">
+          <div class="estate-table-toolbar directory-toolbar">
             <label class="estate-search-inline"><span class="material-icons">search</span>
               <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.APPOINTMENTS' | translate">
             </label>
@@ -392,17 +396,23 @@ export class DoctorCalendarComponent implements OnInit {
             </select>
           </div>
           <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
-            <th>#</th><th>{{ 'NAV.APPOINTMENTS' | translate }}</th><th>{{ 'COMMON.STATUS' | translate }}</th><th>{{ 'COMMON.ACTIONS' | translate }}</th>
+            <th>#</th><th>{{ 'NAV.APPOINTMENTS' | translate }}</th><th class="center-col">{{ 'COMMON.STATUS' | translate }}</th><th class="actions-col">{{ 'COMMON.ACTIONS' | translate }}</th>
           </tr></thead><tbody>
             <tr *ngFor="let a of rows">
               <td>{{ a.appointmentNumber }}</td>
               <td>{{ a.appointmentDate | rmsDate:'date' }} {{ a.startTime }}</td>
-              <td><mat-chip>{{ 'STATUS.' + a.status | translate }}</mat-chip></td>
-              <td class="actions" *ngIf="a.status === 'PENDING'">
-                <button mat-flat-button color="primary" (click)="accept(a)">{{ 'DOCTOR.ACCEPT' | translate }}</button>
-                <button mat-stroked-button color="warn" (click)="reject(a)">{{ 'DOCTOR.REJECT' | translate }}</button>
+              <td class="center-col"><span class="status-badge" [attr.data-status]="a.status">{{ 'STATUS.' + a.status | translate }}</span></td>
+              <td class="actions-col">
+                <div class="table-actions app-row-actions" *ngIf="a.status === 'PENDING'; else noActions">
+                  <button type="button" class="app-icon-btn success" (click)="accept(a)" [matTooltip]="'DOCTOR.ACCEPT' | translate">
+                    <mat-icon>check_circle</mat-icon>
+                  </button>
+                  <button type="button" class="app-icon-btn danger" (click)="reject(a)" [matTooltip]="'DOCTOR.REJECT' | translate">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                </div>
+                <ng-template #noActions>—</ng-template>
               </td>
-              <td *ngIf="a.status !== 'PENDING'">—</td>
             </tr>
           </tbody></table></div>
           <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
@@ -503,7 +513,7 @@ export class DoctorAppointmentsComponent implements OnInit {
       <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
       <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !showForm" icon="medication" titleKey="PATIENT.NO_PRESCRIPTIONS"></app-empty-state>
       <div class="app-list-surface" *ngIf="listLoad.showSurface && rows.length > 0">
-        <section class="list-stats"><article class="stat-pill"><span class="stat-label">{{ 'COMMON.ALL' | translate }}</span><strong>{{ totalElements }}</strong></article></section>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
         <section class="app-card table-card">
           <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
             <th>{{ 'NAV.PRESCRIPTIONS' | translate }}</th><th>{{ 'COMMON.ALL' | translate }}</th>
@@ -602,5 +612,132 @@ export class DoctorEarningsComponent implements OnInit {
       next: (e) => { this.earnings = e; this.loading = false; },
       error: () => { this.loading = false; }
     });
+  }
+}
+
+@Component({
+  selector: 'app-doctor-medical-records',
+  standalone: true,
+  imports: [
+    NgFor, NgIf, ReactiveFormsModule, RmsDatePipe, TranslateModule, MatButtonModule, MatCardModule,
+    MatFormFieldModule, MatInputModule, PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule
+  ],
+  template: `
+    <div class="app-page">
+      <app-page-header titleKey="NAV.MEDICAL_RECORDS">
+        <button mat-flat-button color="primary" type="button" (click)="showForm = !showForm">
+          {{ (showForm ? 'COMMON.CANCEL' : 'DOCTOR.NEW_RECORD') | translate }}
+        </button>
+      </app-page-header>
+      <mat-card class="form-card" *ngIf="showForm">
+        <form [formGroup]="recordForm" (ngSubmit)="submitRecord()">
+          <mat-form-field appearance="outline"><mat-label>{{ 'DOCTOR.PATIENT_ID' | translate }}</mat-label><input matInput type="number" formControlName="patientId"></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>{{ 'DOCTOR.RECORD_TYPE' | translate }}</mat-label><input matInput formControlName="recordType"></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>{{ 'LOOKUPS.NAME_AR' | translate }}</mat-label><input matInput formControlName="titleAr"></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>{{ 'BOOKING.NOTES' | translate }}</mat-label><textarea matInput formControlName="descriptionAr" rows="2"></textarea></mat-form-field>
+          <button mat-flat-button color="primary" type="submit" [disabled]="recordForm.invalid || saving">{{ 'COMMON.SAVE' | translate }}</button>
+        </form>
+      </mat-card>
+      <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+      <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !showForm" icon="folder_shared" titleKey="PATIENT.NO_RECORDS"></app-empty-state>
+      <div class="app-list-surface" *ngIf="listLoad.showSurface && rows.length > 0">
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
+        <section class="app-card table-card">
+          <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
+            <th>{{ 'DOCTOR.RECORD_TYPE' | translate }}</th><th>{{ 'LOOKUPS.NAME_AR' | translate }}</th><th>{{ 'COMMON.ALL' | translate }}</th>
+          </tr></thead><tbody>
+            <tr *ngFor="let r of rows">
+              <td>{{ r['recordType'] }}</td><td>{{ r['titleAr'] }}</td><td>{{ $any(r['createdAt']) | rmsDate:'date' }}</td>
+            </tr>
+          </tbody></table></div>
+          <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
+        </section>
+      </div>
+    </div>
+  `,
+  styles: [`.form-card { padding:1rem; margin-bottom:1rem; } form { display:flex; flex-direction:column; gap:0.5rem; width:100%; max-width:none; }`]
+})
+export class DoctorMedicalRecordsComponent implements OnInit {
+  listLoad = new ListLoadController();
+  rows: Record<string, unknown>[] = [];
+  pageIndex = 0;
+  pageSize = DEFAULT_TABLE_PAGE_SIZE;
+  totalElements = 0;
+  showForm = false;
+  saving = false;
+  recordForm: FormGroup;
+
+  constructor(
+    fb: FormBuilder,
+    private readonly doctorPortal: DoctorPortalService,
+    private readonly snack: SnackService,
+    private readonly i18n: I18nService
+  ) {
+    this.recordForm = fb.group({
+      patientId: [null, Validators.required],
+      recordType: ['DIAGNOSIS', Validators.required],
+      titleAr: ['', Validators.required],
+      descriptionAr: ['']
+    });
+  }
+
+  ngOnInit(): void { this.load(); }
+  load(): void {
+    this.listLoad.begin();
+    this.doctorPortal.getMedicalRecords(withPageParams(this.pageIndex, this.pageSize)).subscribe({
+      next: (res) => { this.rows = res.content; this.totalElements = res.totalElements; this.listLoad.end(); },
+      error: () => { this.rows = []; this.totalElements = 0; this.listLoad.end(); }
+    });
+  }
+  onPageChange(i: number): void { this.pageIndex = i; this.load(); }
+  submitRecord(): void {
+    if (this.recordForm.invalid) return;
+    this.saving = true;
+    this.doctorPortal.createMedicalRecord(this.recordForm.value).subscribe({
+      next: () => {
+        this.snack.success(this.i18n.instant('DOCTOR.RECORD_SAVED'));
+        this.saving = false;
+        this.showForm = false;
+        this.recordForm.reset({ recordType: 'DIAGNOSIS' });
+        this.load();
+      },
+      error: () => { this.saving = false; }
+    });
+  }
+}
+
+@Component({
+  selector: 'app-doctor-profile',
+  standalone: true,
+  imports: [NgIf, TranslateModule, MatCardModule, MatButtonModule, PageHeaderComponent, MatProgressSpinnerModule, RouterLink],
+  template: `
+    <app-page-header titleKey="NAV.PROFILE"></app-page-header>
+    <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+    <mat-card *ngIf="!loading" class="profile-card">
+      <h2>{{ displayName }}</h2>
+      <p *ngIf="profile['titleAr']">{{ profile['titleAr'] }}</p>
+      <p>{{ 'BOOKING.FEE' | translate }}: {{ profile['consultationFee'] }} {{ 'COMMON.EGP' | translate }}</p>
+      <a mat-stroked-button routerLink="/auth/change-password">{{ 'PROFILE.CHANGE_PASSWORD' | translate }}</a>
+    </mat-card>
+  `,
+  styles: [`.profile-card { padding: 1.5rem; display:flex; flex-direction:column; gap:0.75rem; width:100%; max-width:none; }`]
+})
+export class DoctorProfileComponent implements OnInit {
+  loading = true;
+  profile: Record<string, unknown> = {};
+  constructor(
+    private readonly doctorPortal: DoctorPortalService,
+    readonly i18n: I18nService
+  ) {}
+  ngOnInit(): void {
+    this.doctorPortal.getProfile().subscribe({
+      next: (p) => { this.profile = p; this.loading = false; },
+      error: () => { this.loading = false; }
+    });
+  }
+  get displayName(): string {
+    const ar = String(this.profile['fullNameAr'] ?? '');
+    const en = String(this.profile['fullNameEn'] ?? '');
+    return this.i18n.currentLang === 'ar' ? (ar || en) : (en || ar);
   }
 }

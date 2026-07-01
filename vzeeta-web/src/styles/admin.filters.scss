@@ -1,41 +1,116 @@
-/* Standardized admin filter bars — Property_Managments estate-table-toolbar pattern */
+/* Admin list filter bars — Property_Managments estate-table-toolbar pattern */
 
 .app-page .filter-field,
 .page-shell .filter-field,
 .estate-card.admin-filters .search-field,
-.estate-card .estate-table-toolbar .search-field {
-  flex: 1;
-  min-width: 200px;
-  max-width: 420px;
+.estate-card .estate-table-toolbar .search-field,
+.app-card.table-card .estate-table-toolbar .filter-field,
+.directory-toolbar .filter-field,
+.table-list-toolbar .filter-field,
+.lookup-filter.filter-field {
+  flex: 0 1 200px;
+  min-width: 160px;
+  max-width: 260px;
   margin: 0;
 }
 
+.app-card.table-card .estate-table-toolbar .directory-toolbar-top,
+.estate-table-toolbar .directory-toolbar-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+}
+
+.directory-toolbar .filter-field .mat-mdc-form-field-wrapper,
+.table-list-toolbar .filter-field .mat-mdc-form-field-wrapper,
+.lookup-filter.filter-field .mat-mdc-form-field-wrapper,
+.app-card.table-card .estate-table-toolbar .filter-field .mat-mdc-form-field-wrapper {
+  padding-bottom: 0;
+}
+
+.directory-toolbar .filter-field .mat-mdc-text-field-wrapper,
+.table-list-toolbar .filter-field .mat-mdc-text-field-wrapper,
+.lookup-filter.filter-field .mat-mdc-text-field-wrapper,
+.app-card.table-card .estate-table-toolbar .filter-field .mat-mdc-text-field-wrapper {
+  height: 40px !important;
+  min-height: 40px !important;
+  background: var(--surface, #fff) !important;
+  border-radius: 12px !important;
+}
+
+.directory-toolbar .filter-field .mat-mdc-form-field-flex,
+.table-list-toolbar .filter-field .mat-mdc-form-field-flex,
+.lookup-filter.filter-field .mat-mdc-form-field-flex,
+.app-card.table-card .estate-table-toolbar .filter-field .mat-mdc-form-field-flex {
+  height: 40px !important;
+  align-items: center !important;
+}
+
+.directory-toolbar .filter-field .mat-mdc-form-field-infix,
+.table-list-toolbar .filter-field .mat-mdc-form-field-infix,
+.lookup-filter.filter-field .mat-mdc-form-field-infix,
+.app-card.table-card .estate-table-toolbar .filter-field .mat-mdc-form-field-infix {
+  display: flex;
+  align-items: center;
+  min-height: 40px !important;
+  padding: 10px 0 6px !important;
+  font-size: 0.82rem;
+}
+
+.directory-toolbar .filter-field .mat-mdc-form-field-subscript-wrapper,
+.table-list-toolbar .filter-field .mat-mdc-form-field-subscript-wrapper,
+.app-card.table-card .estate-table-toolbar .filter-field .mat-mdc-form-field-subscript-wrapper,
 .estate-card.admin-filters .mat-mdc-form-field-subscript-wrapper,
-.estate-card .estate-table-toolbar .mat-mdc-form-field-subscript-wrapper {
+.estate-card .estate-table-toolbar .mat-mdc-form-field-subscript-wrapper,
+.app-card.table-card .estate-table-toolbar .mat-mdc-form-field-subscript-wrapper {
   display: none;
+}
+
+.directory-toolbar .filter-field .mat-mdc-floating-label,
+.table-list-toolbar .filter-field .mat-mdc-floating-label,
+.lookup-filter.filter-field .mat-mdc-floating-label,
+.app-card.table-card .estate-table-toolbar .filter-field .mat-mdc-floating-label {
+  font-size: 0.72rem;
+}
+
+.directory-toolbar .filter-field .mat-mdc-select-trigger,
+.table-list-toolbar .filter-field .mat-mdc-select-trigger,
+.lookup-filter.filter-field .mat-mdc-select-trigger,
+.app-card.table-card .estate-table-toolbar .filter-field .mat-mdc-select-trigger {
+  height: 22px;
+  display: flex;
+  align-items: center;
+}
+
+.directory-toolbar .filter-field .mat-mdc-select-value,
+.table-list-toolbar .filter-field .mat-mdc-select-value,
+.lookup-filter.filter-field .mat-mdc-select-value,
+.app-card.table-card .estate-table-toolbar .filter-field .mat-mdc-select-value {
+  font-size: 0.82rem;
+  line-height: 20px;
 }
 
 .estate-search-inline {
   display: flex;
   align-items: center;
   gap: 10px;
-  width: 100%;
-  max-width: 420px;
   min-height: 40px;
-  padding: 0 14px;
+  padding: 0 12px;
   border-radius: 12px;
-  background: var(--paper-2);
-  border: 1px solid var(--line);
-  transition: border-color var(--t-fast), background var(--t-fast);
+  background: #ffffff;
+  border: 1px solid var(--line, var(--ds-line));
+  transition: border-color var(--t-fast, 0.15s ease), box-shadow var(--t-fast, 0.15s ease);
 }
 
 .estate-search-inline:focus-within {
-  border-color: var(--blue-400);
-  background: var(--surface);
+  border-color: var(--ds-accent-2, #16b3c6);
+  box-shadow: 0 0 0 3px rgba(22, 179, 198, 0.14);
 }
 
 .estate-search-inline .material-icons {
-  color: var(--ink-400);
+  color: var(--ink-400, var(--ds-muted));
   font-size: 20px;
 }
 
@@ -44,7 +119,28 @@
   border: 0;
   outline: 0;
   background: transparent;
-  color: var(--text-main);
+  color: var(--text-main, var(--ds-text));
   font-size: 13.5px;
   font-family: inherit;
+}
+
+.directory-toolbar-top,
+.table-list-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .app-card.table-card > .estate-table-toolbar .estate-search-inline,
+  .estate-card > .estate-table-toolbar .estate-search-inline,
+  .app-page .filter-field,
+  .directory-toolbar .filter-field,
+  .estate-card .estate-table-toolbar .filter-field {
+    flex: 1 1 100%;
+    max-width: none;
+    width: 100%;
+  }
 }

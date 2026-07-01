@@ -21,12 +21,13 @@ import { formatApiDate, parseApiDate } from '../../../core/utils/date-value.util
   template: `
     <mat-form-field appearance="outline"
       class="app-date-field"
-      floatLabel="always"
+      [class.app-date-field--embedded]="embedded"
+      [floatLabel]="embedded ? 'auto' : 'always'"
       [class.app-date-field--compact]="compact"
       [class.app-date-field--filter]="filter"
       subscriptSizing="dynamic">
-      <mat-label *ngIf="labelKey">{{ labelKey | translate }}</mat-label>
-      <mat-label *ngIf="!labelKey && label">{{ label }}</mat-label>
+      <mat-label *ngIf="!embedded && labelKey">{{ labelKey | translate }}</mat-label>
+      <mat-label *ngIf="!embedded && !labelKey && label">{{ label }}</mat-label>
       <input matInput
         [matDatepicker]="picker"
         [formControl]="pickerCtrl"
@@ -47,6 +48,7 @@ import { formatApiDate, parseApiDate } from '../../../core/utils/date-value.util
   `]
 })
 export class DateFieldComponent implements ControlValueAccessor, OnInit, OnDestroy {
+  @Input() embedded = false;
   @Input() label = '';
   @Input() labelKey = '';
   @Input() placeholder = 'DD/MM/YYYY';

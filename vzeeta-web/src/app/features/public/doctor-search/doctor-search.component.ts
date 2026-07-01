@@ -14,6 +14,10 @@ import { DoctorService } from '../../../core/services/doctor.service';
 import { Doctor, LookupItem, Specialty } from '../../../core/models/doctor.model';
 import { I18nService } from '../../../core/i18n/i18n.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
+import { TablePagerComponent } from '../../../shared/components/table-pager/table-pager.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { DEFAULT_TABLE_PAGE_SIZE } from '../../../core/utils/pagination.util';
+import { SnackService } from '../../../core/services/snack.service';
 
 @Component({
   selector: 'app-doctor-search',
@@ -22,7 +26,7 @@ import { LoadingSpinnerComponent } from '../../../shared/components/loading-spin
     NgFor, NgIf, ReactiveFormsModule, RouterLink, TranslateModule,
     MatFormFieldModule, MatInputModule, MatSelectModule,
     MatButtonModule, MatIconModule, MatCardModule, MatChipsModule,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent, TablePagerComponent, EmptyStateComponent
   ],
   templateUrl: './doctor-search.component.html',
   styleUrl: './doctor-search.component.scss'
@@ -34,13 +38,19 @@ export class DoctorSearchComponent implements OnInit {
   cities: LookupItem[] = [];
   areas: LookupItem[] = [];
   loading = false;
+  loadError = false;
   selectedSpecialtyId: number | null = null;
+  pageIndex = 0;
+  pageSize = DEFAULT_TABLE_PAGE_SIZE;
+  totalElements = 0;
+  sortBy: 'relevance' | 'rating' = 'relevance';
 
   constructor(
     fb: FormBuilder,
     private readonly doctorService: DoctorService,
     private readonly route: ActivatedRoute,
     private readonly router: Router,
+    private readonly snack: SnackService,
     readonly i18n: I18nService
   ) {
     this.filters = fb.group({
@@ -56,13 +66,22 @@ export class DoctorSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.doctorService.getSpecialties().subscribe((s) => (this.specialties = s));
-    this.doctorService.getCities().subscribe((c) => (this.cities = c));
+    this.doctorService.getSpecialties().subscribe({
+      next: (s) => (this.specialties = s),
+      error: () => this.snack.error(this.i18n.instant('ERRORS.NETWORK_ERROR'))
+    });
+    this.doctorService.getCities().subscribe({
+      next: (c) => (this.cities = c),
+      error: () => this.snack.error(this.i18n.instant('ERRORS.NETWORK_ERROR'))
+    });
 
     this.filters.get('cityId')?.valueChanges.subscribe((cityId: number | null) => {
       this.filters.patchValue({ areaId: null }, { emitEvent: false });
       if (cityId) {
-        this.doctorService.getAreas(cityId).subscribe((a) => (this.areas = a));
+        this.doctorService.getAreas(cityId).subscribe({
+          next: (a) => (this.areas = a),
+          error: () => this.snack.error(this.i18n.instant('ERRORS.NETWORK_ERROR'))
+        });
       } else {
         this.areas = [];
       }
@@ -75,8 +94,12 @@ export class DoctorSearchComponent implements OnInit {
       if (params['cityId']) patch['cityId'] = Number(params['cityId']);
       this.filters.patchValue(patch, { emitEvent: false });
       this.selectedSpecialtyId = (patch['specialtyId'] as number | undefined) ?? null;
+      this.pageIndex = Number(params['page'] ?? 0);
       if (patch['cityId']) {
-        this.doctorService.getAreas(Number(patch['cityId'])).subscribe((a) => (this.areas = a));
+        this.doctorService.getAreas(Number(patch['cityId'])).subscribe({
+          next: (a) => (this.areas = a),
+          error: () => {}
+        });
       }
       this.loadDoctors();
     });
@@ -84,22 +107,37 @@ export class DoctorSearchComponent implements OnInit {
 
   loadDoctors(): void {
     this.loading = true;
+    this.loadError = false;
     const v = this.filters.value;
     this.doctorService.search({
       name: v.name || undefined,
       specialtyId: v.specialtyId || undefined,
+      cityId: v.cityId || undefined,
       areaId: v.areaId || undefined,
       minPrice: v.minPrice,
       maxPrice: v.maxPrice,
       consultationType: v.consultationType,
       minRating: v.minRating || undefined
-    }).subscribe((docs) => {
-      this.doctors = docs;
-      this.loading = false;
+    }, this.pageIndex, this.pageSize).subscribe({
+      next: (res) => {
+        this.doctors = this.sortBy === 'rating'
+          ? [...res.content].sort((a, b) => b.rating - a.rating)
+          : res.content;
+        this.totalElements = res.totalElements;
+        this.loading = false;
+      },
+      error: () => {
+        this.doctors = [];
+        this.totalElements = 0;
+        this.loadError = true;
+        this.loading = false;
+        this.snack.error(this.i18n.instant('ERRORS.NETWORK_ERROR'));
+      }
     });
   }
 
   applyFilters(): void {
+    this.pageIndex = 0;
     const v = this.filters.value;
     void this.router.navigate([], {
       queryParams: {
@@ -108,14 +146,37 @@ export class DoctorSearchComponent implements OnInit {
         cityId: v.cityId || null,
         areaId: v.areaId || null,
         consultationType: v.consultationType !== 'ALL' ? v.consultationType : null,
-        minRating: v.minRating || null
+        minRating: v.minRating || null,
+        page: null
       },
       relativeTo: this.route
     });
   }
 
+  onPageChange(index: number): void {
+    this.pageIndex = index;
+    void this.router.navigate([], {
+      queryParams: { page: index || null },
+      queryParamsHandling: 'merge',
+      relativeTo: this.route
+    });
+  }
+
+  setSort(mode: 'relevance' | 'rating'): void {
+    this.sortBy = mode;
+    if (mode === 'rating') {
+      this.doctors = [...this.doctors].sort((a, b) => b.rating - a.rating);
+    } else {
+      this.loadDoctors();
+    }
+  }
+
   doctorName(d: Doctor): string {
     return this.i18n.currentLang === 'ar' ? (d.fullNameAr || d.fullName) : (d.fullNameEn || d.fullName);
+  }
+
+  doctorTitle(d: Doctor): string {
+    return this.i18n.currentLang === 'ar' ? (d.titleAr || d.specialty) : (d.titleEn || d.specialty);
   }
 
   specialtyLabel(s: Specialty): string {
@@ -130,14 +191,12 @@ export class DoctorSearchComponent implements OnInit {
 
   resultsTitle(): string {
     const label = this.selectedSpecialtyLabel();
-    if (!label) return this.i18n.currentLang === 'ar' ? 'كل الأطباء المتاحين' : 'Available Doctors';
-    return this.i18n.currentLang === 'ar' ? `دكاترة ${label}` : `${label} Doctors`;
+    if (!label) return this.i18n.instant('SEARCH.ALL_DOCTORS');
+    return this.i18n.instant('SEARCH.SPECIALTY_DOCTORS', { specialty: label });
   }
 
   resultsSubtitle(): string {
-    return this.i18n.currentLang === 'ar'
-      ? 'استخدم الفلاتر لاختيار المدينة، نوع الاستشارة، والتقييم المناسب لك.'
-      : 'Use filters to refine city, consultation type, and rating.';
+    return this.i18n.instant('SEARCH.FILTERS_HINT');
   }
 
   lookupLabel(item: LookupItem): string {

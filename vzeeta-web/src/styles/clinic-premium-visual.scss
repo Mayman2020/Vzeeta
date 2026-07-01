@@ -7,10 +7,10 @@
 
 .app-shell .topbar {
   background: var(--glass-bg-strong);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 /* ── Glass panels (cards, headers, stats) ── */

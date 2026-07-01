@@ -175,90 +175,134 @@
 }
 .clear-filter mat-icon { width: 18px; height: 18px; font-size: 18px; }
 
+/* ── Grid ── */
 .specialties-grid,
 .specialties-loading {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
 }
 
-.specialty-tile {
+/* ── Card ── */
+.sp-card {
+  --c: #2563eb;
+  --l: #eff6ff;
   --delay: 0ms;
-  position: relative;
-  min-height: 178px;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto 1fr;
-  gap: 18px;
-  padding: 22px;
-  border: 1.5px solid #dce7f0;
-  border-radius: 8px;
+
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid #e8eef6;
+  border-radius: 18px;
   background: #fff;
-  color: #0f2d4d;
-  text-align: start;
+  overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 14px 34px rgba(15,76,129,0.08);
-  animation: pageRise 0.58s cubic-bezier(0.22, 1, 0.36, 1) both;
+  text-align: start;
+  box-shadow: 0 4px 18px rgba(15,45,77,0.07);
+  animation: pageRise 0.52s cubic-bezier(0.22,1,0.36,1) both;
   animation-delay: var(--delay);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+
+  &:hover {
+    transform: translateY(-6px);
+    border-color: var(--c);
+    box-shadow: 0 16px 40px rgba(15,45,77,0.13);
+    .sp-card-arrow { background: var(--c); color: #fff; }
+    .sp-card-icon { transform: scale(1.08) rotate(-4deg); }
+  }
 }
 
-.specialty-tile:hover {
-  transform: translateY(-8px);
-  border-color: #18c2c0;
-  box-shadow: 0 22px 46px rgba(15,76,129,0.14);
+/* Colored band on top */
+.sp-card-band {
+  position: relative;
+  height: 110px;
+  background: var(--l);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-bottom: 1px solid color-mix(in srgb, var(--c) 18%, transparent);
 }
 
-.tile-orbit {
+/* Wave decoration bottom of band */
+.sp-card-wave {
   position: absolute;
-  inset-inline-end: -44px;
-  top: -48px;
-  width: 150px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: 24px solid rgba(24,194,192,0.1);
-  transition: transform 0.28s ease;
+  bottom: -1px;
+  left: 0; right: 0;
+  height: 22px;
+  background: #fff;
+  clip-path: ellipse(55% 100% at 50% 100%);
 }
-.specialty-tile:hover .tile-orbit { transform: scale(1.12) rotate(16deg); }
 
-.tile-icon {
-  width: 58px;
-  height: 58px;
+/* Big icon in band */
+.sp-card-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--c) 28%, transparent);
   display: grid;
   place-items: center;
-  border-radius: 8px;
-  background: linear-gradient(135deg, rgba(24,194,192,0.16), #f5f9ff);
-  color: #0f4c81;
-}
-.tile-icon mat-icon { width: 28px; height: 28px; font-size: 28px; }
-.specialty-tile:hover .tile-icon { animation: appIconPulse 1.2s ease-out; }
-
-.tile-copy {
-  grid-column: 1 / -1;
-  display: grid;
-  gap: 8px;
-  align-self: end;
-}
-.tile-copy strong { color: #0f2d4d; font-size: 1.08rem; font-weight: 900; }
-.tile-copy small { color: #607086; font-size: 0.86rem; font-weight: 700; }
-
-.tile-action {
   position: relative;
   z-index: 1;
-  width: 40px;
-  height: 40px;
+  transition: transform 0.25s ease;
+
+  mat-icon {
+    font-size: 34px;
+    width: 34px;
+    height: 34px;
+    color: var(--c);
+  }
+}
+
+/* Card body */
+.sp-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px 18px;
+}
+
+.sp-card-name {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: #0f2d4d;
+  line-height: 1.3;
+}
+
+.sp-card-sub {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #607086;
+  font-weight: 600;
+}
+
+.sp-card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--c);
+}
+
+.sp-card-arrow {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--l);
   display: grid;
   place-items: center;
-  border-radius: 8px;
-  background: #0f4c81;
-  color: #fff;
+  transition: background 0.2s, color 0.2s;
+  mat-icon { font-size: 16px; width: 16px; height: 16px; color: var(--c); }
 }
-.tile-action mat-icon { width: 18px; height: 18px; font-size: 18px; }
 
 .skeleton-card {
-  min-height: 178px;
-  border-radius: 8px;
+  min-height: 220px;
+  border-radius: 18px;
   background: linear-gradient(90deg, #ffffff 25%, #eaf2fb 50%, #ffffff 75%);
   background-size: 200% 100%;
   animation: skeletonMove 1.4s linear infinite;

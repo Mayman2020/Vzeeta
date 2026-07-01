@@ -12,9 +12,13 @@ import com.vzeeta.modules.medicalrecord.entity.MedicalRecord;
 import com.vzeeta.modules.medicalrecord.repository.MedicalRecordRepository;
 import com.vzeeta.modules.notification.entity.Notification;
 import com.vzeeta.modules.notification.repository.NotificationRepository;
+import com.vzeeta.modules.patient.dto.CreatePatientAttachmentRequest;
 import com.vzeeta.modules.patient.dto.CreateReviewRequest;
+import com.vzeeta.modules.patient.dto.PatientAttachmentDto;
 import com.vzeeta.modules.patient.dto.PatientProfileDto;
 import com.vzeeta.modules.patient.entity.Patient;
+import com.vzeeta.modules.patient.entity.PatientAttachment;
+import com.vzeeta.modules.patient.repository.PatientAttachmentRepository;
 import com.vzeeta.modules.patient.repository.PatientRepository;
 import com.vzeeta.modules.prescription.dto.PrescriptionDto;
 import com.vzeeta.modules.prescription.entity.Prescription;
@@ -38,6 +42,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,6 +60,9 @@ public class PatientService {
     private final LabResultRepository labResultRepository;
     private final MedicalRecordRepository medicalRecordRepository;
     private final NotificationRepository notificationRepository;
+    private final PatientAttachmentRepository patientAttachmentRepository;
+
+    private static final Set<String> ATTACHMENT_TYPES = Set.of("XRAY", "LAB", "SCAN", "OTHER");
 
     @Transactional(readOnly = true)
     public PatientProfileDto getProfile(Long userId) {
@@ -209,11 +217,26 @@ public class PatientService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Notification> listNotifications(Long userId, String q, Pageable pageable) {
+    public Page<Notification> listNotifications(Long userId, String q, String scope, Pageable pageable) {
         String term = normalizeQ(q);
-        return term.isEmpty()
-                ? notificationRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable)
-                : notificationRepository.searchByUserId(userId, term, pageable);
+        java.time.LocalDateTime cutoff = java.time.LocalDateTime.now().minusDays(14);
+        String s = scope == null ? "recent" : scope.trim().toLowerCase();
+        boolean older = "older".equals(s);
+
+        if (!term.isEmpty()) {
+            return older
+                    ? notificationRepository.searchByUserIdBefore(userId, term, cutoff, pageable)
+                    : notificationRepository.searchByUserIdSince(userId, term, cutoff, pageable);
+        }
+        if (older) {
+            return notificationRepository.findByUserIdAndCreatedAtLessThanOrderByCreatedAtDesc(userId, cutoff, pageable);
+        }
+        return notificationRepository.findByUserIdAndCreatedAtGreaterThanEqualOrderByCreatedAtDesc(userId, cutoff, pageable);
+    }
+
+    @Transactional
+    public void markAllNotificationsRead(Long userId) {
+        notificationRepository.markAllReadForUser(userId);
     }
 
     @Transactional
@@ -222,6 +245,67 @@ public class PatientService {
         if (!n.getUserId().equals(userId)) throw AppException.forbidden("Access denied");
         n.setReadFlag(true);
         notificationRepository.save(n);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PatientAttachmentDto> listAttachments(Long userId, String type) {
+        Patient patient = requirePatient(userId);
+        List<PatientAttachment> rows = (type == null || type.isBlank())
+                ? patientAttachmentRepository.findByPatientIdOrderByUploadedAtDesc(patient.getId())
+                : patientAttachmentRepository.findByPatientIdAndTypeOrderByUploadedAtDesc(patient.getId(), normalizeAttachmentType(type));
+        return rows.stream().map(this::toAttachmentDto).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PatientAttachmentDto addAttachment(Long userId, CreatePatientAttachmentRequest request) {
+        Patient patient = requirePatient(userId);
+        String type = normalizeAttachmentType(request.getType());
+        if (request.getFileUrl() == null || request.getFileUrl().isBlank()) {
+            throw AppException.badRequest("fileUrl is required");
+        }
+        PatientAttachment attachment = PatientAttachment.builder()
+                .patientId(patient.getId())
+                .type(type)
+                .titleAr(request.getTitleAr())
+                .fileUrl(request.getFileUrl().trim())
+                .notes(request.getNotes())
+                .uploadedAt(LocalDateTime.now())
+                .build();
+        attachment = patientAttachmentRepository.save(attachment);
+        return toAttachmentDto(attachment);
+    }
+
+    @Transactional
+    public void deleteAttachment(Long userId, Long attachmentId) {
+        Patient patient = requirePatient(userId);
+        PatientAttachment attachment = patientAttachmentRepository.findById(attachmentId)
+                .orElseThrow(() -> AppException.notFound("Attachment not found"));
+        if (!attachment.getPatientId().equals(patient.getId())) {
+            throw AppException.forbidden("Access denied");
+        }
+        patientAttachmentRepository.delete(attachment);
+    }
+
+    private PatientAttachmentDto toAttachmentDto(PatientAttachment attachment) {
+        return PatientAttachmentDto.builder()
+                .id(attachment.getId())
+                .type(attachment.getType())
+                .titleAr(attachment.getTitleAr())
+                .fileUrl(attachment.getFileUrl())
+                .notes(attachment.getNotes())
+                .uploadedAt(attachment.getUploadedAt())
+                .build();
+    }
+
+    private static String normalizeAttachmentType(String type) {
+        if (type == null || type.isBlank()) {
+            throw AppException.badRequest("Attachment type is required");
+        }
+        String normalized = type.trim().toUpperCase();
+        if (!ATTACHMENT_TYPES.contains(normalized)) {
+            throw AppException.badRequest("Invalid attachment type");
+        }
+        return normalized;
     }
 
     private void updateDoctorRating(Long doctorId) {

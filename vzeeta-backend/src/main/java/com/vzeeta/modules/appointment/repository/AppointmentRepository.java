@@ -66,12 +66,21 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             WHERE a.patientId = :patientId
             AND (:q = '' OR LOWER(a.appointmentNumber) LIKE LOWER(CONCAT('%', :q, '%'))
                  OR LOWER(COALESCE(a.notes, '')) LIKE LOWER(CONCAT('%', :q, '%')))
+            AND (:filterByStatus = false OR a.status IN :statuses)
             """)
     Page<Appointment> searchByPatientId(
             @Param("patientId") Long patientId,
             @Param("q") String q,
+            @Param("filterByStatus") boolean filterByStatus,
+            @Param("statuses") List<AppointmentStatus> statuses,
             Pageable pageable);
 
     List<Appointment> findByDoctorIdAndAppointmentDateAndStatusNotIn(
             Long doctorId, LocalDate date, List<AppointmentStatus> excluded);
+
+    List<Appointment> findByAppointmentDateAndStartTimeBetweenAndStatusIn(
+            LocalDate appointmentDate,
+            LocalTime startTimeFrom,
+            LocalTime startTimeTo,
+            List<AppointmentStatus> statuses);
 }

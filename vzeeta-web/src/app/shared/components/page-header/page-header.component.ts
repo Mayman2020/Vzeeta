@@ -6,6 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { NavigationHistoryService } from '../../../core/services/navigation-history.service';
+import { I18nService } from '../../../core/i18n/i18n.service';
 
 @Component({
   selector: 'app-page-header',
@@ -14,8 +15,8 @@ import { NavigationHistoryService } from '../../../core/services/navigation-hist
   template: `
     <header class="page-header app-page-header">
       <div class="page-heading">
-        <h1 class="tb-page-title app-page-title">{{ titleKey | translate }}</h1>
-        <p class="tb-page-subtitle app-page-subtitle" *ngIf="subtitleKey">{{ subtitleKey | translate }}</p>
+        <h1 class="tb-page-title app-page-title">{{ pageTitle }}</h1>
+        <p class="tb-page-subtitle app-page-subtitle" *ngIf="pageSubtitle">{{ pageSubtitle }}</p>
       </div>
       <div class="page-actions">
         <ng-content></ng-content>
@@ -53,8 +54,17 @@ export class PageHeaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private readonly navHistory: NavigationHistoryService,
-    private readonly location: Location
+    private readonly location: Location,
+    private readonly i18n: I18nService
   ) {}
+
+  get pageTitle(): string {
+    return this.i18n.label(this.titleKey);
+  }
+
+  get pageSubtitle(): string {
+    return this.i18n.label(this.subtitleKey);
+  }
 
   ngOnInit(): void {
     this.canGoBack = this.navHistory.canGoBack();

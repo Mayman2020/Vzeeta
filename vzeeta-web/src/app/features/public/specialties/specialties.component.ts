@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DoctorService } from '../../../core/services/doctor.service';
 import { Specialty } from '../../../core/models/doctor.model';
 import { I18nService } from '../../../core/i18n/i18n.service';
+import { specialtyVisual } from '../../../core/utils/specialty-visuals.util';
 
 @Component({
   selector: 'app-specialties',
@@ -63,5 +64,9 @@ export class SpecialtiesComponent implements OnInit {
 
   updateQuery(event: Event): void {
     this.query = (event.target as HTMLInputElement).value;
+  }
+
+  meta(s: Specialty): { icon: string; color: string; light: string } {
+    return specialtyVisual(s);
   }
 }

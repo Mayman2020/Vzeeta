@@ -29,7 +29,7 @@ spring:
     encoding: UTF-8
 
 jwt:
-  secret: ${JWT_SECRET:TabeebiVzeetaSecretKey2024VeryLongAndSecureKeyForJWTSigning}
+  secret: ${JWT_SECRET}
   expiration: 86400000
   refresh-expiration: 604800000
 
@@ -39,6 +39,22 @@ user:
 
 vzeeta:
   platform-commission-percent: 10
+  mail:
+    enabled: ${MAIL_ENABLED:false}
+    from: ${MAIL_FROM:noreply@vzeeta.local}
+  password-reset:
+    base-url: ${PASSWORD_RESET_BASE_URL:}
+  reminders:
+    cron: ${REMINDER_CRON:0 0 * * * *}
+    enabled: ${REMINDERS_ENABLED:true}
+
+app:
+  cors:
+    allowed-origin-patterns: ${CORS_ALLOWED_ORIGINS:}
+
+file:
+  upload-dir: ${UPLOAD_DIR:${user.home}/.vzeeta-uploads}
+  base-url: ${FILE_BASE_URL:http://localhost:8081/api/v1}
 
 server:
   port: 8081
@@ -53,6 +69,9 @@ management:
   endpoint:
     health:
       show-details: when_authorized
+  health:
+    mail:
+      enabled: ${vzeeta.mail.enabled:false}
 
 springdoc:
   api-docs:

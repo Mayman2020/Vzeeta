@@ -25,7 +25,17 @@ user:
   default:
     password: 12345
 
+file:
+  upload-dir: ${java.io.tmpdir}/vzeeta-test-uploads
+  base-url: http://localhost:8081/api/v1
+
+app:
+  cors:
+    allowed-origin-patterns: http://localhost:[*],http://127.0.0.1:[*]
+
 vzeeta:
+  reminders:
+    enabled: false
   platform-commission-percent: 10
 
 server:

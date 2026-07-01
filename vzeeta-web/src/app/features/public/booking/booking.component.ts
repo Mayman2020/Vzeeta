@@ -12,6 +12,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TranslateModule } from '@ngx-translate/core';
 import { DoctorService } from '../../../core/services/doctor.service';
 import { AppointmentService } from '../../../core/services/appointment.service';
+import { PaymentService } from '../../../core/services/payment.service';
 import { Doctor, TimeSlot } from '../../../core/models/doctor.model';
 import { ConsultationType } from '../../../core/models/appointment.model';
 import { SnackService } from '../../../core/services/snack.service';
@@ -19,6 +20,7 @@ import { I18nService } from '../../../core/i18n/i18n.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { DateFieldComponent } from '../../../shared/components/date-field/date-field.component';
+import { switchMap } from 'rxjs';
 import { formatApiDate } from '../../../core/utils/date-value.utils';
 import { RmsDatePipe } from '../../../shared/pipes/rms-date.pipe';
 
@@ -50,6 +52,7 @@ export class BookingComponent implements OnInit {
     private readonly router: Router,
     private readonly doctorService: DoctorService,
     private readonly appointmentService: AppointmentService,
+    private readonly paymentService: PaymentService,
     private readonly snack: SnackService,
     private readonly auth: AuthService,
     readonly i18n: I18nService
@@ -108,7 +111,9 @@ export class BookingComponent implements OnInit {
       startTime: this.selectedSlot.startTime,
       consultationType: this.consultationType,
       notes: this.form.get('notes')?.value || undefined
-    }).subscribe({
+    }).pipe(
+      switchMap((appt) => this.paymentService.createPayment(appt.id, 'ONLINE'))
+    ).subscribe({
       next: () => {
         this.booking = false;
         this.snack.success(this.i18n.instant('BOOKING.SUCCESS'));

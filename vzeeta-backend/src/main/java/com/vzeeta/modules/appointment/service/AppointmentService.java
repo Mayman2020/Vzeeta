@@ -98,9 +98,26 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
-    public Page<AppointmentDto> listForPatient(Long userId, String q, Pageable pageable) {
+    public Page<AppointmentDto> listForPatient(Long userId, String q, String statusGroup, Pageable pageable) {
         Patient patient = requirePatient(userId);
-        return appointmentRepository.searchByPatientId(patient.getId(), normalizeQ(q), pageable).map(this::toDto);
+        List<AppointmentStatus> statuses = resolvePatientStatusGroup(statusGroup);
+        boolean filterByStatus = statuses != null;
+        return appointmentRepository.searchByPatientId(
+                patient.getId(),
+                normalizeQ(q),
+                filterByStatus,
+                filterByStatus ? statuses : List.of(AppointmentStatus.PENDING),
+                pageable).map(this::toDto);
+    }
+
+    private List<AppointmentStatus> resolvePatientStatusGroup(String statusGroup) {
+        if (statusGroup == null || statusGroup.isBlank()) return null;
+        return switch (statusGroup.trim().toLowerCase()) {
+            case "upcoming" -> List.of(AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED, AppointmentStatus.RESCHEDULED);
+            case "completed" -> List.of(AppointmentStatus.COMPLETED);
+            case "cancelled" -> List.of(AppointmentStatus.CANCELLED);
+            default -> null;
+        };
     }
 
     @Transactional(readOnly = true)

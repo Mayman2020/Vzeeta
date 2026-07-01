@@ -12,7 +12,7 @@
 
 .profile-hero-inner {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr;
   gap: 28px;
   align-items: flex-start;
 }
@@ -139,40 +139,6 @@
 
 .ps-divider { width: 1px; height: 32px; background: #e2e8f0; }
 
-.profile-book-panel {
-  background: #fff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  min-width: 220px;
-  box-shadow: 0 4px 16px rgba(15,23,42,0.07);
-}
-
-.book-fee { text-align: center; }
-.fee-label { font-size: 0.78rem; color: #64748b; display: block; margin-bottom: 4px; }
-.fee-value { font-size: 2rem; font-weight: 900; color: #0f172a; }
-.fee-cur { font-size: 1rem; color: #64748b; }
-
-.book-btn {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  padding: 13px;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  color: #fff; font-weight: 800; font-size: 0.95rem;
-  border-radius: 12px; text-decoration: none;
-  transition: opacity 0.15s, transform 0.15s;
-  .material-icons { font-size: 18px; }
-}
-.book-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-
-.book-note {
-  display: flex; align-items: center; justify-content: center;
-  gap: 5px; font-size: 0.78rem; color: #16a34a;
-  .material-icons { font-size: 14px; }
-}
-
 /* ── Profile Body ── */
 .profile-body {
   padding-block: 32px;
@@ -288,7 +254,6 @@
 
 @media (max-width: 900px) {
   .profile-hero-inner { grid-template-columns: auto 1fr; }
-  .profile-book-panel { display: none; }
   .profile-body { grid-template-columns: 1fr; }
   .profile-sidebar { position: static; }
 }

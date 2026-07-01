@@ -40,11 +40,10 @@
         </div>
         <div class="search-field-wrap">
           <span class="sf-icon material-icons">medical_services</span>
-          <input class="sf-input" formControlName="specialty" [placeholder]="'SEARCH.SPECIALTY' | translate">
-        </div>
-        <div class="search-field-wrap">
-          <span class="sf-icon material-icons">location_on</span>
-          <input class="sf-input" formControlName="area" [placeholder]="'SEARCH.AREA' | translate">
+          <select class="sf-input sf-select" formControlName="specialtyId">
+            <option [ngValue]="null">{{ 'SEARCH.SPECIALTY' | translate }}</option>
+            <option *ngFor="let s of specialties" [ngValue]="s.id">{{ specialtyName(s) }}</option>
+          </select>
         </div>
       </div>
       <button class="search-submit" type="submit">
@@ -100,10 +99,51 @@
       <h2>{{ 'HOME.SPECIALTIES_TITLE' | translate }}</h2>
       <p>{{ 'HOME.SPECIALTIES_DESC' | translate }}</p>
     </div>
-    <div class="specialty-grid">
-      <button type="button" *ngFor="let s of specialties" class="specialty-card" (click)="browseSpecialty(s)">
-        <span class="specialty-icon"><span class="material-icons">{{ s.icon || 'medical_services' }}</span></span>
-        <span class="specialty-name">{{ specialtyName(s) }}</span>
+    <div class="specialty-carousel" *ngIf="specialties.length">
+      <button
+        type="button"
+        class="specialty-nav specialty-nav-prev"
+        (click)="scrollSpecialties(-1)"
+        aria-label="Previous specialties">
+        <span class="material-icons">chevron_right</span>
+      </button>
+
+      <div class="specialty-window">
+        <div class="specialty-track" #specialtyTrack (mouseenter)="stopSpecialtyCarousel()" (mouseleave)="startSpecialtyCarousel()">
+          <button
+            type="button"
+            *ngFor="let s of specialties; let i = index"
+            class="specialty-card"
+            (click)="browseSpecialty(s)"
+            [style.--c]="specialtyMeta(s).color"
+            [style.--l]="specialtyMeta(s).light"
+            [style.--delay]="(i * 45) + 'ms'">
+            <span class="specialty-card-band">
+              <span class="specialty-icon">
+                <span class="material-icons">{{ specialtyMeta(s).icon }}</span>
+              </span>
+              <span class="specialty-wave" aria-hidden="true"></span>
+            </span>
+            <span class="specialty-card-body">
+              <span class="specialty-name">{{ specialtyName(s) }}</span>
+              <span class="specialty-sub">
+                {{ i18n.currentLang === 'ar' ? 'اعرض الأطباء المتخصصين' : 'View specialist doctors' }}
+              </span>
+              <span class="specialty-action">
+                {{ i18n.currentLang === 'ar' ? 'احجز الآن' : 'Book now' }}
+                <span class="specialty-action-icon material-icons">arrow_forward</span>
+              </span>
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="specialty-nav specialty-nav-next"
+        (click)="scrollSpecialties(1)"
+        aria-label="Next specialties">
+        <span class="material-icons">chevron_left</span>
       </button>
     </div>
     <div class="section-cta">

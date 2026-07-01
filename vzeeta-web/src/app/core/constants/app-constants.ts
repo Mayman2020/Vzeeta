@@ -31,6 +31,9 @@ export const AppConstants = {
     AUTH_REGISTER: '/auth/register',
     AUTH_LOGOUT: '/auth/logout',
     AUTH_REFRESH: '/auth/refresh',
+    AUTH_FORGOT_PASSWORD: '/auth/forgot-password',
+    AUTH_RESET_PASSWORD: '/auth/reset-password',
+    USERS_ME: '/users/me',
     USERS_ME_CHANGE_PASSWORD: '/users/me/change-password',
 
     DOCTORS: '/public/doctors',
@@ -44,16 +47,24 @@ export const AppConstants = {
     APPOINTMENT_BY_ID: (id: number) => `/patient/appointments/${id}`,
     MY_APPOINTMENTS: '/patient/appointments',
 
+    PATIENT_PROFILE: '/patient/profile',
+    PATIENT_ATTACHMENTS: '/patient/attachments',
     PATIENT_FAVORITES: '/patient/favorites',
     PATIENT_PRESCRIPTIONS: '/patient/prescriptions',
     PATIENT_LAB_RESULTS: '/patient/lab-results',
     PATIENT_RECORDS: '/patient/medical-records',
     PATIENT_NOTIFICATIONS: '/patient/notifications',
+    PATIENT_REVIEWS: '/patient/reviews',
+
+    PAYMENTS: '/payments',
+    PAYMENT_BY_APPOINTMENT: (appointmentId: number) => `/payments/appointment/${appointmentId}`,
 
     DOCTOR_APPOINTMENTS: '/doctor/appointments',
+    DOCTOR_PROFILE: '/doctor/profile',
     DOCTOR_EARNINGS: '/doctor/earnings',
     DOCTOR_AVAILABILITY: '/doctor/availability',
     DOCTOR_PRESCRIPTIONS: '/doctor/prescriptions',
+    DOCTOR_MEDICAL_RECORDS: '/doctor/medical-records',
 
     CLINIC_DOCTORS: '/clinic-admin/doctors',
     CLINIC_BRANCHES: '/clinic-admin/branches',
@@ -68,6 +79,7 @@ export const AppConstants = {
     ADMIN_USERS: '/super-admin/users',
     ADMIN_VERIFICATION: '/super-admin/doctors/verification',
     ADMIN_CITIES: '/super-admin/cities',
+    ADMIN_AREAS: '/super-admin/areas',
     ADMIN_PAYMENTS: '/super-admin/payments',
     ADMIN_SETTINGS: '/super-admin/settings',
     ADMIN_DASHBOARD: '/super-admin/dashboard',
@@ -82,6 +94,8 @@ export const AppConstants = {
 
     NOTIFICATIONS: '/patient/notifications',
     NOTIFICATIONS_UNREAD: '/patient/notifications',
+
+    FILES_UPLOAD: '/files/upload',
   },
 } as const;
 

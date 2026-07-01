@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, catchError, of, timeout } from 'rxjs';
+import { Observable, tap, timeout } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { AppConstants } from '../constants/app-constants';
@@ -18,6 +18,14 @@ export interface AdminClinic {
 
 export interface AdminCity {
   id: number;
+  nameAr: string;
+  nameEn?: string;
+  active: boolean;
+}
+
+export interface AdminArea {
+  id: number;
+  cityId: number;
   nameAr: string;
   nameEn?: string;
   active: boolean;
@@ -73,8 +81,10 @@ export class SuperAdminService {
   getDashboard(): Observable<AdminDashboard> {
     return this.api.get<ApiResponse<AdminDashboard>>(AppConstants.API.ADMIN_DASHBOARD).pipe(
       timeout(8000),
-      map((res) => res.data ?? { userCount: 0, clinicCount: 0, doctorCount: 0, paymentCount: 0, unverifiedDoctorCount: 0 }),
-      catchError(() => of({ userCount: 0, clinicCount: 0, doctorCount: 0, paymentCount: 0, unverifiedDoctorCount: 0 }))
+      map((res) => {
+        if (!res.data) throw new Error(res.message || 'Dashboard unavailable');
+        return res.data;
+      })
     );
   }
 
@@ -145,5 +155,15 @@ export class SuperAdminService {
     return this.api.get<ApiResponse<AdminCity[]>>(AppConstants.API.ADMIN_CITIES).pipe(
       map((res) => res.data ?? [])
     );
+  }
+
+  getAreas(cityId: number): Observable<AdminArea[]> {
+    return this.api.get<ApiResponse<AdminArea[]>>(AppConstants.API.ADMIN_AREAS, { cityId }).pipe(
+      map((res) => res.data ?? [])
+    );
+  }
+
+  saveArea(area: { cityId: number; nameAr: string; nameEn?: string }): Observable<unknown> {
+    return this.api.post<ApiResponse<unknown>>(AppConstants.API.ADMIN_AREAS, area).pipe(map((res) => res.data));
   }
 }

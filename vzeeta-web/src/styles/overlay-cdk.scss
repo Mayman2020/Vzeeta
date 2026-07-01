@@ -1,0 +1,27 @@
+/* CDK overlay layering — never override position/transform (breaks mat-select/menu placement). */
+
+.cdk-overlay-container {
+  z-index: 1200;
+}
+
+.cdk-overlay-pane:has(.mat-mdc-select-panel),
+.cdk-overlay-pane:has(.mat-mdc-autocomplete-panel),
+.cdk-overlay-pane:has(.mat-mdc-menu-panel),
+.cdk-overlay-pane:has(.tb-lang-menu),
+.cdk-overlay-pane:has(.tb-user-menu) {
+  z-index: 1200 !important;
+}
+
+.mat-mdc-select-panel,
+.cdk-overlay-container .mat-mdc-select-panel {
+  min-width: 200px;
+  max-height: 320px;
+  border-radius: 12px !important;
+  border: 1px solid var(--ds-line, var(--line)) !important;
+  box-shadow: var(--ds-shadow, 0 12px 32px rgba(15, 45, 77, 0.14)) !important;
+  background: var(--ds-surface, var(--surface)) !important;
+}
+
+.mat-mdc-select-panel .mat-mdc-option {
+  min-height: 44px;
+}

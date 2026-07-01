@@ -42,13 +42,14 @@ public class PublicController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) Long specialty,
             @RequestParam(required = false) Long area,
+            @RequestParam(required = false) Long city,
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) BigDecimal minRating,
             @RequestParam(required = false) ConsultationType consultationType,
             Pageable pageable) {
         return ResponseEntity.ok(ApiResponse.ok(
-                publicService.searchDoctors(name, specialty, area, minPrice, maxPrice, minRating, consultationType, pageable)));
+                publicService.searchDoctors(name, specialty, area, city, minPrice, maxPrice, minRating, consultationType, pageable)));
     }
 
     @GetMapping("/doctors/featured")

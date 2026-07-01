@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
 import { ThemeService } from './core/services/theme.service';
+import { BackgroundMusicService } from './core/services/background-music.service';
 
 @Component({
   selector: 'app-root',
@@ -13,5 +14,8 @@ import { ThemeService } from './core/services/theme.service';
   `
 })
 export class AppComponent {
-  constructor(private readonly _theme: ThemeService) {}
+  constructor(
+    private readonly _theme: ThemeService,
+    private readonly _music: BackgroundMusicService
+  ) {}
 }

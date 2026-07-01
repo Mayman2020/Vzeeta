@@ -36,6 +36,19 @@ export function formatDateLatin(value: Date | string | number | null | undefined
   return toLatinDigits(new Intl.DateTimeFormat(locale, DATE_DISPLAY_OPTIONS).format(date));
 }
 
+export const TIME_DISPLAY_OPTIONS: Intl.DateTimeFormatOptions = {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false
+};
+
+export function formatTimeLatin(value: Date | string | number | null | undefined, lang: string): string {
+  const date = normalize(value);
+  if (!date) return '-';
+  const locale = localeFor(lang);
+  return toLatinDigits(new Intl.DateTimeFormat(locale, TIME_DISPLAY_OPTIONS).format(date));
+}
+
 export function formatDateTimeLatin(value: Date | string | number | null | undefined, lang: string): string {
   const date = normalize(value);
   if (!date) return '-';

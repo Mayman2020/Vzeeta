@@ -1,12 +1,13 @@
-<div class="clinic-register-split">
+<div class="vzeeta-register">
 
-  <!-- Hero Left Panel -->
-  <div class="register-hero">
-    <div class="register-hero-bg"></div>
-    <div class="register-hero-overlay"></div>
+  <!-- ═══ Left Hero ═══ -->
+  <section class="register-hero">
+    <div class="hero-watermark" aria-hidden="true">
+      <app-nabd-logo [size]="480" [bg]="false"></app-nabd-logo>
+    </div>
 
     <div class="hero-toolbar">
-      <a href="/" class="hero-tool-btn">
+      <a routerLink="/" class="hero-back-btn">
         <span class="material-icons">arrow_back</span>
         {{ 'COMMON.BACK' | translate }}
       </a>
@@ -14,7 +15,7 @@
 
     <div class="hero-brand-block">
       <div class="hero-logo">
-        <img src="assets/brand/tabeebi-mark.svg" alt="" width="60" height="60">
+        <app-nabd-logo [size]="120"></app-nabd-logo>
       </div>
       <h2 class="hero-title">{{ 'AUTH.REGISTER_HERO_TITLE' | translate }}</h2>
       <p class="hero-subtitle">{{ 'AUTH.REGISTER_HERO_DESC' | translate }}</p>
@@ -44,61 +45,45 @@
       </div>
     </div>
 
-    <div class="hero-bottom">
-      <span class="hero-tagline">{{ 'APP.TAGLINE_SHORT' | translate }}</span>
+    <div class="hero-footer">
+      <span class="material-icons" style="font-size:13px">verified_user</span>
+      <span>{{ 'LOGIN.SECURE_LOGIN' | translate }}</span>
     </div>
-  </div>
+  </section>
 
-  <!-- Form Right Panel -->
-  <div class="register-form-panel">
-    <div class="form-inner">
+  <!-- ═══ Right Form ═══ -->
+  <section class="register-panel">
+    <div class="register-shell">
 
-      <!-- Mobile logo -->
       <div class="mobile-brand">
-        <span class="mobile-logo-icon"><img src="assets/brand/tabeebi-mark.svg" alt="" width="38" height="38"></span>
-        <span class="mobile-logo-text">{{ 'APP.NAME' | translate }}</span>
+        <app-nabd-logo [size]="40"></app-nabd-logo>
+        <span>{{ 'APP.NAME' | translate }}</span>
       </div>
 
-      <div class="form-header">
-        <h1 class="form-title">{{ 'AUTH.CREATE_ACCOUNT' | translate }}</h1>
-        <p class="form-subtitle">{{ 'AUTH.REGISTER_SUBTITLE' | translate }}</p>
-      </div>
-
-      <!-- Role selector -->
-      <div class="role-selector">
-        <button
-          *ngFor="let r of roles"
-          type="button"
-          class="role-btn"
-          [class.active]="form.get('role')?.value === r.value"
-          (click)="form.get('role')?.setValue(r.value)">
-          <span class="material-icons">{{ r.value === 'PATIENT' ? 'person' : 'medical_services' }}</span>
-          {{ r.labelKey | translate }}
-        </button>
+      <div class="register-header">
+        <h1 class="register-title">{{ 'AUTH.CREATE_ACCOUNT' | translate }}</h1>
+        <p class="register-subtitle">{{ 'AUTH.REGISTER_SUBTITLE' | translate }}</p>
       </div>
 
       <form [formGroup]="form" (ngSubmit)="submit()" class="register-form">
+
         <div class="form-row">
           <div class="field-group">
             <label class="field-label">{{ 'AUTH.FULL_NAME' | translate }}</label>
-            <div class="field-input-wrap">
-              <span class="field-icon material-icons">person</span>
-              <input
-                class="field-input"
-                formControlName="fullNameAr"
-                [placeholder]="'AUTH.FULL_NAME_PLACEHOLDER' | translate"
-                autocomplete="name">
+            <div class="reg-field" [class.invalid]="form.get('fullNameAr')!.invalid && form.get('fullNameAr')!.touched">
+              <span class="material-icons">person</span>
+              <input formControlName="fullNameAr"
+                     [placeholder]="'AUTH.FULL_NAME_PLACEHOLDER' | translate"
+                     autocomplete="name">
             </div>
           </div>
           <div class="field-group">
             <label class="field-label">{{ 'AUTH.FULL_NAME_EN' | translate }}</label>
-            <div class="field-input-wrap">
-              <span class="field-icon material-icons">person_outline</span>
-              <input
-                class="field-input"
-                formControlName="fullNameEn"
-                [placeholder]="'AUTH.FULL_NAME_EN_PLACEHOLDER' | translate"
-                autocomplete="given-name">
+            <div class="reg-field">
+              <span class="material-icons">person_outline</span>
+              <input formControlName="fullNameEn"
+                     [placeholder]="'AUTH.FULL_NAME_EN_PLACEHOLDER' | translate"
+                     autocomplete="given-name">
             </div>
           </div>
         </div>
@@ -106,64 +91,61 @@
         <div class="form-row">
           <div class="field-group">
             <label class="field-label">{{ 'AUTH.EMAIL' | translate }}</label>
-            <div class="field-input-wrap">
-              <span class="field-icon material-icons">email</span>
-              <input
-                class="field-input"
-                type="email"
-                formControlName="email"
-                [placeholder]="'AUTH.EMAIL_PLACEHOLDER' | translate"
-                autocomplete="email">
+            <div class="reg-field" [class.invalid]="form.get('email')!.invalid && form.get('email')!.touched">
+              <span class="material-icons">mail</span>
+              <input formControlName="email" type="email"
+                     [placeholder]="'AUTH.EMAIL_PLACEHOLDER' | translate"
+                     autocomplete="email">
             </div>
           </div>
           <div class="field-group">
             <label class="field-label">{{ 'AUTH.PHONE' | translate }}</label>
-            <div class="field-input-wrap">
-              <span class="field-icon material-icons">phone</span>
-              <input
-                class="field-input"
-                type="tel"
-                formControlName="phone"
-                [placeholder]="'AUTH.PHONE_PLACEHOLDER' | translate"
-                autocomplete="tel">
+            <div class="reg-field" [class.invalid]="form.get('phone')!.invalid && form.get('phone')!.touched">
+              <span class="material-icons">phone</span>
+              <input formControlName="phone" type="tel"
+                     [placeholder]="'AUTH.PHONE_PLACEHOLDER' | translate"
+                     autocomplete="tel">
             </div>
           </div>
         </div>
 
         <div class="field-group">
           <label class="field-label">{{ 'AUTH.PASSWORD' | translate }}</label>
-          <div class="field-input-wrap">
-            <span class="field-icon material-icons">lock</span>
-            <input
-              class="field-input"
-              [type]="showPassword ? 'text' : 'password'"
-              formControlName="password"
-              [placeholder]="'AUTH.PASSWORD_PLACEHOLDER' | translate"
-              autocomplete="new-password">
-            <button type="button" class="pw-toggle" (click)="showPassword = !showPassword">
+          <div class="reg-field" [class.invalid]="form.get('password')!.invalid && form.get('password')!.touched">
+            <span class="material-icons">lock</span>
+            <input formControlName="password"
+                   [type]="showPassword ? 'text' : 'password'"
+                   [placeholder]="'AUTH.PASSWORD_PLACEHOLDER' | translate"
+                   autocomplete="new-password">
+            <button type="button" class="field-icon-btn" (click)="showPassword = !showPassword">
               <span class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
             </button>
           </div>
         </div>
 
-        <button
-          type="submit"
-          class="register-submit"
-          [disabled]="loading || form.invalid">
-          <span *ngIf="!loading">{{ 'AUTH.CREATE_ACCOUNT' | translate }}</span>
-          <span *ngIf="loading" class="btn-loading">
-            <span class="material-icons spin">refresh</span>
-            {{ 'COMMON.LOADING' | translate }}
-          </span>
+        <div class="login-error" *ngIf="error">
+          <span class="material-icons">error_outline</span>
+          {{ error }}
+        </div>
+
+        <button type="submit" class="register-submit"
+                [disabled]="form.invalid || loading"
+                [class.is-loading]="loading">
+          <span class="login-btn-loader" *ngIf="loading" aria-hidden="true"></span>
+          <ng-container *ngIf="!loading">
+            <span>{{ 'AUTH.CREATE_ACCOUNT' | translate }}</span>
+            <span class="material-icons">{{ i18n.isRtl ? 'arrow_back' : 'arrow_forward' }}</span>
+          </ng-container>
+          <span *ngIf="loading">{{ 'COMMON.LOADING' | translate }}</span>
         </button>
+
       </form>
 
-      <div class="divider"><span>{{ 'AUTH.OR' | translate }}</span></div>
-
-      <p class="login-link">
+      <p class="auth-login">
         {{ 'AUTH.HAVE_ACCOUNT' | translate }}
         <a routerLink="/auth/login">{{ 'AUTH.LOGIN' | translate }}</a>
       </p>
     </div>
-  </div>
+  </section>
+
 </div>

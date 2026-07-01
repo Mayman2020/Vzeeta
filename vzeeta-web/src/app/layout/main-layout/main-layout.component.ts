@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { TopbarComponent } from '../topbar/topbar.component';
@@ -7,7 +8,7 @@ import { TopbarComponent } from '../topbar/topbar.component';
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, SidebarComponent, TopbarComponent],
+  imports: [RouterOutlet, SidebarComponent, TopbarComponent, CdkScrollable],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss'
 })

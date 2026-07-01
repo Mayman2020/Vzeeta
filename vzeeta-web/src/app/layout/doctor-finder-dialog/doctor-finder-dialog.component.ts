@@ -59,9 +59,12 @@ export class DoctorFinderDialogComponent implements OnInit {
     this.doctors = [];
     if (!specialtyId) return;
     this.loadingDoctors = true;
-    this.doctorService.search({ specialtyId }).subscribe((items) => {
-      this.doctors = items;
-      this.loadingDoctors = false;
+    this.doctorService.search({ specialtyId }).subscribe({
+      next: (res) => {
+        this.doctors = res.content;
+        this.loadingDoctors = false;
+      },
+      error: () => { this.loadingDoctors = false; }
     });
   }
 

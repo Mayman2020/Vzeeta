@@ -84,7 +84,7 @@ html[dir='rtl'] body {
   padding: var(--content-pad-block) var(--content-pad-inline) 48px;
   min-height: calc(100vh - var(--topbar-height, 64px));
   width: 100%;
-  max-width: var(--content-max-w);
+  max-width: none;
   margin-inline: 0;
 }
 

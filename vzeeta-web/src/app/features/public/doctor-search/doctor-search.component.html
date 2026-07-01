@@ -104,12 +104,12 @@
       <!-- Results bar -->
       <div class="results-bar" *ngIf="!loading">
         <span class="results-count">
-          <strong>{{ doctors.length }}</strong> {{ 'SEARCH.DOCTORS_FOUND' | translate }}
+          <strong>{{ totalElements }}</strong> {{ 'SEARCH.DOCTORS_FOUND' | translate }}
         </span>
         <div class="sort-row">
           <span class="sort-label">{{ 'SEARCH.SORT_BY' | translate }}:</span>
-          <button type="button" class="sort-chip active">{{ 'SEARCH.RELEVANCE' | translate }}</button>
-          <button type="button" class="sort-chip">★ {{ 'SEARCH.RATING' | translate }}</button>
+          <button type="button" class="sort-chip" [class.active]="sortBy === 'relevance'" (click)="setSort('relevance')">{{ 'SEARCH.RELEVANCE' | translate }}</button>
+          <button type="button" class="sort-chip" [class.active]="sortBy === 'rating'" (click)="setSort('rating')">★ {{ 'SEARCH.RATING' | translate }}</button>
         </div>
       </div>
 
@@ -153,7 +153,7 @@
             <h3 class="dc-name">
               <a [routerLink]="['/doctors', d.id]">{{ doctorName(d) }}</a>
             </h3>
-            <p class="dc-specialty">{{ d.titleAr || d.specialty }}</p>
+            <p class="dc-specialty">{{ doctorTitle(d) }}</p>
 
             <div class="dc-meta">
               <span class="meta-item" *ngIf="d.clinicName">
@@ -198,18 +198,22 @@
           </div>
         </div>
 
+        <app-table-pager *ngIf="doctors.length"
+          [length]="totalElements"
+          [pageSize]="pageSize"
+          [pageIndex]="pageIndex"
+          (pageIndexChange)="onPageChange($event)"/>
+
         <!-- Empty state -->
-        <div class="empty-state" *ngIf="!doctors.length">
-          <div class="es-icon">
-            <span class="material-icons">search_off</span>
-          </div>
-          <h3>{{ 'SEARCH.NO_RESULTS' | translate }}</h3>
-          <p>{{ 'SEARCH.TRY_DIFFERENT' | translate }}</p>
-          <button type="button" class="apply-btn" (click)="clearFilters()">
-            <span class="material-icons">refresh</span>
-            {{ 'COMMON.CLEAR' | translate }}
-          </button>
-        </div>
+        <app-empty-state *ngIf="!doctors.length && !loadError"
+          icon="search_off"
+          titleKey="SEARCH.NO_RESULTS"
+          subtitleKey="SEARCH.TRY_DIFFERENT">
+        </app-empty-state>
+        <app-empty-state *ngIf="loadError"
+          icon="cloud_off"
+          titleKey="ERRORS.NETWORK_ERROR">
+        </app-empty-state>
       </div>
     </div>
   </div>

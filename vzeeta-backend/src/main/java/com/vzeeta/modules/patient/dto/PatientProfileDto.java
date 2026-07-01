@@ -1,5 +1,6 @@
 package com.vzeeta.modules.patient.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ public class PatientProfileDto {
     private String fullNameAr;
     private String fullNameEn;
     private String phone;
+    @JsonAlias("profileImageUrl")
     private String profileImage;
     private LocalDate dateOfBirth;
     private String gender;

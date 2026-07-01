@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { AppConstants } from '../constants/app-constants';
 import { Doctor, DoctorSearchParams, LookupItem, Specialty, TimeSlot } from '../models/doctor.model';
 import { ApiResponse } from '../models/user.model';
+import { DEFAULT_TABLE_PAGE_SIZE } from '../utils/pagination.util';
+import { PagedResult, parsePageResponse } from '../utils/api-page.util';
 
 @Injectable({ providedIn: 'root' })
 export class DoctorService {
   constructor(private readonly api: ApiService) {}
 
-  search(params: DoctorSearchParams): Observable<Doctor[]> {
-    const query: Record<string, string | number> = { size: 50 };
+  search(params: DoctorSearchParams, page = 0, size = DEFAULT_TABLE_PAGE_SIZE): Observable<PagedResult<Doctor>> {
+    const query: Record<string, string | number> = { page, size };
     if (params.name) query['name'] = params.name;
     if (params.specialtyId) query['specialty'] = params.specialtyId;
     if (params.areaId) query['area'] = params.areaId;
+    if (params.cityId) query['city'] = params.cityId;
     if (params.minPrice != null) query['minPrice'] = params.minPrice;
     if (params.maxPrice != null) query['maxPrice'] = params.maxPrice;
     if (params.minRating) query['minRating'] = params.minRating;
@@ -22,44 +25,44 @@ export class DoctorService {
       query['consultationType'] = params.consultationType;
     }
 
-    return this.api.get<ApiResponse<{ content?: unknown[] }>>(AppConstants.API.DOCTORS, query).pipe(
-      map((res) => (res.data?.content ?? []).map((d) => this.mapDoctor(d as Record<string, unknown>))),
-      catchError(() => of([]))
+    return this.api.get<ApiResponse<unknown>>(AppConstants.API.DOCTORS, query).pipe(
+      map((res) => {
+        const parsed = parsePageResponse<Record<string, unknown>>(res.data);
+        return {
+          ...parsed,
+          content: parsed.content.map((d) => this.mapDoctor(d))
+        };
+      })
     );
   }
 
   getById(id: number): Observable<Doctor | null> {
     return this.api.get<ApiResponse<Record<string, unknown>>>(AppConstants.API.DOCTOR_BY_ID(id)).pipe(
-      map((res) => (res.data ? this.mapDoctor(res.data, true) : null)),
-      catchError(() => of(null))
+      map((res) => (res.data ? this.mapDoctor(res.data, true) : null))
     );
   }
 
   getSpecialties(): Observable<Specialty[]> {
     return this.api.get<ApiResponse<Specialty[]>>(AppConstants.API.SPECIALTIES).pipe(
-      map((res) => res.data ?? []),
-      catchError(() => of([]))
+      map((res) => res.data ?? [])
     );
   }
 
   getCities(): Observable<LookupItem[]> {
     return this.api.get<ApiResponse<LookupItem[]>>(AppConstants.API.CITIES).pipe(
-      map((res) => res.data ?? []),
-      catchError(() => of([]))
+      map((res) => res.data ?? [])
     );
   }
 
   getAreas(cityId: number): Observable<LookupItem[]> {
     return this.api.get<ApiResponse<LookupItem[]>>(AppConstants.API.AREAS, { cityId }).pipe(
-      map((res) => res.data ?? []),
-      catchError(() => of([]))
+      map((res) => res.data ?? [])
     );
   }
 
   getTimeSlots(doctorId: number, date: string, consultationType = 'IN_CLINIC'): Observable<TimeSlot[]> {
     return this.api.get<ApiResponse<Record<string, unknown>[]>>(AppConstants.API.DOCTOR_SLOTS(doctorId), { date, consultationType }).pipe(
-      map((res) => (res.data ?? []).map((s, i) => this.mapSlot(s, i))),
-      catchError(() => of([]))
+      map((res) => (res.data ?? []).map((s, i) => this.mapSlot(s, i)))
     );
   }
 
@@ -77,6 +80,7 @@ export class DoctorService {
       fullNameAr: raw['fullNameAr'] as string,
       fullNameEn: raw['fullNameEn'] as string,
       titleAr: raw['titleAr'] as string,
+      titleEn: raw['titleEn'] as string,
       specialty: specialtyNames[0] ?? '',
       specialtyNames,
       specialtyIds: detail ? (raw['specialtyIds'] as number[]) : undefined,

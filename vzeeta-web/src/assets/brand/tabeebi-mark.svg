@@ -1,18 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-label="NABD mark">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" aria-label="NABD mark">
+  <defs>
+    <linearGradient id="bg" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1251a3"/>
+      <stop offset="1" stop-color="#061e40"/>
+    </linearGradient>
+    <filter id="pulseGlow" x="7" y="19" width="51" height="29" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#18C2C0" flood-opacity="0.9"/>
+    </filter>
+  </defs>
   <style>
     .heart {
       transform-box: fill-box;
       transform-origin: center;
       animation: heartBeat 2.2s ease-in-out infinite;
     }
-    .pulse-base {
-      opacity: .38;
-    }
+    .pulse-base { opacity: 0.35; }
     .pulse-live {
-      stroke-dasharray: 13 72;
+      stroke-dasharray: 14 72;
       stroke-dashoffset: 84;
-      filter: url(#pulseGlow);
-      animation: pulseTrace 2.2s cubic-bezier(.4, 0, .2, 1) infinite;
+      animation: pulseTrace 2.2s cubic-bezier(.4,0,.2,1) infinite;
     }
     .spark {
       transform-box: fill-box;
@@ -20,37 +26,28 @@
       animation: sparkBeat 2.2s ease-in-out infinite;
     }
     @keyframes pulseTrace {
-      0% { stroke-dashoffset: 84; opacity: .18; }
-      12% { opacity: 1; }
-      46% { stroke-dashoffset: 0; opacity: 1; }
-      70% { stroke-dashoffset: -18; opacity: .2; }
-      100% { stroke-dashoffset: -18; opacity: .18; }
+      0%   { stroke-dashoffset: 84; opacity: .15; }
+      12%  { opacity: 1; }
+      46%  { stroke-dashoffset: 0; opacity: 1; }
+      70%  { stroke-dashoffset: -20; opacity: .15; }
+      100% { stroke-dashoffset: -20; opacity: .15; }
     }
     @keyframes heartBeat {
-      0%, 18%, 44%, 100% { transform: scale(1); }
-      24% { transform: scale(1.045); }
-      31% { transform: scale(.985); }
-      37% { transform: scale(1.025); }
+      0%,18%,44%,100% { transform: scale(1); }
+      24% { transform: scale(1.05); }
+      31% { transform: scale(.98); }
+      37% { transform: scale(1.03); }
     }
     @keyframes sparkBeat {
-      0%, 18%, 44%, 100% { transform: scale(1); opacity: .88; }
-      24% { transform: scale(1.18); opacity: 1; }
-      31% { transform: scale(.95); }
-      37% { transform: scale(1.08); }
+      0%,18%,44%,100% { transform: scale(1); opacity: .85; }
+      24% { transform: scale(1.2); opacity: 1; }
+      31% { transform: scale(.93); }
+      37% { transform: scale(1.1); }
     }
   </style>
   <rect width="64" height="64" rx="16" fill="url(#bg)"/>
-  <path class="heart" d="M17 24.5c0-5 4-9 9-9 3.1 0 5.9 1.6 7.5 4 1.6-2.4 4.4-4 7.5-4 5 0 9 4 9 9 0 11.4-16.5 22.7-16.5 22.7S17 35.9 17 24.5Z" fill="#fff"/>
-  <path class="pulse-base" d="M15 34h8l3.5-7 5 13 4.2-9h13.8" stroke="#18C2C0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-  <path class="pulse-live" d="M15 34h8l3.5-7 5 13 4.2-9h13.8" stroke="#18C2C0" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle class="spark" cx="48" cy="19" r="5" fill="#18C2C0"/>
-  <defs>
-    <linearGradient id="bg" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0F4C81"/>
-      <stop offset="1" stop-color="#06213A"/>
-    </linearGradient>
-    <filter id="pulseGlow" x="7" y="19" width="51" height="29" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-      <feDropShadow dx="0" dy="0" stdDeviation="1.7" flood-color="#18C2C0" flood-opacity=".85"/>
-    </filter>
-  </defs>
+  <path class="heart" d="M17 24.5c0-5 4-9 9-9 3.1 0 5.9 1.6 7.5 4 1.6-2.4 4.4-4 7.5-4 5 0 9 4 9 9 0 11.4-16.5 22.7-16.5 22.7S17 35.9 17 24.5Z" fill="#ffffff"/>
+  <path class="pulse-base" d="M14 34h9l3.5-7 5 13 4-9h14" stroke="#18C2C0" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path class="pulse-live" d="M14 34h9l3.5-7 5 13 4-9h14" stroke="#18C2C0" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" filter="url(#pulseGlow)"/>
+  <circle class="spark" cx="49" cy="19" r="4.5" fill="#18C2C0"/>
 </svg>

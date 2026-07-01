@@ -84,6 +84,11 @@ public class SuperAdminService {
     }
 
     @Transactional(readOnly = true)
+    public List<Area> listAreas(Long cityId) {
+        return areaRepository.findByCityIdAndActiveTrueOrderByNameAr(cityId);
+    }
+
+    @Transactional(readOnly = true)
     public List<City> listCities() {
         return cityRepository.findByActiveTrueOrderByNameAr();
     }

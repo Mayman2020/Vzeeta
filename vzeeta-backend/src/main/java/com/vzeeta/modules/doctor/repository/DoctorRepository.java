@@ -20,11 +20,13 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
             JOIN DoctorSpecialty ds ON ds.doctorId = d.id
             JOIN DoctorBranch db ON db.doctorId = d.id
             JOIN ClinicBranch cb ON cb.id = db.branchId
+            JOIN Area ar ON ar.id = cb.areaId
             WHERE d.verified = true
             AND (:name = '' OR LOWER(d.user.fullNameAr) LIKE LOWER(CONCAT('%', :name, '%'))
                  OR LOWER(d.user.fullNameEn) LIKE LOWER(CONCAT('%', :name, '%')))
             AND (:specialtyId IS NULL OR ds.specialtyId = :specialtyId)
             AND (:areaId IS NULL OR cb.areaId = :areaId)
+            AND (:cityId IS NULL OR ar.cityId = :cityId)
             AND (:minPrice IS NULL OR d.consultationFee >= :minPrice)
             AND (:maxPrice IS NULL OR d.consultationFee <= :maxPrice)
             AND (:minRating IS NULL OR d.ratingAvg >= :minRating)
@@ -34,6 +36,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
             @Param("name") String name,
             @Param("specialtyId") Long specialtyId,
             @Param("areaId") Long areaId,
+            @Param("cityId") Long cityId,
             @Param("minPrice") BigDecimal minPrice,
             @Param("maxPrice") BigDecimal maxPrice,
             @Param("minRating") BigDecimal minRating,

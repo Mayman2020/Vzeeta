@@ -4,7 +4,7 @@
       <span class="material-icons">{{ sidebarCollapsed ? 'menu_open' : 'menu' }}</span>
     </button>
     <a [routerLink]="dashboardRoute" class="topbar-brand" (click)="onMenuNav()" [attr.aria-label]="'NAV.DASHBOARD' | translate">
-      <img src="assets/brand/tabeebi-mark.svg" alt="" class="topbar-brand-logo" />
+      <app-nabd-logo [size]="34" class="topbar-brand-logo"></app-nabd-logo>
       <span class="topbar-brand-name">{{ 'APP.NAME' | translate }}</span>
     </a>
     <div class="topbar-search">
@@ -12,32 +12,73 @@
       <input type="search" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()" [placeholder]="'TOPBAR.SEARCH_PLACEHOLDER' | translate" />
     </div>
   </div>
+
   <div class="topbar-end">
-    <button class="tb-action-btn" type="button" [matMenuTriggerFor]="langMenu">
-      <img class="flag" [src]="activeLanguage.flagUrl" alt="">
-      <span class="lang-name">{{ activeLanguage.nativeLabel }}</span>
+    <button
+      class="tb-action-btn"
+      type="button"
+      [matMenuTriggerFor]="langMenu"
+      [matTooltip]="'TOPBAR.LANGUAGE' | translate">
+      <img class="flag" [src]="activeLanguage.flagUrl" [attr.alt]="languageLabel(activeLanguage)">
+      <span class="lang-name">{{ languageNativeLabel(activeLanguage) }}</span>
     </button>
-    <mat-menu #langMenu="matMenu">
-      <button mat-menu-item *ngFor="let lang of languages" (click)="switchLang(lang)">
-        <img class="flag" [src]="lang.flagUrl" alt="">
-        <span>{{ lang.nativeLabel }}</span>
+    <mat-menu #langMenu="matMenu" class="tb-lang-menu">
+      <button mat-menu-item type="button" *ngFor="let lang of languages" (click)="switchLang(lang)">
+        <img class="flag" [src]="lang.flagUrl" [attr.alt]="languageLabel(lang)">
+        <span>{{ languageNativeLabel(lang) }}</span>
       </button>
     </mat-menu>
+
     <button class="tb-action-btn tb-theme-btn" type="button" (click)="toggleTheme()" [matTooltip]="themeTooltipKey | translate">
       <span class="material-icons">{{ theme.isDark ? 'light_mode' : 'dark_mode' }}</span>
     </button>
-    <a class="tb-action-btn" [routerLink]="notificationsRoute"
-       [matBadge]="unreadCount > 0 ? unreadCount : null" matBadgeColor="warn" matBadgeSize="small"
-       [matTooltip]="'TOPBAR.NOTIFICATIONS' | translate">
+
+    <app-sound-toggle></app-sound-toggle>
+
+    <button
+      *ngIf="showNotifications"
+      type="button"
+      class="tb-action-btn tb-notify-btn"
+      (click)="openNotificationsInbox()"
+      [matTooltip]="'NOTIFICATIONS.TITLE' | translate"
+      [attr.aria-label]="'NOTIFICATIONS.TITLE' | translate">
       <span class="material-icons">notifications</span>
-    </a>
-    <button class="tb-user-btn" type="button" [matMenuTriggerFor]="userMenu">
-      <div class="tb-avatar">{{ currentUser?.initials || ('COMMON.USER_INITIAL' | translate) }}</div>
-      <span class="tb-user-name">{{ currentUserDisplayName }}</span>
+      <span *ngIf="unreadCount > 0" class="tb-notify-count">{{ unreadCount }}</span>
     </button>
-    <mat-menu #userMenu="matMenu">
-      <a mat-menu-item [routerLink]="profileRoute"><span class="material-icons">person</span>{{ 'NAV.PROFILE' | translate }}</a>
-      <button mat-menu-item type="button" (click)="logout()"><span class="material-icons">logout</span>{{ 'AUTH.LOGOUT' | translate }}</button>
+
+    <button
+      class="tb-user-btn"
+      type="button"
+      #userMenuTrigger="matMenuTrigger"
+      [matMenuTriggerFor]="userMenu"
+      [attr.aria-expanded]="userMenuTrigger.menuOpen"
+      [attr.aria-haspopup]="true">
+      <div class="tb-avatar">{{ currentUser?.initials || ('COMMON.USER_INITIAL' | translate) }}</div>
+      <span class="tb-user-copy">
+        <span class="tb-user-name">{{ currentUserDisplayName || '-' }}</span>
+        <span class="tb-user-role" *ngIf="roleKey">{{ roleKey | translate }}</span>
+      </span>
+    </button>
+    <mat-menu #userMenu="matMenu" class="tb-user-menu">
+      <ng-template matMenuContent>
+        <div class="user-menu-header">
+          <div class="user-menu-avatar">{{ currentUser?.initials || ('COMMON.USER_INITIAL' | translate) }}</div>
+          <div class="user-menu-copy">
+            <strong>{{ currentUserDisplayName || '-' }}</strong>
+            <span class="user-menu-role" *ngIf="roleKey">{{ roleKey | translate }}</span>
+            <span class="user-menu-email">{{ currentUser?.email }}</span>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item type="button" [routerLink]="profileRoute()" (click)="userMenuTrigger.closeMenu()">
+          <span class="material-icons">person</span>
+          {{ 'NAV.PROFILE' | translate }}
+        </button>
+        <button mat-menu-item type="button" (click)="logout()">
+          <span class="material-icons">logout</span>
+          {{ 'AUTH.LOGOUT' | translate }}
+        </button>
+      </ng-template>
     </mat-menu>
   </div>
 </header>

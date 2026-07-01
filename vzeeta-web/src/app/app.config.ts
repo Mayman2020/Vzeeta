@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_SELECT_CONFIG } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DateFormatAdapter } from './core/adapters/date-format.adapter';
 import { DD_MM_YYYY_DATE_FORMATS } from './core/constants/date-formats';
@@ -13,6 +14,7 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { languageInterceptor } from './core/interceptors/language.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { I18nService } from './core/i18n/i18n.service';
 import { PermissionService } from './core/services/permission.service';
@@ -47,7 +49,14 @@ export const appConfig: ApplicationConfig = {
     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
     { provide: DateAdapter, useClass: DateFormatAdapter },
     { provide: MAT_DATE_FORMATS, useValue: DD_MM_YYYY_DATE_FORMATS },
-    provideHttpClient(withInterceptors([loadingInterceptor, authInterceptor, errorInterceptor])),
+    {
+      provide: MAT_SELECT_CONFIG,
+      useValue: {
+        disableOptionCentering: true,
+        overlayPanelClass: 'app-select-panel'
+      }
+    },
+    provideHttpClient(withInterceptors([loadingInterceptor, languageInterceptor, authInterceptor, errorInterceptor])),
     provideTranslateHttpLoader({ prefix: '/assets/i18n/', suffix: '.json' }),
     importProvidersFrom(
       MatSnackBarModule,

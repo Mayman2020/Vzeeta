@@ -9,9 +9,22 @@ springdoc:
   swagger-ui:
     enabled: false
 
+app:
+  cors:
+    allowed-origin-patterns: ${CORS_ALLOWED_ORIGINS}
+
 jwt:
   secret: ${JWT_SECRET}
 
 user:
   default:
     password: ${USER_DEFAULT_PASSWORD}
+
+vzeeta:
+  mail:
+    enabled: ${MAIL_ENABLED:true}
+    from: ${MAIL_FROM}
+  password-reset:
+    base-url: ${PASSWORD_RESET_BASE_URL}
+  reminders:
+    enabled: ${REMINDERS_ENABLED:true}

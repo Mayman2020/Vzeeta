@@ -2,7 +2,7 @@
   <app-sidebar [collapsed]="sidebarCollapsed" (collapseToggle)="toggleSidebar()"></app-sidebar>
   <div class="main-area">
     <app-topbar [sidebarCollapsed]="sidebarCollapsed" (sidebarToggle)="toggleSidebar()"></app-topbar>
-    <main class="main-content">
+    <main class="main-content" cdkScrollable>
       <router-outlet></router-outlet>
     </main>
   </div>

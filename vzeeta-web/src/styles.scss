@@ -10,8 +10,14 @@
 @import './styles/pages/content-pages';
 @import './styles/pages/dashboard.page';
 @import './styles/admin.filters';
+@import './styles/overlay-cdk';
 @import './styles/components/form-dialog';
 @import './styles/components/date-field';
+@import './styles/pages/patient-profile';
+@import './styles/pages/profile.page';
+@import './styles/pages/notifications.page';
+@import './styles/pages/lookups.page';
+@import './styles/design-system';
 
 /* Arabic UI: always show Western digits (0–9) in numbers, counters, and tables */
 html[lang^='ar'],
@@ -218,31 +224,31 @@ html.dark-theme,
 
 html.dark-theme,
 .cdk-overlay-container.dark-theme {
-  --mdc-outlined-text-field-input-text-color: #e6ecf3;
-  --mdc-outlined-text-field-label-text-color: rgba(200, 220, 240, 0.72);
-  --mdc-outlined-text-field-hover-label-text-color: rgba(200, 220, 240, 0.85);
-  --mdc-outlined-text-field-focus-label-text-color: var(--amber-400);
-  --mdc-outlined-text-field-outline-color: #253140;
-  --mdc-outlined-text-field-hover-outline-color: #3a4a5c;
-  --mdc-outlined-text-field-focus-outline-color: var(--amber-400);
-  --mdc-outlined-text-field-caret-color: var(--amber-400);
-  --mdc-filled-text-field-container-color: #101720;
-  --mdc-filled-text-field-input-text-color: #e6ecf3;
-  --mat-select-panel-background-color: #141b23;
-  --mat-select-enabled-trigger-text-color: #e6ecf3;
-  --mat-autocomplete-background-color: #141b23;
+  --mdc-outlined-text-field-input-text-color: var(--ds-text, #f2f6fa);
+  --mdc-outlined-text-field-label-text-color: var(--ds-muted, #a8c4d8);
+  --mdc-outlined-text-field-hover-label-text-color: var(--ds-text, #f2f6fa);
+  --mdc-outlined-text-field-focus-label-text-color: var(--ds-accent-2, #16b3c6);
+  --mdc-outlined-text-field-outline-color: var(--ds-line, rgba(168, 231, 230, 0.14));
+  --mdc-outlined-text-field-hover-outline-color: var(--ds-line-strong, rgba(168, 231, 230, 0.22));
+  --mdc-outlined-text-field-focus-outline-color: var(--ds-accent-2, #16b3c6);
+  --mdc-outlined-text-field-caret-color: var(--ds-accent-2, #16b3c6);
+  --mdc-filled-text-field-container-color: var(--ds-surface-2, #123a5c);
+  --mdc-filled-text-field-input-text-color: var(--ds-text, #f2f6fa);
+  --mat-select-panel-background-color: var(--ds-surface, #0f2d4d);
+  --mat-select-enabled-trigger-text-color: var(--ds-text, #f2f6fa);
+  --mat-autocomplete-background-color: var(--ds-surface, #0f2d4d);
   --mat-app-background-color: var(--bg-page);
   --mat-app-text-color: var(--text-main);
 }
 
 html.dark-theme .mat-mdc-text-field-wrapper {
-  background-color: #101720 !important;
+  background-color: var(--ds-surface-2, #123a5c) !important;
 }
 
 html.dark-theme input.mat-mdc-input-element:-webkit-autofill,
 html.dark-theme input.mat-mdc-input-element:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px #101720 inset !important;
-  -webkit-text-fill-color: #e6ecf3 !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--ds-surface-2, #123a5c) inset !important;
+  -webkit-text-fill-color: var(--ds-text, #f2f6fa) !important;
 }
 
 .dark-theme .mat-mdc-menu-panel {
@@ -256,6 +262,107 @@ html.dark-theme input.mat-mdc-input-element:-webkit-autofill:focus {
 
 .dark-theme .mat-mdc-menu-item:hover {
   background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Topbar dropdown menus — Property parity */
+.mat-mdc-menu-panel.tb-lang-menu,
+.mat-mdc-menu-panel.tb-user-menu {
+  border-radius: 14px !important;
+  border: 1px solid var(--ds-line, var(--line)) !important;
+  box-shadow: var(--ds-shadow, 0 12px 32px rgba(15, 45, 77, 0.12)) !important;
+  background: var(--ds-surface, var(--surface)) !important;
+  min-width: 200px;
+  overflow: hidden;
+}
+
+.mat-mdc-menu-panel.tb-user-menu {
+  min-width: 280px;
+}
+
+.mat-mdc-menu-panel.tb-lang-menu .mat-mdc-menu-item,
+.mat-mdc-menu-panel.tb-user-menu .mat-mdc-menu-item {
+  min-height: 44px !important;
+  font-weight: 600 !important;
+}
+
+.mat-mdc-menu-panel.tb-lang-menu .mat-mdc-menu-item .flag {
+  margin-inline-end: 10px;
+}
+
+.mat-mdc-menu-panel.tb-user-menu .mat-mdc-menu-item .material-icons {
+  margin-inline-end: 10px;
+  font-size: 18px;
+  opacity: 0.85;
+}
+
+.cdk-overlay-pane:has(.tb-lang-menu),
+.cdk-overlay-pane:has(.tb-user-menu) {
+  pointer-events: auto;
+  max-width: calc(100vw - 16px);
+}
+
+.mat-mdc-menu-panel.tb-user-menu .user-menu-header {
+  min-width: 260px;
+  padding: 18px 18px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background:
+    linear-gradient(135deg, rgba(22, 179, 198, 0.08), rgba(15, 45, 77, 0.04)),
+    var(--ds-surface, var(--surface));
+}
+
+.mat-mdc-menu-panel.tb-user-menu .user-menu-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--ds-primary, #0f2d4d), var(--ds-accent, #16b3c6));
+  color: #fff;
+  font-size: 1.12rem;
+  font-weight: 800;
+  box-shadow: 0 0 0 3px var(--surface, #fff), 0 10px 22px rgba(15, 45, 77, 0.18);
+}
+
+.mat-mdc-menu-panel.tb-user-menu .user-menu-copy {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.mat-mdc-menu-panel.tb-user-menu .user-menu-copy strong {
+  color: var(--ds-text, var(--text-main));
+  font-size: 1rem;
+  line-height: 1.2;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mat-mdc-menu-panel.tb-user-menu .user-menu-role {
+  width: fit-content;
+  max-width: 170px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--ds-primary, #0f2d4d);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mat-mdc-menu-panel.tb-user-menu .user-menu-email {
+  color: var(--ds-muted, var(--text-muted));
+  font-size: 0.76rem;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 /* Topbar notification menu: multi-line rows without forced min-height scrollbar glitch */
@@ -544,7 +651,8 @@ app-public-layout a:hover .material-icons {
 .app-page {
   padding: var(--content-pad-block) var(--content-pad-inline) 48px;
   min-height: calc(100vh - 64px);
-  max-width: var(--content-max-w);
+  width: 100%;
+  max-width: none;
   margin-inline: 0;
   text-align: start;
 }
@@ -913,17 +1021,20 @@ app-public-layout a:hover .material-icons {
 }
 
 .estate-table-toolbar {
-  padding: 14px;
+  padding: 14px 16px;
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   border-bottom: 1px solid var(--line-2);
+  background: var(--paper-2, #f7fbff);
 }
 
 .estate-table-toolbar .estate-search-inline {
-  max-width: none;
-  width: 100%;
+  max-width: 420px;
+  flex: 1 1 240px;
+  min-width: 200px;
 }
 
 .estate-table-toolbar .filter-divider {
@@ -2403,13 +2514,62 @@ app-public-layout .mat-mdc-raised-button:not(:disabled) {
   color: #fff !important;
 }
 
+/* ── Doctor Finder Dialog — centered + blur backdrop ── */
+/* Center the finder dialog pane */
+.doctor-finder-panel.cdk-overlay-pane {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  max-height: calc(100vh - 48px) !important;
+  overflow: auto !important;
+  z-index: 99999 !important;
+}
+
+.cdk-overlay-backdrop.finder-blur-backdrop,
+.finder-blur-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  background: rgba(6, 33, 58, 0.96) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  z-index: 99998 !important;
+}
+
+.cdk-overlay-backdrop.finder-blur-backdrop.cdk-overlay-backdrop-showing {
+  opacity: 1 !important;
+}
+
+.doctor-finder-panel {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
 .doctor-finder-panel .mat-mdc-dialog-container {
-  --mdc-dialog-container-shape: 8px;
+  --mdc-dialog-container-shape: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .doctor-finder-panel .mat-mdc-dialog-surface {
-  border-radius: 8px !important;
+  border-radius: 18px !important;
   overflow: hidden !important;
   background: transparent !important;
-  box-shadow: 0 26px 80px rgba(6, 33, 58, 0.28) !important;
+  box-shadow: 0 32px 80px rgba(6, 33, 58, 0.38) !important;
 }
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(2px);
+}
+
+@import './styles/vzeeta-estate-refinement';
