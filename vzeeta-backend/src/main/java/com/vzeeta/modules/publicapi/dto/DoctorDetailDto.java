@@ -27,4 +27,8 @@ public class DoctorDetailDto {
     private List<Long> specialtyIds;
     private List<Long> branchIds;
     private Long clinicId;
+    private String clinicNameAr;
+    private String clinicNameEn;
+    private BigDecimal clinicRatingAvg;
+    private Integer clinicRatingCount;
 }

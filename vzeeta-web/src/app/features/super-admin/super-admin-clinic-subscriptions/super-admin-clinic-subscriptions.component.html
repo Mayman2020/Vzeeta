@@ -1,0 +1,68 @@
+    <div class="app-page">
+      <app-page-header titleKey="SUBSCRIPTION.CLINIC_SUBSCRIPTIONS_TITLE" subtitleKey="SUBSCRIPTION.CLINIC_SUBSCRIPTIONS_SUBTITLE"></app-page-header>
+      <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+      <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="workspace_premium" titleKey="COMMON.NO_DATA"></app-empty-state>
+      <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
+        <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
+        <section class="app-card table-card">
+          <div class="estate-table-toolbar directory-toolbar">
+            <mat-form-field appearance="outline" class="filter-field">
+              <mat-label>{{ 'COMMON.STATUS' | translate }}</mat-label>
+              <mat-select [(ngModel)]="statusFilter" (selectionChange)="onStatusChange()">
+                <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
+                <mat-option *ngFor="let s of statuses" [value]="s">{{ ('SUBSCRIPTION.STATUS_' + s) | translate }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
+            <th class="table-index-col">#</th>
+            <th>{{ 'NAV.CLINICS' | translate }}</th>
+            <th>{{ 'COMMON.STATUS' | translate }}</th>
+            <th>{{ 'SUBSCRIPTION.PAYMENT_METHOD' | translate }}</th>
+            <th>{{ 'SUBSCRIPTION.DOCTORS' | translate }}</th>
+            <th>{{ 'SUBSCRIPTION.AMOUNT' | translate }}</th>
+            <th>{{ 'SUBSCRIPTION.RECEIPT' | translate }}</th>
+            <th>{{ 'SUBSCRIPTION.END_DATE' | translate }}</th>
+            <th class="actions-col">{{ 'COMMON.ACTIONS' | translate }}</th>
+          </tr></thead><tbody>
+            <tr *ngFor="let row of rows; let i = index">
+              <td class="table-index-col">{{ pageIndex * pageSize + i + 1 }}</td>
+              <td>{{ clinicName(row) }}</td>
+              <td>
+                <span class="status-chip" [ngClass]="row.status === 'ACTIVE' ? 'chip-success' : (row.status === 'PENDING_APPROVAL' ? 'chip-warning' : 'chip-danger')">
+                  {{ ('SUBSCRIPTION.STATUS_' + row.status) | translate }}
+                </span>
+              </td>
+              <td>{{ ('SUBSCRIPTION.METHOD_' + row.paymentMethod) | translate }}</td>
+              <td>{{ row.doctorCount ?? '-' }}</td>
+              <td>{{ row.amount | number:'1.2-2' }} {{ 'COMMON.OMR' | translate }}</td>
+              <td>
+                <a *ngIf="row.receiptUrl" [href]="row.receiptUrl" target="_blank" rel="noopener">{{ 'SUBSCRIPTION.VIEW_RECEIPT' | translate }}</a>
+                <span *ngIf="!row.receiptUrl">-</span>
+              </td>
+              <td>{{ row.endDate ? (row.endDate | rmsDate) : '-' }}</td>
+              <td class="actions-col">
+                <div class="app-row-actions">
+                  <button *ngIf="row.status === 'PENDING_APPROVAL'" class="app-icon-btn success" type="button"
+                          [disabled]="busy[row.id]" (click)="approve(row)" [matTooltip]="'SUBSCRIPTION.APPROVE' | translate">
+                    <mat-icon>check_circle</mat-icon>
+                  </button>
+                  <button *ngIf="row.status === 'PENDING_APPROVAL'" class="app-icon-btn danger" type="button"
+                          [disabled]="busy[row.id]" (click)="reject(row)" [matTooltip]="'SUBSCRIPTION.REJECT' | translate">
+                    <mat-icon>block</mat-icon>
+                  </button>
+                  <button class="app-icon-btn info" type="button" (click)="grantTrial(row)" [matTooltip]="'SUBSCRIPTION.GRANT_TRIAL' | translate">
+                    <mat-icon>redeem</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="rows.length === 0">
+              <td colspan="8" class="empty-row">{{ 'COMMON.NO_DATA' | translate }}</td>
+            </tr>
+          </tbody></table></div>
+          <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
+        </section>
+      </div>
+    </div>

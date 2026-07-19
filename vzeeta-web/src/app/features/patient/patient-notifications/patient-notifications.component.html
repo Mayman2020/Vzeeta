@@ -1,0 +1,64 @@
+    <div class="app-page notifications-page">
+      <app-page-header
+        titleKey="NOTIFICATIONS.TITLE"
+        subtitleKey="NOTIFICATIONS.SUBTITLE">
+        <button mat-stroked-button type="button" (click)="markAllRead()">{{ 'NOTIFICATIONS.MARK_ALL_READ' | translate }}</button>
+      </app-page-header>
+
+      <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+
+      <ng-container *ngIf="listLoad.showSurface">
+        <mat-tab-group
+          class="notify-scope-tabs"
+          animationDuration="0ms"
+          [selectedIndex]="tabIndex"
+          (selectedIndexChange)="onTabChange($event)">
+          <mat-tab [label]="'NOTIFICATIONS.TAB_RECENT' | translate"></mat-tab>
+          <mat-tab [label]="'NOTIFICATIONS.TAB_OLDER' | translate"></mat-tab>
+        </mat-tab-group>
+
+        <div class="app-card notifications-card" *ngIf="rows.length; else emptyTpl">
+          <div class="notification-list">
+            <button
+              type="button"
+              class="notification-row"
+              *ngFor="let n of rows"
+              [class.unread]="!n.readFlag"
+              (click)="open(n)">
+              <span class="notification-icon material-icons" [ngClass]="iconTone(n)">{{ notificationIcon(n) }}</span>
+              <span class="notification-copy">
+                <span class="notification-row-head">
+                  <strong>{{ notificationTitle(n) }}</strong>
+                  <span class="status-badge" [attr.data-status]="n.readFlag ? 'ACTIVE' : 'PENDING'">
+                    {{ (n.readFlag ? 'NOTIFICATIONS.READ' : 'NOTIFICATIONS.NEW') | translate }}
+                  </span>
+                </span>
+                <span class="notification-message">{{ notificationBody(n) }}</span>
+                <span class="notification-meta">
+                  {{ 'NOTIFICATIONS.DATE' | translate }} {{ n.createdAt | rmsDate }}
+                  <span aria-hidden="true">•</span>
+                  {{ 'NOTIFICATIONS.TIME' | translate }} {{ n.createdAt | rmsDate:'time' }}
+                </span>
+              </span>
+              <span class="app-icon-btn accent notification-open" [matTooltip]="'NOTIFICATIONS.OPEN_LINK' | translate">
+                <span class="material-icons">arrow_forward</span>
+              </span>
+            </button>
+          </div>
+          <app-table-pager
+            [length]="totalElements"
+            [pageSize]="pageSize"
+            [pageIndex]="pageIndex"
+            (pageIndexChange)="onPageChange($event)">
+          </app-table-pager>
+        </div>
+
+        <ng-template #emptyTpl>
+          <app-empty-state
+            icon="notifications_none"
+            titleKey="NOTIFICATIONS.EMPTY"
+            messageKey="NOTIFICATIONS.EMPTY_TAB_HINT">
+          </app-empty-state>
+        </ng-template>
+      </ng-container>
+    </div>

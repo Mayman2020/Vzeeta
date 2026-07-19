@@ -9,6 +9,9 @@ import com.vzeeta.modules.doctor.entity.Doctor;
 import com.vzeeta.modules.lab.entity.LabResult;
 import com.vzeeta.modules.lookup.entity.Specialty;
 import com.vzeeta.modules.patient.entity.Patient;
+import com.vzeeta.modules.subscription.dto.SubmitSubscriptionPaymentRequest;
+import com.vzeeta.modules.subscription.entity.ClinicSubscription;
+import com.vzeeta.modules.subscription.entity.SubscriptionPlan;
 import com.vzeeta.shared.enums.AppointmentStatus;
 import com.vzeeta.shared.response.ApiResponse;
 import com.vzeeta.shared.util.SecurityUtils;
@@ -108,5 +111,35 @@ public class ClinicAdminController {
     @GetMapping("/analytics")
     public ResponseEntity<ApiResponse<Map<String, Object>>> analytics() {
         return ResponseEntity.ok(ApiResponse.ok(clinicAdminService.analytics(SecurityUtils.currentUserId())));
+    }
+
+    @GetMapping("/subscription/current")
+    public ResponseEntity<ApiResponse<ClinicSubscription>> currentSubscription() {
+        return ResponseEntity.ok(ApiResponse.ok(clinicAdminService.currentSubscription(SecurityUtils.currentUserId())));
+    }
+
+    @GetMapping("/subscription/history")
+    public ResponseEntity<ApiResponse<Page<ClinicSubscription>>> subscriptionHistory(Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.ok(clinicAdminService.subscriptionHistory(SecurityUtils.currentUserId(), pageable)));
+    }
+
+    @GetMapping("/subscription/plans")
+    public ResponseEntity<ApiResponse<List<SubscriptionPlan>>> subscriptionPlans() {
+        return ResponseEntity.ok(ApiResponse.ok(clinicAdminService.subscriptionPlans()));
+    }
+
+    @PostMapping("/subscription/submit")
+    public ResponseEntity<ApiResponse<ClinicSubscription>> submitSubscriptionPayment(@RequestBody SubmitSubscriptionPaymentRequest request) {
+        return ResponseEntity.ok(ApiResponse.ok(clinicAdminService.submitSubscriptionPayment(SecurityUtils.currentUserId(), request)));
+    }
+
+    @GetMapping("/subscription/pending")
+    public ResponseEntity<ApiResponse<ClinicSubscription>> pendingSubscriptionCharge() {
+        return ResponseEntity.ok(ApiResponse.ok(clinicAdminService.pendingSubscriptionCharge(SecurityUtils.currentUserId())));
+    }
+
+    @GetMapping("/subscription/doctor-count")
+    public ResponseEntity<ApiResponse<Long>> verifiedDoctorCount() {
+        return ResponseEntity.ok(ApiResponse.ok(clinicAdminService.verifiedDoctorCount(SecurityUtils.currentUserId())));
     }
 }

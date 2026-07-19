@@ -14,6 +14,10 @@ export interface AdminClinic {
   email?: string;
   active: boolean;
   verified: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: number;
+  updatedBy?: number;
 }
 
 export interface AdminCity {
@@ -39,6 +43,10 @@ export interface AdminUser {
   phone?: string;
   role: string;
   active: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: number;
+  updatedBy?: number;
 }
 
 export interface AdminDoctor {
@@ -108,6 +116,12 @@ export class SuperAdminService {
 
   updateUser(id: number, user: Partial<AdminUser>): Observable<AdminUser> {
     return this.api.put<ApiResponse<AdminUser>>(`${AppConstants.API.ADMIN_USERS}/${id}`, user).pipe(
+      map((res) => res.data!)
+    );
+  }
+
+  toggleUserActive(id: number): Observable<AdminUser> {
+    return this.api.patch<ApiResponse<AdminUser>>(`${AppConstants.API.ADMIN_USERS}/${id}/toggle-active`, {}).pipe(
       map((res) => res.data!)
     );
   }

@@ -1,0 +1,28 @@
+    <h2 mat-dialog-title>
+      {{ data.mode === 'city' ? ('LOOKUPS.ADD_CITY' | translate) : ('LOOKUPS.ADD_AREA' | translate) }}
+    </h2>
+    <mat-dialog-content class="dialog-body">
+      <form [formGroup]="form" class="geo-dialog-form">
+        <mat-form-field appearance="outline" *ngIf="data.mode === 'area'">
+          <mat-label>{{ 'LOOKUPS.CITY' | translate }}</mat-label>
+          <mat-select formControlName="cityId">
+            <mat-option *ngFor="let c of data.cities" [value]="c.id">{{ nameOf(c) }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'LOOKUPS.NAME_AR' | translate }}</mat-label>
+          <input matInput formControlName="nameAr" dir="rtl">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'LOOKUPS.NAME_EN' | translate }}</mat-label>
+          <input matInput formControlName="nameEn" dir="ltr">
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" class="dialog-actions">
+      <button mat-stroked-button type="button" (click)="ref.close(false)">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="saving || form.invalid">
+        <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+        <span *ngIf="!saving">{{ 'COMMON.SAVE' | translate }}</span>
+      </button>
+    </mat-dialog-actions>

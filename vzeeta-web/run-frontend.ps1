@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
   [switch]$SkipInstall,
-  [int]$Port = 4200
+  [int]$Port = 4202
 )
 
 $ErrorActionPreference = 'Stop'
@@ -72,4 +72,15 @@ Restart-PortOwner -Port $Port
 
 Write-Step "Starting NABD frontend on port $Port..." "Green"
 Write-Step "URL: http://localhost:$Port" "Gray"
-npx ng serve --project vzeeta-web --port=$Port --proxy-config proxy.conf.json
+
+$maxAttempts = 3
+for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+    npx ng serve --project vzeeta-web --port=$Port --proxy-config proxy.conf.json
+    if ($LASTEXITCODE -eq 0) { exit 0 }
+
+    if ($attempt -lt $maxAttempts) {
+        Write-Step "Frontend exited with code $LASTEXITCODE (attempt $attempt/$maxAttempts) - another process may have grabbed port $Port meanwhile. Reclaiming it and retrying..." "Yellow"
+        Restart-PortOwner -Port $Port
+    }
+}
+exit $LASTEXITCODE

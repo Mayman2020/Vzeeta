@@ -1,0 +1,18 @@
+    <div class="app-page">
+      <app-page-header titleKey="NAV.SPECIALTIES" subtitleKey="CLINIC.SPECIALTIES_READONLY_HINT"></app-page-header>
+      <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+      <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0" icon="category" titleKey="COMMON.NO_DATA"></app-empty-state>
+      <div class="app-list-surface" *ngIf="listLoad.showSurface && rows.length > 0">
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ rows.length }}</strong></article></section>
+        <section class="app-card table-card">
+          <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
+            <th>{{ 'LOOKUPS.NAME_AR' | translate }}</th><th>{{ 'LOOKUPS.NAME_EN' | translate }}</th><th>{{ 'COMMON.STATUS' | translate }}</th>
+          </tr></thead><tbody>
+            <tr *ngFor="let s of rows">
+              <td>{{ s.nameAr }}</td><td>{{ s.nameEn }}</td>
+              <td>{{ s.active ? ('ADMIN.ACTIVE' | translate) : ('ADMIN.INACTIVE' | translate) }}</td>
+            </tr>
+          </tbody></table></div>
+        </section>
+      </div>
+    </div>

@@ -30,6 +30,10 @@
           <span class="meta-item" *ngIf="doctor.clinicName">
             <span class="material-icons">local_hospital</span>
             {{ doctor.clinicName }}
+            <span class="clinic-rating" *ngIf="doctor.clinicRating">
+              <span class="material-icons star-ic">star</span>
+              {{ doctor.clinicRating }} ({{ doctor.clinicReviewCount || 0 }} {{ 'DOCTOR.CLINIC_REVIEWS' | translate }})
+            </span>
           </span>
           <span class="meta-item" *ngIf="doctor.area">
             <span class="material-icons">location_on</span>

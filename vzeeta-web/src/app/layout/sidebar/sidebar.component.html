@@ -5,29 +5,50 @@
       <span class="brand-name">{{ 'APP.NAME' | translate }}</span>
       <span class="brand-tagline">{{ 'APP.TAGLINE_SHORT' | translate }}</span>
     </div>
+    <button class="collapse-btn" type="button" (click)="collapseToggle.emit()" [attr.aria-label]="'TOPBAR.TOGGLE_MENU' | translate">
+      <span class="material-icons">{{ collapsed ? 'chevron_right' : 'chevron_left' }}</span>
+    </button>
   </div>
+
   <nav class="sidebar-nav">
-    <a
-      *ngFor="let item of navItems; trackBy: trackByRoute"
-      class="nav-item"
-      [routerLink]="item.route"
-      routerLinkActive="active"
-      [matTooltip]="collapsed ? (item.labelKey | translate) : null"
-      [matTooltipDisabled]="!collapsed"
-      matTooltipPosition="before"
-      [matTooltipShowDelay]="200"
-      (click)="onMenuNav()">
-      <span class="nav-icon-wrap" [attr.data-tone]="item.tone">
-        <span class="nav-icon material-icons">{{ item.icon }}</span>
-      </span>
-      <span class="nav-label" *ngIf="!collapsed">{{ item.labelKey | translate }}</span>
-    </a>
+    <ng-container *ngFor="let section of visibleSections; trackBy: trackBySection">
+      <button class="nav-section-toggle" *ngIf="!collapsed" type="button" (click)="toggleSection(section.key)">
+        <span class="nav-section-label">{{ section.key | translate }}</span>
+        <span class="material-icons nav-section-arrow">{{ sectionExpanded[section.key] ? 'expand_less' : 'expand_more' }}</span>
+      </button>
+
+      <div class="nav-section-items" [class.is-collapsed]="!sectionExpanded[section.key] && !collapsed">
+        <a
+          *ngFor="let item of section.items; trackBy: trackByRoute"
+          class="nav-item"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [class.active]="isForcedActive(item)"
+          [matTooltip]="collapsed ? (item.labelKey | translate) : null"
+          [matTooltipDisabled]="!collapsed"
+          matTooltipPosition="before"
+          [matTooltipShowDelay]="200"
+          [attr.aria-label]="item.labelKey | translate"
+          (click)="onMenuNav()">
+          <span class="nav-icon-wrap" [attr.data-tone]="item.tone">
+            <span class="nav-icon material-icons">{{ item.icon }}</span>
+          </span>
+          <span class="nav-label" *ngIf="!collapsed">{{ item.labelKey | translate }}</span>
+        </a>
+      </div>
+    </ng-container>
   </nav>
+
   <div class="sidebar-user">
-    <div class="user-avatar">{{ currentUser?.initials || 'U' }}</div>
+    <img
+      *ngIf="profileImageUrl as photo"
+      class="user-avatar user-avatar-img"
+      [src]="photo"
+      [attr.alt]="'PROFILE.AVATAR_ALT' | translate">
+    <div class="user-avatar" *ngIf="!profileImageUrl">{{ currentUser?.initials || 'U' }}</div>
     <div class="user-info" *ngIf="!collapsed">
-      <span class="user-role" *ngIf="roleKey">{{ roleKey | translate }}</span>
       <span class="user-name">{{ currentUserDisplayName || '-' }}</span>
+      <span class="user-role" *ngIf="roleKey">{{ roleKey | translate }}</span>
     </div>
   </div>
   <button
@@ -37,7 +58,8 @@
     [matTooltip]="collapsed ? ('AUTH.LOGOUT' | translate) : null"
     [matTooltipDisabled]="!collapsed"
     matTooltipPosition="before"
-    [matTooltipShowDelay]="200">
+    [matTooltipShowDelay]="200"
+    [attr.aria-label]="'AUTH.LOGOUT' | translate">
     <span class="material-icons">logout</span>
     <span class="logout-label" *ngIf="!collapsed">{{ 'AUTH.LOGOUT' | translate }}</span>
   </button>

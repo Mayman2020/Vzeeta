@@ -1,0 +1,17 @@
+    .appt-panel { background: var(--surface); border: 1px solid var(--card-border); border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow-card); }
+    .appt-panel-head { padding: 18px 22px; border-bottom: 1px solid var(--line); }
+    .appt-panel-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin: 0; }
+    .appt-count { color: var(--text-muted); font-weight: 500; margin-inline-start: 6px; }
+    .appt-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--line); }
+    .appt-card { background: var(--surface); padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .appt-card-row { display: flex; align-items: flex-start; gap: 10px; }
+    .appt-avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 0.8rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .appt-info { flex: 1; min-width: 0; }
+    .appt-name { font-weight: 600; font-size: 0.875rem; color: var(--text-main); margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .appt-type { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; }
+    .appt-time { font-size: 1.35rem; font-weight: 700; color: var(--text-main); }
+    .appt-date { font-size: 0.75rem; color: var(--text-subtle); }
+    .appt-empty { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 48px 24px; color: var(--text-subtle); }
+    .appt-empty .material-icons { font-size: 40px; opacity: 0.35; }
+    @media (max-width: 1200px) { .appt-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 700px) { .appt-grid { grid-template-columns: 1fr; } }

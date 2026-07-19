@@ -14,6 +14,8 @@ export interface ClinicDoctor {
   consultationFee?: number;
   verified?: boolean;
   clinicId?: number;
+  createdAt?: string;
+  updatedAt?: string;
   user?: { fullNameAr?: string; fullNameEn?: string; email?: string; phone?: string };
 }
 

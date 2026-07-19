@@ -1,0 +1,43 @@
+    <h2 mat-dialog-title>
+      <mat-icon class="dialog-title-icon">{{ data.clinic ? 'edit' : 'add_business' }}</mat-icon>
+      {{ (data.clinic ? 'ADMIN.EDIT_CLINIC' : 'ADMIN.ADD_CLINIC') | translate }}
+    </h2>
+    <mat-dialog-content class="dialog-body">
+      <form [formGroup]="form" class="rms-dialog-form">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'LOOKUPS.NAME_AR' | translate }}</mat-label>
+          <input matInput formControlName="nameAr" dir="rtl">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'LOOKUPS.NAME_EN' | translate }}</mat-label>
+          <input matInput formControlName="nameEn" dir="ltr">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'AUTH.EMAIL' | translate }}</mat-label>
+          <input matInput formControlName="email" type="email" dir="ltr">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'AUTH.PHONE' | translate }}</mat-label>
+          <input matInput formControlName="phone" dir="ltr">
+        </mat-form-field>
+        <div class="full-col dialog-checks">
+          <mat-checkbox formControlName="active">{{ 'ADMIN.ACTIVE' | translate }}</mat-checkbox>
+          <mat-checkbox formControlName="verified">{{ 'ADMIN.VERIFIED' | translate }}</mat-checkbox>
+        </div>
+        <app-audit-trail
+          *ngIf="data.clinic?.id"
+          class="full-col"
+          [createdAt]="data.clinic?.createdAt"
+          [updatedAt]="data.clinic?.updatedAt"
+          [createdBy]="data.clinic?.createdBy"
+          [modifiedBy]="data.clinic?.updatedBy">
+        </app-audit-trail>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" class="dialog-actions">
+      <button mat-stroked-button type="button" (click)="ref.close(false)">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="saving || form.invalid">
+        <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+        <span *ngIf="!saving">{{ 'COMMON.SAVE' | translate }}</span>
+      </button>
+    </mat-dialog-actions>

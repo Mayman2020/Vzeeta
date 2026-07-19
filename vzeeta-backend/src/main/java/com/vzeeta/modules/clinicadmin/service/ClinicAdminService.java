@@ -16,6 +16,11 @@ import com.vzeeta.modules.lookup.entity.Specialty;
 import com.vzeeta.modules.lookup.repository.SpecialtyRepository;
 import com.vzeeta.modules.patient.entity.Patient;
 import com.vzeeta.modules.patient.repository.PatientRepository;
+import com.vzeeta.modules.subscription.dto.SubmitSubscriptionPaymentRequest;
+import com.vzeeta.modules.subscription.entity.ClinicSubscription;
+import com.vzeeta.modules.subscription.entity.SubscriptionPlan;
+import com.vzeeta.modules.subscription.service.ClinicSubscriptionGuardService;
+import com.vzeeta.modules.subscription.service.SubscriptionService;
 import com.vzeeta.modules.user.entity.User;
 import com.vzeeta.modules.user.repository.UserRepository;
 import com.vzeeta.shared.enums.UserRole;
@@ -47,6 +52,8 @@ public class ClinicAdminService {
     private final LabResultRepository labResultRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final SubscriptionService subscriptionService;
+    private final ClinicSubscriptionGuardService subscriptionGuardService;
 
     private Long requireClinicId(Long userId) {
         return clinicAdminRepository.findByUserId(userId)
@@ -62,6 +69,7 @@ public class ClinicAdminService {
     @Transactional
     public Doctor createDoctor(Long userId, CreateDoctorRequest req) {
         Long clinicId = requireClinicId(userId);
+        subscriptionGuardService.assertActive(clinicId);
         if (userRepository.existsByEmailIgnoreCase(req.getEmail()))
             throw AppException.conflict("Email already registered");
         User user = User.builder()
@@ -88,6 +96,7 @@ public class ClinicAdminService {
     @Transactional
     public Doctor updateDoctor(Long userId, Long doctorId, Doctor update) {
         Long clinicId = requireClinicId(userId);
+        subscriptionGuardService.assertActive(clinicId);
         Doctor doctor = doctorRepository.findById(doctorId).orElseThrow(() -> AppException.notFound("Doctor not found"));
         if (!clinicId.equals(doctor.getClinicId())) throw AppException.forbidden("Access denied");
         if (update.getConsultationFee() != null) doctor.setConsultationFee(update.getConsultationFee());
@@ -122,7 +131,9 @@ public class ClinicAdminService {
 
     @Transactional
     public ClinicBranch saveBranch(Long userId, ClinicBranch branch) {
-        branch.setClinicId(requireClinicId(userId));
+        Long clinicId = requireClinicId(userId);
+        subscriptionGuardService.assertActive(clinicId);
+        branch.setClinicId(clinicId);
         return branchRepository.save(branch);
     }
 
@@ -133,14 +144,48 @@ public class ClinicAdminService {
 
     @Transactional
     public ClinicService saveService(Long userId, ClinicService service) {
-        service.setClinicId(requireClinicId(userId));
+        Long clinicId = requireClinicId(userId);
+        subscriptionGuardService.assertActive(clinicId);
+        service.setClinicId(clinicId);
         return clinicServiceRepository.save(service);
     }
 
     @Transactional
     public LabResult createLabResult(Long userId, LabResult result) {
-        result.setClinicId(requireClinicId(userId));
+        Long clinicId = requireClinicId(userId);
+        subscriptionGuardService.assertActive(clinicId);
+        result.setClinicId(clinicId);
         return labResultRepository.save(result);
+    }
+
+    @Transactional(readOnly = true)
+    public ClinicSubscription currentSubscription(Long userId) {
+        return subscriptionService.getCurrent(requireClinicId(userId)).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ClinicSubscription> subscriptionHistory(Long userId, Pageable pageable) {
+        return subscriptionService.getHistory(requireClinicId(userId), pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public List<SubscriptionPlan> subscriptionPlans() {
+        return subscriptionService.listActivePlans();
+    }
+
+    @Transactional
+    public ClinicSubscription submitSubscriptionPayment(Long userId, SubmitSubscriptionPaymentRequest request) {
+        return subscriptionService.submitPayment(requireClinicId(userId), request);
+    }
+
+    @Transactional(readOnly = true)
+    public ClinicSubscription pendingSubscriptionCharge(Long userId) {
+        return subscriptionService.getPendingCharge(requireClinicId(userId)).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public long verifiedDoctorCount(Long userId) {
+        return subscriptionService.countVerifiedDoctors(requireClinicId(userId));
     }
 
     @Transactional(readOnly = true)

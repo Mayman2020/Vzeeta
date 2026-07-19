@@ -1,0 +1,73 @@
+    <div class="app-page">
+      <app-page-header titleKey="NAV.CLINICS" subtitleKey="ADMIN.CLINICS_SUBTITLE">
+        <button mat-flat-button color="primary" type="button" (click)="openCreate()">
+          <mat-icon>add</mat-icon> {{ 'ADMIN.ADD_CLINIC' | translate }}
+        </button>
+      </app-page-header>
+      <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+      <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="local_hospital" titleKey="COMMON.NO_DATA"></app-empty-state>
+      <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
+        <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
+        <section class="app-card table-card">
+          <div class="estate-table-toolbar directory-toolbar">
+            <div class="directory-toolbar-top table-list-toolbar">
+              <label class="estate-search-inline"><span class="material-icons">search</span>
+                <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.CLINICS' | translate">
+              </label>
+              <app-table-export-toolbar
+                [inline]="true"
+                permissionKey="clinics"
+                [title]="'NAV.CLINICS' | translate"
+                fileName="clinics"
+                [columns]="exportColumns"
+                [loadRows]="loadExportRows">
+              </app-table-export-toolbar>
+            </div>
+          </div>
+          <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
+            <th class="table-index-col">#</th>
+            <th>{{ 'NAV.CLINICS' | translate }}</th>
+            <th>{{ 'AUTH.EMAIL' | translate }}</th>
+            <th class="center-col">{{ 'COMMON.STATUS' | translate }}</th>
+            <th class="actions-col">{{ 'COMMON.ACTIONS' | translate }}</th>
+          </tr></thead><tbody>
+            <tr *ngFor="let c of rows; let i = index">
+              <td class="table-index-col">{{ pageIndex * pageSize + i + 1 }}</td>
+              <td>
+                <div class="table-entity-cell">
+                  <div class="table-entity-initial">{{ (c.nameAr || c.nameEn || '?').charAt(0) }}</div>
+                  <div>
+                    <div class="table-entity-name">{{ c.nameAr || c.nameEn }}</div>
+                    <div class="table-entity-sub" *ngIf="c.nameEn && c.nameAr">{{ c.nameEn }}</div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div>{{ c.email }}</div>
+                <div class="table-entity-sub" *ngIf="c.phone">{{ c.phone }}</div>
+              </td>
+              <td class="center-col">
+                <span class="status-chip" [ngClass]="c.verified ? 'chip-success' : 'chip-warning'">
+                  {{ c.verified ? ('ADMIN.VERIFIED' | translate) : ('ADMIN.PENDING' | translate) }}
+                </span>
+              </td>
+              <td class="actions-col">
+                <div class="app-row-actions">
+                  <button class="app-icon-btn info" type="button" (click)="openEdit(c)" [matTooltip]="'COMMON.EDIT' | translate">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button class="app-icon-btn danger" type="button" (click)="confirmDeactivate(c)" [matTooltip]="'ACTIONS.DELETE' | translate" [disabled]="!c.active">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="rows.length === 0">
+              <td colspan="5" class="empty-row">{{ 'COMMON.NO_DATA' | translate }}</td>
+            </tr>
+          </tbody></table></div>
+          <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
+        </section>
+      </div>
+    </div>

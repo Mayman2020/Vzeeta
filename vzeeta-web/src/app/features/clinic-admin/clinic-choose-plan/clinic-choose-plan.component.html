@@ -1,0 +1,55 @@
+    <div class="app-page">
+      <app-page-header titleKey="SUBSCRIPTION.CHOOSE_PLAN_TITLE" subtitleKey="SUBSCRIPTION.CHOOSE_PLAN_SUBTITLE"></app-page-header>
+
+      <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+
+      <div *ngIf="!loading" class="app-list-surface">
+        <p style="margin:0 0 12px;">{{ 'SUBSCRIPTION.PRICING_PER_DOCTOR_HINT' | translate: { count: doctorCount } }}</p>
+        <section style="display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:16px; margin-bottom:24px;">
+          <div class="app-card" *ngFor="let plan of plans"
+               style="padding:20px; cursor:pointer; border:2px solid transparent;"
+               [ngClass]="{ 'plan-selected': selectedPlanId === plan.id }"
+               (click)="selectPlan(plan.id)">
+            <h3 style="margin:0 0 8px;">{{ plan.nameAr }}</h3>
+            <p style="margin:0 0 8px; color:var(--text-secondary);">{{ ('SUBSCRIPTION.' + plan.billingCycle) | translate }}</p>
+            <p style="margin:0 0 4px; color:var(--text-secondary); font-size:0.85rem;">
+              {{ plan.price | number:'1.2-2' }} {{ 'COMMON.OMR' | translate }} {{ 'SUBSCRIPTION.PER_DOCTOR' | translate }}
+              &times; {{ doctorCount }} {{ 'SUBSCRIPTION.DOCTORS' | translate }}
+            </p>
+            <p style="font-size:1.4rem; font-weight:700; margin:0;">{{ totalFor(plan) | number:'1.2-2' }} {{ 'COMMON.OMR' | translate }}</p>
+          </div>
+        </section>
+
+        <section class="app-card" style="padding:20px;" *ngIf="selectedPlanId">
+          <h3>{{ 'SUBSCRIPTION.PAYMENT_METHOD' | translate }}</h3>
+          <div style="display:flex; gap:12px; margin-bottom:16px;">
+            <button mat-stroked-button type="button"
+                    [color]="paymentMethod === 'RECEIPT_UPLOAD' ? 'primary' : undefined"
+                    (click)="paymentMethod = 'RECEIPT_UPLOAD'">
+              <mat-icon>upload_file</mat-icon> {{ 'SUBSCRIPTION.METHOD_RECEIPT_UPLOAD' | translate }}
+            </button>
+            <button mat-stroked-button type="button"
+                    [color]="paymentMethod === 'ONLINE_PLACEHOLDER' ? 'primary' : undefined"
+                    (click)="paymentMethod = 'ONLINE_PLACEHOLDER'">
+              <mat-icon>credit_card</mat-icon> {{ 'SUBSCRIPTION.METHOD_ONLINE_PLACEHOLDER' | translate }}
+            </button>
+          </div>
+
+          <div *ngIf="paymentMethod === 'RECEIPT_UPLOAD'">
+            <p>{{ 'SUBSCRIPTION.UPLOAD_RECEIPT_HINT' | translate }}</p>
+            <app-upload-zone [multiple]="false" [urlList]="receiptUrls" (urlListChange)="onReceiptChange($event)"></app-upload-zone>
+          </div>
+
+          <div *ngIf="paymentMethod === 'ONLINE_PLACEHOLDER'" class="app-card" style="padding:16px; background:var(--surface-2);">
+            <p>{{ 'SUBSCRIPTION.ONLINE_PLACEHOLDER_NOTE' | translate }}</p>
+          </div>
+
+          <div style="margin-top:20px; display:flex; justify-content:flex-end;">
+            <button mat-flat-button color="primary" type="button" [disabled]="!canSubmit || submitting" (click)="submit()">
+              <mat-spinner *ngIf="submitting" diameter="18"></mat-spinner>
+              <span *ngIf="!submitting">{{ 'SUBSCRIPTION.SUBMIT_PAYMENT' | translate }}</span>
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>

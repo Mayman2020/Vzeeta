@@ -1,0 +1,132 @@
+    <div class="app-page appts-page">
+      <!-- Header -->
+      <div class="appts-header">
+        <div>
+          <h1 class="appts-title">{{ 'NAV.APPOINTMENTS' | translate }}</h1>
+          <p class="appts-sub">{{ 'PATIENT.APPOINTMENTS_SUBTITLE' | translate }}</p>
+        </div>
+        <a routerLink="/doctors" class="book-new-btn">
+          <span class="material-icons">add</span>
+          {{ 'HOME.SEARCH' | translate }}
+        </a>
+      </div>
+
+      <!-- Tabs -->
+      <div class="appts-tabs">
+        <button class="appt-tab" [class.active]="activeTab === 'upcoming'" (click)="switchTab('upcoming')">
+          <span class="material-icons">upcoming</span>
+          {{ 'PATIENT.UPCOMING' | translate }}
+        </button>
+        <button class="appt-tab" [class.active]="activeTab === 'completed'" (click)="switchTab('completed')">
+          <span class="material-icons">check_circle</span>
+          {{ 'PATIENT.COMPLETED' | translate }}
+        </button>
+        <button class="appt-tab" [class.active]="activeTab === 'cancelled'" (click)="switchTab('cancelled')">
+          <span class="material-icons">cancel</span>
+          {{ 'PATIENT.CANCELLED' | translate }}
+        </button>
+      </div>
+
+      <!-- Loading -->
+      <div class="appts-loading" *ngIf="listLoad.showInitialSpinner">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+
+      <!-- Cards -->
+      <div class="appts-list" *ngIf="listLoad.showSurface && rows.length > 0">
+        <div class="appt-card" *ngFor="let a of rows">
+          <div class="appt-status-bar" [class]="'status-' + a.status.toLowerCase()"></div>
+          <div class="appt-body">
+            <div class="appt-doctor">
+              <div class="appt-avatar">{{ (a.doctorNameAr || 'D')[0] }}</div>
+              <div>
+                <div class="appt-doc-name">{{ a.doctorNameAr || ('PATIENT.DOCTOR' | translate) }}</div>
+                <div class="appt-doc-spec">{{ a.specialtyNameAr || a.appointmentNumber }}</div>
+              </div>
+            </div>
+            <div class="appt-details">
+              <div class="appt-detail-item">
+                <span class="material-icons">calendar_today</span>
+                {{ a.appointmentDate | rmsDate:'date' }}
+              </div>
+              <div class="appt-detail-item">
+                <span class="material-icons">schedule</span>
+                {{ a.startTime }}
+              </div>
+              <div class="appt-detail-item" *ngIf="a.consultationType">
+                <span class="material-icons">{{ a.consultationType === 'ONLINE' ? 'videocam' : 'local_hospital' }}</span>
+                {{ (a.consultationType === 'ONLINE' ? 'SEARCH.ONLINE' : 'SEARCH.IN_CLINIC') | translate }}
+              </div>
+            </div>
+            <div class="appt-right">
+              <span class="status-chip" [class]="'chip-' + a.status.toLowerCase()">{{ 'STATUS.' + a.status | translate }}</span>
+              <span class="appt-fee">{{ a.feeAmount }} {{ 'COMMON.EGP' | translate }}</span>
+            </div>
+          </div>
+          <!-- Actions -->
+          <div class="appt-actions" *ngIf="canReschedule(a) || canCancel(a) || canReview(a)">
+            <button class="action-btn reschedule" *ngIf="canReschedule(a)" (click)="startReschedule(a)">
+              <span class="material-icons">event_repeat</span>
+              {{ 'PATIENT.RESCHEDULE' | translate }}
+            </button>
+            <button class="action-btn cancel" *ngIf="canCancel(a)" (click)="cancel(a)">
+              <span class="material-icons">cancel</span>
+              {{ 'PATIENT.CANCEL' | translate }}
+            </button>
+            <button class="action-btn review" *ngIf="canReview(a)" (click)="startReview(a)">
+              <span class="material-icons">star_rate</span>
+              {{ 'PATIENT.REVIEW_DOCTOR' | translate }}
+            </button>
+          </div>
+
+          <!-- Review inline form -->
+          <div class="reschedule-form" *ngIf="reviewTarget?.id === a.id">
+            <div class="rs-fields">
+              <label>{{ 'PATIENT.RATING' | translate }}</label>
+              <select [(ngModel)]="reviewRating" name="reviewRating" class="time-input">
+                <option [ngValue]="5">5</option>
+                <option [ngValue]="4">4</option>
+                <option [ngValue]="3">3</option>
+                <option [ngValue]="2">2</option>
+                <option [ngValue]="1">1</option>
+              </select>
+              <div class="rs-time" style="flex:1">
+                <label>{{ 'PATIENT.REVIEW_COMMENT' | translate }}</label>
+                <input type="text" [(ngModel)]="reviewComment" name="reviewComment" class="time-input">
+              </div>
+            </div>
+            <div class="rs-actions">
+              <button class="action-btn reschedule" (click)="submitReview()">
+                {{ 'COMMON.SAVE' | translate }}
+              </button>
+              <button class="action-btn cancel" (click)="cancelReview()">{{ 'COMMON.CANCEL' | translate }}</button>
+            </div>
+          </div>
+
+          <!-- Reschedule inline form -->
+          <div class="reschedule-form" *ngIf="rescheduleTarget?.id === a.id">
+            <div class="rs-fields">
+              <app-date-field labelKey="BOOKING.DATE" [(ngModel)]="rescheduleDate" name="rescheduleDate"></app-date-field>
+              <div class="rs-time">
+                <label>{{ 'BOOKING.TIME' | translate }}</label>
+                <input type="time" [(ngModel)]="rescheduleTime" name="rescheduleTime" class="time-input">
+              </div>
+            </div>
+            <div class="rs-actions">
+              <button class="action-btn reschedule" (click)="submitReschedule()" [disabled]="!rescheduleDate || !rescheduleTime">
+                {{ 'COMMON.SAVE' | translate }}
+              </button>
+              <button class="action-btn cancel" (click)="cancelReschedule()">{{ 'COMMON.CANCEL' | translate }}</button>
+            </div>
+          </div>
+        </div>
+        <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
+      </div>
+
+      <!-- Empty -->
+      <div class="appts-empty" *ngIf="listLoad.showSurface && rows.length === 0">
+        <div class="empty-icon"><span class="material-icons">event_busy</span></div>
+        <h3>{{ 'PATIENT.NO_APPOINTMENTS' | translate }}</h3>
+        <a routerLink="/doctors" class="book-new-btn">{{ 'HOME.SEARCH' | translate }}</a>
+      </div>
+    </div>

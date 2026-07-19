@@ -1,0 +1,77 @@
+    <div class="app-page dashboard-page">
+      <div *ngIf="loading" class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
+
+      <ng-container *ngIf="!loading">
+        <div class="estate-stat-grid">
+          <article class="estate-stat-card navy">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'CLINIC.MONTH_APPOINTMENTS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">event</span></div>
+            </div>
+            <div class="estate-stat-value">{{ analytics.appointmentCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ analytics.todayCount }} {{ 'COMMON.TODAY' | translate }}</span>
+            </div>
+          </article>
+
+          <article class="estate-stat-card teal">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'CLINIC.ACTIVE_DOCTORS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">medical_services</span></div>
+            </div>
+            <div class="estate-stat-value">{{ analytics.doctorCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ analytics.branchCount }} {{ 'NAV.BRANCHES' | translate }}</span>
+            </div>
+          </article>
+
+          <article class="estate-stat-card gold">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'APPOINTMENT.PENDING' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">pending_actions</span></div>
+            </div>
+            <div class="estate-stat-value">{{ analytics.pendingCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ 'APPOINTMENT.STATUS_PENDING' | translate }}</span>
+            </div>
+          </article>
+
+          <article class="estate-stat-card danger">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'APPOINTMENT.CANCELLED' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">event_busy</span></div>
+            </div>
+            <div class="estate-stat-value">{{ analytics.cancelledCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ 'APPOINTMENT.STATUS_CANCELLED' | translate }}</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Today Appointments -->
+        <div class="appt-panel">
+          <div class="appt-panel-head">
+            <h3 class="appt-panel-title">{{ 'CLINIC.TODAY_APPOINTMENTS' | translate }} <span class="appt-count">({{ todayAppointments.length }})</span></h3>
+          </div>
+          <div class="appt-grid" *ngIf="todayAppointments.length > 0; else noAppts">
+            <div class="appt-card" *ngFor="let a of todayAppointments">
+              <div class="appt-card-row">
+                <div class="appt-avatar" [style.background]="avatarColor(a.patientNameAr || a.patientNameEn || 'P')">
+                  {{ initials(a.patientNameAr || a.patientNameEn) }}
+                </div>
+                <div class="appt-info">
+                  <div class="appt-name">{{ a.patientNameAr || a.patientNameEn || ('PATIENT.PATIENT' | translate) + ' #' + a.patientId }}</div>
+                  <div class="appt-type">{{ a.specialtyNameAr || a.consultationType }}</div>
+                  <span class="status-badge" [attr.data-status]="a.status">{{ a.status }}</span>
+                </div>
+              </div>
+              <div class="appt-time">{{ a.startTime | slice:0:5 }}</div>
+              <div class="appt-date">{{ a.appointmentDate | rmsDate:'date' }}</div>
+            </div>
+          </div>
+          <ng-template #noAppts>
+            <div class="appt-empty"><span class="material-icons">event_available</span><p>{{ 'APPOINTMENT.NO_TODAY' | translate }}</p></div>
+          </ng-template>
+        </div>
+      </ng-container>
+    </div>

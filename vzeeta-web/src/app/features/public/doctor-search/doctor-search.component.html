@@ -110,6 +110,10 @@
           <span class="sort-label">{{ 'SEARCH.SORT_BY' | translate }}:</span>
           <button type="button" class="sort-chip" [class.active]="sortBy === 'relevance'" (click)="setSort('relevance')">{{ 'SEARCH.RELEVANCE' | translate }}</button>
           <button type="button" class="sort-chip" [class.active]="sortBy === 'rating'" (click)="setSort('rating')">★ {{ 'SEARCH.RATING' | translate }}</button>
+          <button type="button" class="sort-chip" [class.active]="sortBy === 'nearest'" [disabled]="locatingUser" (click)="setSort('nearest')">
+            <span class="material-icons" style="font-size:14px; vertical-align:middle;">near_me</span>
+            {{ locatingUser ? ('SEARCH.LOCATING' | translate) : ('SEARCH.NEAREST' | translate) }}
+          </button>
         </div>
       </div>
 
@@ -159,10 +163,18 @@
               <span class="meta-item" *ngIf="d.clinicName">
                 <span class="material-icons">local_hospital</span>
                 {{ d.clinicName }}
+                <span class="clinic-rating" *ngIf="d.clinicRating">
+                  <span class="material-icons star-ic">star</span>
+                  {{ d.clinicRating }} ({{ d.clinicReviewCount || 0 }})
+                </span>
               </span>
               <span class="meta-item" *ngIf="d.area">
                 <span class="material-icons">location_on</span>
                 {{ d.area }}
+              </span>
+              <span class="meta-item" *ngIf="userLocation && distanceLabel(d) as dist">
+                <span class="material-icons">near_me</span>
+                {{ dist }}
               </span>
               <span class="meta-item" *ngIf="d.yearsExperience">
                 <span class="material-icons">work</span>

@@ -1,0 +1,43 @@
+    <div class="app-page">
+      <app-page-header titleKey="SUBSCRIPTION.PLANS_TITLE" subtitleKey="SUBSCRIPTION.PLANS_SUBTITLE">
+        <button mat-flat-button color="primary" type="button" (click)="openCreate()">
+          <mat-icon>add</mat-icon> {{ 'SUBSCRIPTION.ADD_PLAN' | translate }}
+        </button>
+      </app-page-header>
+      <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+      <app-empty-state *ngIf="!loading && rows.length === 0" icon="card_membership" titleKey="COMMON.NO_DATA"></app-empty-state>
+      <div class="app-list-surface" *ngIf="!loading && rows.length > 0">
+        <section class="app-card table-card">
+          <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
+            <th class="table-index-col">#</th>
+            <th>{{ 'LOOKUPS.NAME_AR' | translate }}</th>
+            <th>{{ 'SUBSCRIPTION.BILLING_CYCLE' | translate }}</th>
+            <th>{{ 'SUBSCRIPTION.PRICE_OMR' | translate }}</th>
+            <th class="center-col">{{ 'COMMON.STATUS' | translate }}</th>
+            <th class="actions-col">{{ 'COMMON.ACTIONS' | translate }}</th>
+          </tr></thead><tbody>
+            <tr *ngFor="let p of rows; let i = index">
+              <td class="table-index-col">{{ i + 1 }}</td>
+              <td>
+                <div class="table-entity-name">{{ p.nameAr }}</div>
+                <div class="table-entity-sub" *ngIf="p.nameEn">{{ p.nameEn }}</div>
+              </td>
+              <td>{{ ('SUBSCRIPTION.' + p.billingCycle) | translate }}</td>
+              <td>{{ p.price | number:'1.2-2' }} {{ 'COMMON.OMR' | translate }}</td>
+              <td class="center-col">
+                <span class="status-chip" [ngClass]="p.active ? 'chip-success' : 'chip-warning'">
+                  {{ p.active ? ('ADMIN.ACTIVE' | translate) : ('ADMIN.INACTIVE' | translate) }}
+                </span>
+              </td>
+              <td class="actions-col">
+                <div class="app-row-actions">
+                  <button class="app-icon-btn info" type="button" (click)="openEdit(p)" [matTooltip]="'COMMON.EDIT' | translate">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody></table></div>
+        </section>
+      </div>
+    </div>

@@ -1,0 +1,7 @@
+    <app-page-header titleKey="NAV.ANALYTICS"></app-page-header>
+    <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+    <div class="stats-grid" *ngIf="!loading && analytics">
+      <mat-card class="stat"><h2>{{ analytics.doctorCount }}</h2><p>{{ 'CLINIC.ACTIVE_DOCTORS' | translate }}</p></mat-card>
+      <mat-card class="stat"><h2>{{ analytics.branchCount }}</h2><p>{{ 'CLINIC.BRANCHES' | translate }}</p></mat-card>
+      <mat-card class="stat"><h2>{{ analytics.appointmentCount }}</h2><p>{{ 'CLINIC.MONTH_APPOINTMENTS' | translate }}</p></mat-card>
+    </div>

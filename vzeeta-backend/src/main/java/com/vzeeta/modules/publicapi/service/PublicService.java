@@ -141,14 +141,18 @@ public class PublicService {
         List<String> names = doctorSpecialtyRepository.findByDoctorId(d.getId()).stream()
                 .map(ds -> specialtyRepository.findById(ds.getSpecialtyId()).map(Specialty::getNameAr).orElse(""))
                 .collect(Collectors.toList());
-        String clinicName = d.getClinicId() != null
-                ? clinicRepository.findById(d.getClinicId()).map(Clinic::getNameAr).orElse(null)
-                : null;
-        String areaName = doctorBranchRepository.findByDoctorId(d.getId()).stream()
+        Clinic clinic = d.getClinicId() != null ? clinicRepository.findById(d.getClinicId()).orElse(null) : null;
+        List<ClinicBranch> branches = doctorBranchRepository.findByDoctorId(d.getId()).stream()
                 .map(db -> clinicBranchRepository.findById(db.getBranchId()).orElse(null))
-                .filter(b -> b != null && b.getAreaId() != null)
+                .filter(b -> b != null)
+                .collect(Collectors.toList());
+        String areaName = branches.stream()
+                .filter(b -> b.getAreaId() != null)
                 .map(b -> areaRepository.findById(b.getAreaId()).map(Area::getNameAr).orElse(null))
                 .filter(n -> n != null && !n.isBlank())
+                .findFirst().orElse(null);
+        ClinicBranch branchWithCoords = branches.stream()
+                .filter(b -> b.getLatitude() != null && b.getLongitude() != null)
                 .findFirst().orElse(null);
         return DoctorSummaryDto.builder()
                 .id(d.getId())
@@ -165,14 +169,19 @@ public class PublicService {
                 .profileImage(d.getUser().getProfileImage())
                 .specialtyNames(names)
                 .clinicId(d.getClinicId())
-                .clinicNameAr(clinicName)
+                .clinicNameAr(clinic != null ? clinic.getNameAr() : null)
+                .clinicRatingAvg(clinic != null ? clinic.getRatingAvg() : null)
+                .clinicRatingCount(clinic != null ? clinic.getRatingCount() : null)
                 .areaNameAr(areaName)
+                .latitude(branchWithCoords != null ? branchWithCoords.getLatitude() : null)
+                .longitude(branchWithCoords != null ? branchWithCoords.getLongitude() : null)
                 .verified(d.isVerified())
                 .yearsExperience(d.getYearsExperience())
                 .build();
     }
 
     private DoctorDetailDto toDetail(Doctor d) {
+        Clinic clinic = d.getClinicId() != null ? clinicRepository.findById(d.getClinicId()).orElse(null) : null;
         return DoctorDetailDto.builder()
                 .id(d.getId())
                 .fullNameAr(d.getUser().getFullNameAr())
@@ -194,6 +203,10 @@ public class PublicService {
                 .branchIds(doctorBranchRepository.findByDoctorId(d.getId()).stream()
                         .map(db -> db.getBranchId()).collect(Collectors.toList()))
                 .clinicId(d.getClinicId())
+                .clinicNameAr(clinic != null ? clinic.getNameAr() : null)
+                .clinicNameEn(clinic != null ? clinic.getNameEn() : null)
+                .clinicRatingAvg(clinic != null ? clinic.getRatingAvg() : null)
+                .clinicRatingCount(clinic != null ? clinic.getRatingCount() : null)
                 .build();
     }
 }

@@ -1,0 +1,30 @@
+    .permissions-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .perm-grid { display: grid; gap: 0.5rem; }
+    .perm-header, .perm-row {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.25fr) repeat(8, minmax(56px, 1fr));
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .perm-header { font-weight: 600; color: var(--tb-text-muted); }
+    .module-name { font-weight: 700; color: var(--tb-text); }
+
+    .perm-grid {
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+    }
+
+    .perm-header,
+    .perm-row {
+      min-width: 820px;
+    }
+
+    app-table-pager {
+      margin-top: 0.75rem;
+    }

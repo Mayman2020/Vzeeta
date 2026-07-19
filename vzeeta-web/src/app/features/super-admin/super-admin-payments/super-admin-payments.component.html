@@ -1,0 +1,34 @@
+    <div class="app-page">
+      <app-page-header titleKey="NAV.PAYMENTS"></app-page-header>
+      <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+      <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="payment" titleKey="COMMON.NO_DATA"></app-empty-state>
+      <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
+        <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
+        <section class="app-card table-card">
+          <div class="estate-table-toolbar directory-toolbar">
+            <div class="directory-toolbar-top table-list-toolbar">
+              <label class="estate-search-inline"><span class="material-icons">search</span>
+                <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.PAYMENTS' | translate">
+              </label>
+              <mat-form-field appearance="outline" class="filter-field" floatLabel="always" subscriptSizing="dynamic">
+                <mat-label>{{ 'COMMON.FILTER_STATUS' | translate }}</mat-label>
+                <mat-select [(ngModel)]="statusFilter" (selectionChange)="onStatusChange()">
+                  <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
+                  <mat-option *ngFor="let s of paymentStatuses" [value]="s">{{ 'PAYMENT_STATUS.' + s | translate }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
+            <th>{{ 'COMMON.EGP' | translate }}</th><th>{{ 'ADMIN.APPOINTMENT' | translate }}</th><th>{{ 'COMMON.STATUS' | translate }}</th><th>{{ 'COMMON.ALL' | translate }}</th>
+          </tr></thead><tbody>
+            <tr *ngFor="let p of rows">
+              <td>{{ p.amount }}</td><td>#{{ p.appointmentId }}</td><td><mat-chip>{{ 'PAYMENT_STATUS.' + p.status | translate }}</mat-chip></td>
+              <td>{{ p.createdAt | rmsDate:'datetime' }}</td>
+            </tr>
+          </tbody></table></div>
+          <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
+        </section>
+      </div>
+    </div>

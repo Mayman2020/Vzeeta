@@ -26,10 +26,17 @@ function Stop-ListenerOnPort {
     }
     foreach ($procId in ($pids | Select-Object -Unique)) {
         if ($procId -le 0) { continue }
-        Write-Step "Port $TargetPort in use by PID $procId - stopping previous instance..." "Yellow"
+        Write-Step "Port $TargetPort in use by PID $procId - stopping it (whatever it is) to take over the port..." "Yellow"
         taskkill /PID $procId /F | Out-Null
-        Start-Sleep -Seconds 1
     }
+
+    # Freeing a port isn't instant (TIME_WAIT, slow process teardown) - wait until it's actually gone.
+    for ($i = 0; $i -lt 20; $i++) {
+        $stillBusy = netstat -ano | Select-String -Pattern (':\s*' + $TargetPort + '\s+.*LISTENING')
+        if (-not $stillBusy) { return }
+        Start-Sleep -Milliseconds 300
+    }
+    Write-Step "Port $TargetPort still reports busy after cleanup attempt; the startup below may retry." "Yellow"
 }
 
 $JavaCandidates = @($env:JAVA_HOME, "C:\Program Files\Java\jdk-17", "C:\Program Files\Eclipse Adoptium\jdk-17*")
@@ -86,5 +93,14 @@ Write-Step "Starting NABD backend on $BaseUrl" "Green"
 Write-Step "Default login: superadmin@tabeebi.com / Dev@Local2026!" "Gray"
 Write-Step "Stop with Ctrl+C" "Gray"
 
-& $MvnwPath spring-boot:run "-Dspring-boot.run.arguments=--server.port=$Port"
+$maxAttempts = 3
+for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+    & $MvnwPath spring-boot:run "-Dspring-boot.run.arguments=--server.port=$Port"
+    if ($LASTEXITCODE -eq 0) { exit 0 }
+
+    if ($attempt -lt $maxAttempts) {
+        Write-Step "Backend exited with code $LASTEXITCODE (attempt $attempt/$maxAttempts) - another process may have grabbed port $Port meanwhile. Reclaiming it and retrying..." "Yellow"
+        Stop-ListenerOnPort -TargetPort $Port
+    }
+}
 exit $LASTEXITCODE

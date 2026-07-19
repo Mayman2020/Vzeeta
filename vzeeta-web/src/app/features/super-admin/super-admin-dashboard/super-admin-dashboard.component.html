@@ -1,0 +1,85 @@
+    <div class="app-page sa-dashboard" *ngIf="!loading; else loadingTpl">
+
+      <!-- Welcome bar — styled via vzeeta-estate-refinement DS tokens -->
+      <div class="sa-welcome-bar">
+        <div class="sa-welcome-left">
+          <div class="sa-welcome-icon"><mat-icon>admin_panel_settings</mat-icon></div>
+          <div>
+            <h1 class="sa-welcome-title">{{ 'ADMIN.DASHBOARD_TITLE' | translate }}</h1>
+            <p class="sa-welcome-sub">{{ 'ADMIN.WELCOME' | translate }}</p>
+          </div>
+        </div>
+        <div class="sa-welcome-actions">
+          <a mat-stroked-button routerLink="/super-admin/clinics" class="sa-action-btn">
+            <mat-icon>add_business</mat-icon>
+            {{ 'ADMIN.ADD_CLINIC' | translate }}
+          </a>
+          <a mat-flat-button routerLink="/super-admin/verification" class="sa-primary-btn">
+            <mat-icon>verified</mat-icon>
+            {{ 'NAV.VERIFICATION' | translate }}
+          </a>
+        </div>
+      </div>
+
+      <!-- KPI Grid -->
+      <div class="sa-kpi-grid admin-kpi-grid">
+        <article class="sa-kpi-card">
+          <div class="sa-kpi-top">
+            <span class="sa-kpi-label">{{ 'ADMIN.TOTAL_CLINICS' | translate }}</span>
+            <div class="sa-kpi-icon-wrap indigo"><mat-icon>local_hospital</mat-icon></div>
+          </div>
+          <div class="sa-kpi-value">{{ clinicCount }}</div>
+          <a routerLink="/super-admin/clinics" class="sa-kpi-link">
+            {{ 'COMMON.VIEW_ALL' | translate }} <mat-icon>arrow_forward</mat-icon>
+          </a>
+        </article>
+
+        <article class="sa-kpi-card">
+          <div class="sa-kpi-top">
+            <span class="sa-kpi-label">{{ 'ADMIN.TOTAL_USERS' | translate }}</span>
+            <div class="sa-kpi-icon-wrap blue"><mat-icon>people</mat-icon></div>
+          </div>
+          <div class="sa-kpi-value">{{ userCount }}</div>
+          <a routerLink="/super-admin/users" class="sa-kpi-link">
+            {{ 'COMMON.VIEW_ALL' | translate }} <mat-icon>arrow_forward</mat-icon>
+          </a>
+        </article>
+
+        <article class="sa-kpi-card warn-card">
+          <div class="sa-kpi-top">
+            <span class="sa-kpi-label">{{ 'ADMIN.PENDING_VERIFICATION' | translate }}</span>
+            <div class="sa-kpi-icon-wrap orange"><mat-icon>pending</mat-icon></div>
+          </div>
+          <div class="sa-kpi-value">{{ pendingCount }}</div>
+          <a routerLink="/super-admin/verification" class="sa-kpi-link warn-link">
+            {{ 'ADMIN.REVIEW_NOW' | translate }} <mat-icon>arrow_forward</mat-icon>
+          </a>
+        </article>
+
+        <article class="sa-kpi-card">
+          <div class="sa-kpi-top">
+            <span class="sa-kpi-label">{{ 'ADMIN.TOTAL_PAYMENTS' | translate }}</span>
+            <div class="sa-kpi-icon-wrap teal"><mat-icon>payments</mat-icon></div>
+          </div>
+          <div class="sa-kpi-value">{{ paymentCount }}</div>
+          <a routerLink="/super-admin/payments" class="sa-kpi-link">
+            {{ 'COMMON.VIEW_ALL' | translate }} <mat-icon>arrow_forward</mat-icon>
+          </a>
+        </article>
+      </div>
+
+      <!-- Quick Nav -->
+      <div class="sa-quick-nav">
+        <h2 class="sa-section-title">{{ 'ADMIN.MANAGEMENT' | translate }}</h2>
+        <div class="sa-nav-grid">
+          <a *ngFor="let nav of quickNav" [routerLink]="nav.route" class="sa-nav-card" [attr.data-tone]="nav.tone">
+            <span class="sa-nav-icon-wrap" [attr.data-tone]="nav.tone">
+              <mat-icon>{{ nav.icon }}</mat-icon>
+            </span>
+            <span class="sa-nav-label">{{ nav.labelKey | translate }}</span>
+            <mat-icon class="sa-nav-arrow">chevron_left</mat-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+    <ng-template #loadingTpl><app-loading-spinner [local]="true"></app-loading-spinner></ng-template>

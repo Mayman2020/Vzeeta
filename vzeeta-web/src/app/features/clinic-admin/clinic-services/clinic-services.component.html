@@ -1,0 +1,26 @@
+    <div class="app-page">
+      <app-page-header titleKey="NAV.SERVICES">
+        <button mat-flat-button color="primary" type="button" (click)="openCreate()">
+          <mat-icon>add</mat-icon> {{ 'CLINIC.ADD_SERVICE' | translate }}
+        </button>
+      </app-page-header>
+      <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+      <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="medical_services" titleKey="COMMON.NO_DATA"></app-empty-state>
+      <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
+        <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
+        <section class="app-card table-card">
+          <div class="estate-table-toolbar directory-toolbar">
+            <label class="estate-search-inline"><span class="material-icons">search</span>
+              <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.SERVICES' | translate">
+            </label>
+          </div>
+          <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
+            <th>{{ 'NAV.SERVICES' | translate }}</th><th>{{ 'COMMON.EGP' | translate }}</th>
+          </tr></thead><tbody>
+            <tr *ngFor="let s of rows"><td>{{ s.nameAr }}</td><td>{{ s.price }}</td></tr>
+          </tbody></table></div>
+          <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
+        </section>
+      </div>
+    </div>

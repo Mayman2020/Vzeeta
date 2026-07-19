@@ -1,0 +1,41 @@
+    <div class="app-page">
+      <app-page-header titleKey="NAV.LAB_RESULTS">
+        <button mat-flat-button color="primary" type="button" (click)="showForm = !showForm">
+          <mat-icon>add</mat-icon> {{ 'CLINIC.ADD_LAB_RESULT' | translate }}
+        </button>
+      </app-page-header>
+      <mat-card class="create-card" *ngIf="showForm">
+        <form [formGroup]="labForm" (ngSubmit)="submitLabResult()" class="create-form">
+          <mat-form-field appearance="outline"><mat-label>{{ 'CLINIC.PATIENT_ID' | translate }}</mat-label><input matInput type="number" formControlName="patientId"></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>{{ 'CLINIC.TEST_NAME_AR' | translate }}</mat-label><input matInput formControlName="testNameAr"></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>{{ 'CLINIC.TEST_NAME_EN' | translate }}</mat-label><input matInput formControlName="testNameEn"></mat-form-field>
+          <mat-form-field appearance="outline"><mat-label>{{ 'CLINIC.RESULT_SUMMARY' | translate }}</mat-label><input matInput formControlName="resultSummary"></mat-form-field>
+          <app-date-field labelKey="CLINIC.RESULT_DATE" formControlName="resultDate"></app-date-field>
+          <div class="create-actions">
+            <button mat-button type="button" (click)="showForm = false">{{ 'COMMON.CANCEL' | translate }}</button>
+            <button mat-flat-button color="primary" type="submit" [disabled]="labForm.invalid || saving">{{ 'COMMON.SAVE' | translate }}</button>
+          </div>
+        </form>
+      </mat-card>
+      <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+      <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0 && !hasActiveFilters()" icon="science" titleKey="COMMON.NO_DATA"></app-empty-state>
+      <div class="app-list-surface" [class.is-refreshing]="listLoad.refreshing" *ngIf="listLoad.showSurface && (rows.length > 0 || hasActiveFilters())">
+        <div class="list-refresh-spinner" *ngIf="listLoad.refreshing"><mat-spinner diameter="32"></mat-spinner></div>
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
+        <section class="app-card table-card">
+          <div class="estate-table-toolbar directory-toolbar">
+            <label class="estate-search-inline"><span class="material-icons">search</span>
+              <input [(ngModel)]="searchTerm" (ngModelChange)="onSearch()" [placeholder]="'NAV.LAB_RESULTS' | translate">
+            </label>
+          </div>
+          <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
+            <th>{{ 'NAV.LAB_RESULTS' | translate }}</th><th>{{ 'COMMON.STATUS' | translate }}</th><th>{{ 'COMMON.ALL' | translate }}</th>
+          </tr></thead><tbody>
+            <tr *ngFor="let r of rows">
+              <td>{{ r.testNameAr }}</td><td>{{ r.resultSummary || '-' }}</td><td>{{ r.resultDate | rmsDate:'date' }}</td>
+            </tr>
+          </tbody></table></div>
+          <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
+        </section>
+      </div>
+    </div>

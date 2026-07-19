@@ -1,0 +1,14 @@
+    :host { display: block; height: calc(100vh - 64px); background: #0f172a; }
+    .vc-page { display: flex; flex-direction: column; height: 100%; color: #fff; }
+    .vc-topbar { display: flex; align-items: center; gap: 16px; padding: 12px 20px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
+    .vc-session-info { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .vc-avatar-sm { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #1d4ed8); display: grid; place-items: center; font-weight: 800; font-size: 1rem; flex-shrink: 0; }
+    .vc-doctor-name { font-size: 0.85rem; font-weight: 700; color: #e2e8f0; }
+    .vc-status { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: #94a3b8; }
+    .vc-dot { width: 7px; height: 7px; border-radius: 50%; background: #ef4444; }
+    .vc-dot.connected { background: #22c55e; }
+    .vc-room-id { font-size: 0.75rem; color: #64748b; font-family: monospace; }
+    .end-call-btn { display: flex; align-items: center; gap: 6px; padding: 8px 18px; border: none; border-radius: 10px; background: #ef4444; color: #fff; font: inherit; font-weight: 700; font-size: 0.85rem; cursor: pointer; }
+    .vc-main { flex: 1; position: relative; overflow: hidden; }
+    .vc-loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; color: #94a3b8; background: #0f172a; z-index: 10; }
+    .jitsi-frame { width: 100%; height: 100%; }

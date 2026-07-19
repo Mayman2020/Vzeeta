@@ -1,0 +1,20 @@
+    .mr-page { width: 100%; max-width: none; margin-inline: 0; }
+    .mr-header { margin-bottom: 24px; }
+    .mr-title { margin: 0 0 4px; font-size: 1.5rem; font-weight: 900; color: #0f172a; }
+    .mr-sub { margin: 0; color: #64748b; font-size: 0.88rem; }
+    .mr-loading { display: flex; justify-content: center; padding: 40px; }
+    .mr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .mr-card { display: flex; gap: 14px; background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 18px; box-shadow: 0 2px 6px rgba(15,23,42,0.04); transition: box-shadow 0.15s; &:hover { box-shadow: 0 6px 18px rgba(15,23,42,0.08); } }
+    .mr-card-icon { width: 48px; height: 48px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; .material-icons { font-size: 22px; }
+      &.diagnosis { background: #dbeafe; .material-icons { color: #2563eb; } }
+      &.prescription { background: #d1fae5; .material-icons { color: #059669; } }
+      &.lab { background: #fde8d8; .material-icons { color: #ea580c; } }
+      &.imaging { background: #ede9fe; .material-icons { color: #7c3aed; } }
+      &.default { background: #f1f5f9; .material-icons { color: #64748b; } } }
+    .mr-card-body { flex: 1; min-width: 0; }
+    .mr-card-type { font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .mr-card-title { margin: 0 0 6px; font-size: 0.95rem; font-weight: 800; color: #0f172a; }
+    .mr-card-desc { margin: 0 0 10px; font-size: 0.82rem; color: #475569; line-height: 1.6; }
+    .mr-card-date { display: flex; align-items: center; gap: 4px; font-size: 0.76rem; color: #94a3b8; .material-icons { font-size: 14px; } }
+    .mr-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 48px 24px; text-align: center; h3 { margin: 0; color: #0f172a; } }
+    .empty-icon { width: 64px; height: 64px; border-radius: 50%; background: #f1f5f9; display: grid; place-items: center; .material-icons { font-size: 32px; color: #94a3b8; } }

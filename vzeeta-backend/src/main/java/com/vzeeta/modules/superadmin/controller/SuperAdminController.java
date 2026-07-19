@@ -7,8 +7,13 @@ import com.vzeeta.modules.lookup.entity.City;
 import com.vzeeta.modules.permission.annotation.RequiresPermission;
 import com.vzeeta.modules.payment.entity.Payment;
 import com.vzeeta.modules.settings.entity.SystemSetting;
+import com.vzeeta.modules.subscription.dto.GrantTrialRequest;
+import com.vzeeta.modules.subscription.dto.RejectSubscriptionRequest;
+import com.vzeeta.modules.subscription.entity.ClinicSubscription;
+import com.vzeeta.modules.subscription.entity.SubscriptionPlan;
 import com.vzeeta.modules.superadmin.service.SuperAdminService;
 import com.vzeeta.modules.user.entity.User;
+import com.vzeeta.shared.enums.ClinicSubscriptionStatus;
 import com.vzeeta.shared.enums.PaymentStatus;
 import com.vzeeta.shared.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -55,6 +60,12 @@ public class SuperAdminController {
     @RequiresPermission(module = "users", action = "edit")
     public ResponseEntity<ApiResponse<User>> updateUser(@PathVariable Long id, @RequestBody User request) {
         return ResponseEntity.ok(ApiResponse.ok(superAdminService.updateUser(id, request)));
+    }
+
+    @PatchMapping("/users/{id}/toggle-active")
+    @RequiresPermission(module = "users", action = "edit")
+    public ResponseEntity<ApiResponse<User>> toggleUserActive(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.ok(superAdminService.toggleUserActive(id)));
     }
 
     @PostMapping("/doctors/{id}/verify")
@@ -123,5 +134,45 @@ public class SuperAdminController {
     @RequiresPermission(module = "dashboard", action = "view")
     public ResponseEntity<ApiResponse<Map<String, Object>>> dashboard() {
         return ResponseEntity.ok(ApiResponse.ok(superAdminService.dashboard()));
+    }
+
+    @GetMapping("/subscription-plans")
+    @RequiresPermission(module = "subscriptions", action = "view")
+    public ResponseEntity<ApiResponse<List<SubscriptionPlan>>> subscriptionPlans() {
+        return ResponseEntity.ok(ApiResponse.ok(superAdminService.listSubscriptionPlans()));
+    }
+
+    @PostMapping("/subscription-plans")
+    @RequiresPermission(module = "subscriptions", action = "edit")
+    public ResponseEntity<ApiResponse<SubscriptionPlan>> saveSubscriptionPlan(@RequestBody SubscriptionPlan plan) {
+        return ResponseEntity.ok(ApiResponse.ok(superAdminService.saveSubscriptionPlan(plan)));
+    }
+
+    @GetMapping("/clinic-subscriptions")
+    @RequiresPermission(module = "subscriptions", action = "view")
+    public ResponseEntity<ApiResponse<Page<ClinicSubscription>>> clinicSubscriptions(
+            @RequestParam(required = false) ClinicSubscriptionStatus status,
+            Pageable pageable) {
+        return ResponseEntity.ok(ApiResponse.ok(superAdminService.listClinicSubscriptions(status, pageable)));
+    }
+
+    @PostMapping("/clinic-subscriptions/{id}/approve")
+    @RequiresPermission(module = "subscriptions", action = "approve")
+    public ResponseEntity<ApiResponse<ClinicSubscription>> approveClinicSubscription(@PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.ok(superAdminService.approveClinicSubscription(id)));
+    }
+
+    @PostMapping("/clinic-subscriptions/{id}/reject")
+    @RequiresPermission(module = "subscriptions", action = "approve")
+    public ResponseEntity<ApiResponse<ClinicSubscription>> rejectClinicSubscription(
+            @PathVariable Long id, @RequestBody RejectSubscriptionRequest request) {
+        return ResponseEntity.ok(ApiResponse.ok(superAdminService.rejectClinicSubscription(id, request.getReason())));
+    }
+
+    @PostMapping("/clinics/{clinicId}/subscriptions/grant-trial")
+    @RequiresPermission(module = "subscriptions", action = "approve")
+    public ResponseEntity<ApiResponse<ClinicSubscription>> grantTrial(
+            @PathVariable Long clinicId, @RequestBody GrantTrialRequest request) {
+        return ResponseEntity.ok(ApiResponse.ok(superAdminService.grantTrial(clinicId, request)));
     }
 }

@@ -1,0 +1,77 @@
+    <div class="app-page dashboard-page">
+      <div *ngIf="loading" class="loading-center"><mat-spinner diameter="40"></mat-spinner></div>
+      <ng-container *ngIf="!loading">
+        <div class="estate-stat-grid">
+          <article class="estate-stat-card navy">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'DOCTOR.TODAY_APPOINTMENTS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">today</span></div>
+            </div>
+            <div class="estate-stat-value">{{ todayCount }}</div>
+            <div class="estate-stat-foot">
+              <span class="material-icons kpi-nav-arrow">schedule</span>
+              <span>{{ 'COMMON.TODAY' | translate }}</span>
+            </div>
+          </article>
+
+          <article class="estate-stat-card teal">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'DOCTOR.WEEK_APPOINTMENTS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">event_note</span></div>
+            </div>
+            <div class="estate-stat-value">{{ totalCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ 'APPOINTMENT.ALL' | translate }}</span>
+            </div>
+          </article>
+
+          <article class="estate-stat-card gold">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'DOCTOR.MONTH_EARNINGS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">payments</span></div>
+            </div>
+            <div class="estate-stat-value">{{ totalEarnings }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ 'COMMON.EGP' | translate }}</span>
+            </div>
+          </article>
+
+          <article class="estate-stat-card danger">
+            <div class="estate-stat-top">
+              <span class="estate-stat-label">{{ 'DOCTOR.PENDING_REQUESTS' | translate }}</span>
+              <div class="estate-stat-icon"><span class="material-icons">pending_actions</span></div>
+            </div>
+            <div class="estate-stat-value">{{ pendingCount }}</div>
+            <div class="estate-stat-foot">
+              <span>{{ 'APPOINTMENT.STATUS_PENDING' | translate }}</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- Today's Appointments -->
+        <div class="appt-panel">
+          <div class="appt-panel-head">
+            <h3 class="appt-panel-title">{{ 'CLINIC.TODAY_APPOINTMENTS' | translate }} <span class="appt-count">({{ todayAppointments.length }})</span></h3>
+          </div>
+          <div class="appt-grid" *ngIf="todayAppointments.length > 0; else noAppts">
+            <div class="appt-card" *ngFor="let a of todayAppointments">
+              <div class="appt-card-row">
+                <div class="appt-avatar" [style.background]="avatarColor(a.patientNameAr || a.patientNameEn || 'P')">
+                  {{ initials(a.patientNameAr || a.patientNameEn) }}
+                </div>
+                <div class="appt-info">
+                  <div class="appt-name">{{ a.patientNameAr || a.patientNameEn || ('PATIENT.PATIENT' | translate) + ' #' + a.patientId }}</div>
+                  <div class="appt-type">{{ a.specialtyNameAr || a.consultationType }}</div>
+                  <span class="status-badge" [attr.data-status]="a.status">{{ 'STATUS.' + a.status | translate }}</span>
+                </div>
+              </div>
+              <div class="appt-time">{{ a.startTime | slice:0:5 }}</div>
+              <div class="appt-date">{{ a.appointmentDate | rmsDate:'date' }}</div>
+            </div>
+          </div>
+          <ng-template #noAppts>
+            <div class="appt-empty"><span class="material-icons">event_available</span><p>{{ 'APPOINTMENT.NO_TODAY' | translate }}</p></div>
+          </ng-template>
+        </div>
+      </ng-container>
+    </div>

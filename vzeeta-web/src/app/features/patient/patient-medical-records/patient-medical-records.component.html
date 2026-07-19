@@ -1,0 +1,31 @@
+    <div class="app-page mr-page">
+      <div class="mr-header">
+        <div>
+          <h1 class="mr-title">{{ 'NAV.MEDICAL_RECORDS' | translate }}</h1>
+          <p class="mr-sub">{{ 'PATIENT.RECORDS_SUBTITLE' | translate }}</p>
+        </div>
+      </div>
+      <div class="mr-loading" *ngIf="listLoad.showInitialSpinner"><mat-spinner diameter="40"></mat-spinner></div>
+      <div class="mr-grid" *ngIf="listLoad.showSurface && items.length > 0">
+        <div class="mr-card" *ngFor="let r of items">
+          <div class="mr-card-icon" [class]="iconClass(r.recordType)">
+            <span class="material-icons">{{ recordIcon(r.recordType) }}</span>
+          </div>
+          <div class="mr-card-body">
+            <div class="mr-card-type">{{ 'RECORD_TYPE.' + r.recordType | translate }}</div>
+            <h3 class="mr-card-title">{{ recordTitle(r) }}</h3>
+            <p class="mr-card-desc">{{ recordDescription(r) }}</p>
+            <div class="mr-card-date">
+              <span class="material-icons">calendar_today</span>
+              {{ r.createdAt | rmsDate:'date' }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <app-table-pager *ngIf="listLoad.showSurface && totalElements > pageSize"
+        [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
+      <div class="mr-empty" *ngIf="listLoad.showSurface && !items.length">
+        <div class="empty-icon"><span class="material-icons">folder_open</span></div>
+        <h3>{{ 'PATIENT.NO_RECORDS' | translate }}</h3>
+      </div>
+    </div>

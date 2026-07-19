@@ -7,7 +7,7 @@ const { chromium } = require('playwright');
   page.on('console', msg => logs.push(`${msg.type()}: ${msg.text()}`));
   page.on('pageerror', err => logs.push(`pageerror: ${err.message}`));
   page.on('requestfailed', req => logs.push(`failed: ${req.method()} ${req.url()} ${req.failure()?.errorText}`));
-  await page.goto('http://localhost:4200/auth/login', { waitUntil: 'domcontentloaded' });
+  await page.goto('http://localhost:4202/auth/login', { waitUntil: 'domcontentloaded' });
   await page.fill('input[formcontrolname="email"]', 'superadmin@tabeebi.com');
   await page.fill('input[formcontrolname="password"]', 'Dev@Local2026!');
   await page.click('button[type="submit"]');

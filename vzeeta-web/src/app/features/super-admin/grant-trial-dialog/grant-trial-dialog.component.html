@@ -1,0 +1,20 @@
+    <h2 mat-dialog-title>
+      <mat-icon class="dialog-title-icon">redeem</mat-icon>
+      {{ 'SUBSCRIPTION.GRANT_TRIAL' | translate }}
+    </h2>
+    <mat-dialog-content class="dialog-body">
+      <p>{{ 'SUBSCRIPTION.GRANT_TRIAL_FOR' | translate: { clinic: data.clinicName } }}</p>
+      <form [formGroup]="form" class="rms-dialog-form">
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'SUBSCRIPTION.TRIAL_MONTHS' | translate }}</mat-label>
+          <input matInput type="number" min="1" max="12" formControlName="months">
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" class="dialog-actions">
+      <button mat-stroked-button type="button" (click)="ref.close(false)">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="saving || form.invalid">
+        <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+        <span *ngIf="!saving">{{ 'SUBSCRIPTION.GRANT' | translate }}</span>
+      </button>
+    </mat-dialog-actions>

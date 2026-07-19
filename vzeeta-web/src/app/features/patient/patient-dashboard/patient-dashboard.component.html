@@ -1,0 +1,150 @@
+    <div class="app-page dashboard-page" *ngIf="!loading; else loadingTpl">
+
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <div class="welcome-left">
+          <div class="welcome-icon-wrap">
+            <mat-icon>health_and_safety</mat-icon>
+          </div>
+          <div class="welcome-text">
+            <h1 class="welcome-title">{{ 'PATIENT.WELCOME' | translate }}</h1>
+            <p class="welcome-sub">{{ 'PATIENT.DASHBOARD_SUBTITLE' | translate }}</p>
+          </div>
+        </div>
+        <a mat-flat-button class="book-now-btn" routerLink="/doctors">
+          <mat-icon>add</mat-icon>
+          {{ 'BOOKING.BOOK_NOW' | translate }}
+        </a>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="estate-stat-grid patient-kpi-grid">
+        <article class="estate-stat-card navy" routerLink="/patient/appointments">
+          <div class="estate-stat-top">
+            <span class="estate-stat-label">{{ 'PATIENT.UPCOMING_APPOINTMENTS' | translate }}</span>
+            <div class="estate-stat-icon"><span class="material-icons">event</span></div>
+          </div>
+          <div class="estate-stat-body">
+            <app-stat-counter [value]="upcomingCount" tone="navy"></app-stat-counter>
+          </div>
+          <div class="estate-stat-foot">
+            <span class="material-icons kpi-nav-arrow">arrow_forward</span>
+            <span>{{ 'COMMON.UPCOMING' | translate }}</span>
+          </div>
+        </article>
+
+        <article class="estate-stat-card teal" routerLink="/patient/favorites">
+          <div class="estate-stat-top">
+            <span class="estate-stat-label">{{ 'PATIENT.FAVORITE_DOCTORS' | translate }}</span>
+            <div class="estate-stat-icon"><span class="material-icons">favorite</span></div>
+          </div>
+          <div class="estate-stat-body">
+            <app-stat-counter [value]="favoritesCount" tone="teal"></app-stat-counter>
+          </div>
+          <div class="estate-stat-foot">
+            <span class="material-icons kpi-nav-arrow">arrow_forward</span>
+            <span>{{ 'COMMON.TOTAL' | translate }}</span>
+          </div>
+        </article>
+
+        <article class="estate-stat-card gold" routerLink="/patient/prescriptions">
+          <div class="estate-stat-top">
+            <span class="estate-stat-label">{{ 'PATIENT.ACTIVE_PRESCRIPTIONS' | translate }}</span>
+            <div class="estate-stat-icon"><span class="material-icons">medication</span></div>
+          </div>
+          <div class="estate-stat-body">
+            <app-stat-counter [value]="prescriptionsCount" tone="gold"></app-stat-counter>
+          </div>
+          <div class="estate-stat-foot">
+            <span class="material-icons kpi-nav-arrow">arrow_forward</span>
+            <span>{{ 'COMMON.TOTAL' | translate }}</span>
+          </div>
+        </article>
+
+        <article class="estate-stat-card" [class.danger]="unreadCount > 0" routerLink="/patient/notifications">
+          <div class="estate-stat-top">
+            <span class="estate-stat-label">{{ 'PATIENT.UNREAD_NOTIFICATIONS' | translate }}</span>
+            <div class="estate-stat-icon"><span class="material-icons">notifications</span></div>
+          </div>
+          <div class="estate-stat-body">
+            <app-stat-counter [value]="unreadCount" [tone]="unreadCount > 0 ? 'danger' : 'navy'"></app-stat-counter>
+          </div>
+          <div class="estate-stat-foot">
+            <span class="material-icons kpi-nav-arrow">{{ unreadCount > 0 ? 'priority_high' : 'done_all' }}</span>
+            <span>{{ (unreadCount > 0 ? 'COMMON.NEW' : 'COMMON.ALL_READ') | translate }}</span>
+          </div>
+        </article>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="quick-section">
+        <div class="section-header">
+          <h2 class="section-title">{{ 'PATIENT.QUICK_ACTIONS' | translate }}</h2>
+          <span class="section-badge">{{ 'COMMON.FAST_ACCESS' | translate }}</span>
+        </div>
+        <div class="quick-grid">
+          <a routerLink="/doctors" class="quick-card q-blue">
+            <span class="q-icon"><mat-icon>search</mat-icon></span>
+            <span class="q-label">{{ 'HOME.SEARCH' | translate }}</span>
+            <span class="q-desc">{{ 'PATIENT.QA_SEARCH_DESC' | translate }}</span>
+          </a>
+          <a routerLink="/patient/appointments" class="quick-card q-rose">
+            <span class="q-icon"><mat-icon>event_note</mat-icon></span>
+            <span class="q-label">{{ 'NAV.APPOINTMENTS' | translate }}</span>
+            <span class="q-desc">{{ 'PATIENT.QA_APPT_DESC' | translate }}</span>
+          </a>
+          <a routerLink="/patient/medical-records" class="quick-card q-teal">
+            <span class="q-icon"><mat-icon>folder_open</mat-icon></span>
+            <span class="q-label">{{ 'NAV.MEDICAL_RECORDS' | translate }}</span>
+            <span class="q-desc">{{ 'PATIENT.QA_RECORDS_DESC' | translate }}</span>
+          </a>
+          <a routerLink="/patient/prescriptions" class="quick-card q-purple">
+            <span class="q-icon"><mat-icon>medication</mat-icon></span>
+            <span class="q-label">{{ 'NAV.PRESCRIPTIONS' | translate }}</span>
+            <span class="q-desc">{{ 'PATIENT.QA_RX_DESC' | translate }}</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Upcoming Appointments -->
+      <div class="appt-section" *ngIf="upcomingAppointments.length > 0">
+        <div class="section-header">
+          <h2 class="section-title">{{ 'PATIENT.UPCOMING_APPOINTMENTS' | translate }}</h2>
+          <a routerLink="/patient/appointments" class="see-all">
+            {{ 'COMMON.SEE_ALL' | translate }}
+            <mat-icon>chevron_right</mat-icon>
+          </a>
+        </div>
+        <div class="appt-card-grid">
+          <div class="appt-card" *ngFor="let a of upcomingAppointments">
+            <div class="appt-avatar" [style.background]="avatarColor(a.doctorNameAr || 'D')">
+              {{ initials(a.doctorNameAr || a.doctorNameEn) }}
+            </div>
+            <div class="appt-info">
+              <div class="appt-doctor">{{ a.doctorNameAr || a.doctorNameEn || ('PATIENT.DOCTOR' | translate) }}</div>
+              <div class="appt-meta">
+                <span class="appt-time"><mat-icon>schedule</mat-icon> {{ a.startTime.substring(0, 5) }}</span>
+                <span class="appt-date"><mat-icon>calendar_today</mat-icon> {{ a.appointmentDate }}</span>
+              </div>
+              <span class="appt-status" [attr.data-status]="a.status">{{ a.status }}</span>
+            </div>
+            <a routerLink="/patient/appointments" class="appt-view-btn">
+              <mat-icon>arrow_forward</mat-icon>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state for appointments -->
+      <div class="appt-empty" *ngIf="upcomingAppointments.length === 0">
+        <div class="empty-icon"><mat-icon>event_busy</mat-icon></div>
+        <h3>{{ 'PATIENT.NO_APPOINTMENTS' | translate }}</h3>
+        <p>{{ 'PATIENT.NO_APPOINTMENTS_HINT' | translate }}</p>
+        <a mat-flat-button class="book-now-btn" routerLink="/doctors">
+          <mat-icon>search</mat-icon>
+          {{ 'HOME.SEARCH' | translate }}
+        </a>
+      </div>
+    </div>
+
+    <ng-template #loadingTpl><app-loading-spinner [local]="true"></app-loading-spinner></ng-template>

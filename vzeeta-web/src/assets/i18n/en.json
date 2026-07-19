@@ -7,10 +7,19 @@
     "TAGLINE_SHORT": "Appointment OS",
     "FOOTER": "NABD — All rights reserved"
   },
+  "NAV_SECTION": {
+    "OVERVIEW": "Overview",
+    "CLINIC": "Clinic",
+    "CARE": "Care",
+    "MANAGEMENT": "Management",
+    "FINANCE": "Finance",
+    "ACCOUNT": "Account"
+  },
   "COMMON": {
     "LANGUAGE": "Language",
     "SAR": "SAR",
-    "EGP": "EGP",
+    "EGP": "OMR",
+    "OMR": "OMR",
     "NEXT": "Next",
     "BACK": "Back",
     "NO_DATA": "No data available",
@@ -50,9 +59,15 @@
     "NEW": "New",
     "FAST_ACCESS": "Quick access",
     "VIEW_FILE": "View file",
+    "EXPORT_EXCEL": "Export to Excel",
+    "NO_RESULTS": "No results",
+    "REQUIRED": "Required",
     "UPLOAD_MAX_HINT": "Images up to 20 MB — documents/video up to 50 MB",
     "UPLOAD_SOME_FAILED": "Some files failed to upload",
-    "UPLOAD_REJECTED_TOO_LARGE": "File size exceeds the allowed limit"
+    "UPLOAD_REJECTED_TOO_LARGE": "File size exceeds the allowed limit",
+    "EMAIL": "Email",
+    "PHONE": "Phone",
+    "ERROR": "An error occurred"
   },
   "TOPBAR": {
     "DARK_MODE": "Switch to dark mode",
@@ -64,6 +79,10 @@
     "MUTE_SOUND": "Mute sound",
     "UNMUTE_SOUND": "Unmute sound"
   },
+  "DIALOG": {
+    "DELETE_TITLE": "Confirm deletion",
+    "DELETE_GENERIC": "Are you sure you want to delete this record? This action cannot be undone."
+  },
   "ACTIONS": {
     "ADD": "Add",
     "CANCEL": "Cancel",
@@ -71,8 +90,11 @@
     "DOWNLOAD": "Download",
     "EDIT": "Edit",
     "VIEW": "View",
+    "VIEW_ALL": "View all",
     "SAVE": "Save",
-    "CONFIRM": "Confirm"
+    "CONFIRM": "Confirm",
+    "SEARCH": "Search",
+    "NO_RESULTS": "No results found"
   },
   "AUDIT": {
     "INFO_TITLE": "Audit Trail",
@@ -84,7 +106,21 @@
     "UNKNOWN": "Unknown"
   },
   "UPLOAD": {
-    "REPLACE_FILE": "Replace file"
+    "REPLACE_FILE": "Replace file",
+    "REMOVE_FILE": "Remove file",
+    "PROFILE_IMAGE": "Profile image",
+    "UPLOAD_PHOTO": "Upload photo",
+    "CIVIL_ID_IMAGE": "ID / document image",
+    "UPLOAD_CIVIL_ID": "Upload ID / document"
+  },
+  "LOV": {
+    "SELECT_PLACEHOLDER": "Press search to select",
+    "SEARCH_PLACEHOLDER": "Search in list...",
+    "CLEAR": "Clear selection",
+    "OPEN": "Open selector"
+  },
+  "PAGE": {
+    "BREADCRUMB_LABEL": "Breadcrumb"
   },
   "AUTH": {
     "LOGIN": "Login",
@@ -199,10 +235,10 @@
     "CTA_DESC": "Join thousands of patients who trust NABD for their healthcare"
   },
   "SEARCH": {
-    "DOCTOR_NAME": "Doctor Name",
+    "DOCTOR_NAME": "Search by doctor name, specialty, or clinic",
     "SPECIALTY": "Specialty",
-    "CITY": "City",
-    "AREA": "Area",
+    "CITY": "Governorate",
+    "AREA": "Wilayat",
     "SEARCH": "Search",
     "RESULTS_TITLE": "Search Results",
     "FILTERS": "Filters",
@@ -218,6 +254,11 @@
     "TRY_DIFFERENT": "Try adjusting your search filters",
     "RELEVANCE": "Relevance",
     "RATING": "Rating",
+    "NEAREST": "Nearest",
+    "LOCATING": "Locating you...",
+    "LOCATION_UNAVAILABLE": "Your browser doesn't support location",
+    "LOCATION_DENIED": "Location access was denied",
+    "KM_AWAY": "km",
     "SORT_BY": "Sort by",
     "ALL_DOCTORS": "Available Doctors",
     "SPECIALTY_DOCTORS": "{{specialty}} Doctors",
@@ -285,12 +326,74 @@
     "CLINICS": "Clinics",
     "USERS": "Users",
     "VERIFICATION": "Verification",
-    "CITIES": "Cities",
+    "CITIES": "Governorates",
     "PAYMENTS": "Payments",
     "SETTINGS": "Settings",
     "PERMISSIONS": "Permissions",
     "LOOKUPS": "Lookups",
-    "PROFILE": "Profile"
+    "PROFILE": "Profile",
+    "SUBSCRIPTION_PLANS": "Subscription Plans",
+    "CLINIC_SUBSCRIPTIONS": "Clinic Subscriptions",
+    "MY_SUBSCRIPTION": "My Subscription"
+  },
+  "SUBSCRIPTION": {
+    "PLANS_TITLE": "Subscription Plans",
+    "PLANS_SUBTITLE": "Manage monthly and yearly clinic subscription plans",
+    "ADD_PLAN": "Add Plan",
+    "EDIT_PLAN": "Edit Plan",
+    "PLAN_SAVED": "Plan saved",
+    "BILLING_CYCLE": "Billing Cycle",
+    "MONTHLY": "Monthly",
+    "YEARLY": "Yearly",
+    "PRICE_OMR": "Price (OMR)",
+    "GRANT_TRIAL": "Grant Free Trial",
+    "GRANT_TRIAL_FOR": "Grant a free trial to {{clinic}}",
+    "TRIAL_MONTHS": "Number of months (1-12)",
+    "GRANT": "Grant",
+    "TRIAL_GRANTED": "Trial granted successfully",
+    "CLINIC_SUBSCRIPTIONS_TITLE": "Clinic Subscriptions",
+    "CLINIC_SUBSCRIPTIONS_SUBTITLE": "Review and approve or reject payment requests",
+    "PAYMENT_METHOD": "Payment Method",
+    "AMOUNT": "Amount",
+    "RECEIPT": "Receipt",
+    "VIEW_RECEIPT": "View Receipt",
+    "END_DATE": "End Date",
+    "APPROVE": "Approve",
+    "REJECT": "Reject",
+    "REJECT_PAYMENT": "Reject Payment",
+    "REJECTION_REASON": "Rejection Reason",
+    "APPROVED_OK": "Subscription approved and activated",
+    "REJECTED_OK": "Payment request rejected",
+    "STATUS_PENDING_PAYMENT": "Pending Payment",
+    "STATUS_PENDING_APPROVAL": "Pending Approval",
+    "STATUS_ACTIVE": "Active",
+    "STATUS_REJECTED": "Rejected",
+    "STATUS_EXPIRED": "Expired",
+    "STATUS_CANCELLED": "Cancelled",
+    "METHOD_RECEIPT_UPLOAD": "Bank Receipt",
+    "METHOD_ONLINE_PLACEHOLDER": "Online Payment",
+    "METHOD_ADMIN_GRANT": "Admin Grant",
+    "MY_SUBSCRIPTION_TITLE": "My Subscription",
+    "MY_SUBSCRIPTION_SUBTITLE": "Your clinic's subscription status and payment history",
+    "CHOOSE_PLAN": "Choose Plan",
+    "FREE_TRIAL_ACTIVE": "You are currently on a free trial",
+    "EXPIRES_ON": "Expires on",
+    "NO_SUBSCRIPTION_YET": "No subscription yet",
+    "CHOOSE_PLAN_TITLE": "Choose a Subscription Plan",
+    "CHOOSE_PLAN_SUBTITLE": "Pick the right plan for your clinic and complete payment",
+    "UPLOAD_RECEIPT_HINT": "Upload an image or file of your bank transfer receipt",
+    "ONLINE_PLACEHOLDER_NOTE": "Online payment is coming soon. Your request will be reviewed manually by the admin after submission.",
+    "SUBMIT_PAYMENT": "Submit Payment Request",
+    "SUBMITTED_OK": "Payment request submitted, pending admin review",
+    "LOCKED_TITLE": "Subscription Inactive",
+    "LOCKED_MESSAGE": "Your clinic's subscription has expired or has not been activated yet. Please subscribe to continue using the clinic admin panel.",
+    "GO_TO_SUBSCRIPTION": "Go to Subscription",
+    "PRICING_PER_DOCTOR_HINT": "Pricing is per verified doctor. Your clinic currently has {{count}} verified doctor(s).",
+    "PER_DOCTOR": "per doctor",
+    "DOCTORS": "doctors",
+    "TOPUP_DUE_TITLE": "Additional Payment Due",
+    "TOPUP_DUE_MESSAGE": "A newly verified doctor was added to your clinic. Amount due: {{amount}} OMR (total doctors now covered: {{count}}).",
+    "PAY_NOW": "Pay Now"
   },
   "PERMISSIONS": {
     "TITLE": "Role Permissions",
@@ -304,7 +407,30 @@
     "EDIT": "Edit",
     "DELETE": "Delete",
     "EXPORT": "Export",
-    "APPROVE": "Approve"
+    "APPROVE": "Approve",
+    "MODULES": {
+      "DASHBOARD": "Dashboard",
+      "APPOINTMENTS": "Appointments",
+      "FAVORITES": "Favorites",
+      "PRESCRIPTIONS": "Prescriptions",
+      "LAB_RESULTS": "Lab Results",
+      "MEDICAL_RECORDS": "Medical Records",
+      "NOTIFICATIONS": "Notifications",
+      "CALENDAR": "Calendar",
+      "EARNINGS": "Earnings",
+      "CLINICS": "Clinics",
+      "USERS": "Users",
+      "DOCTORS": "Doctors",
+      "PATIENTS": "Patients",
+      "PAYMENTS": "Payments",
+      "SETTINGS": "Settings",
+      "PERMISSIONS": "Permissions",
+      "SPECIALTIES": "Specialties",
+      "LOOKUPS": "Reference Data",
+      "CITIES": "Cities",
+      "AREAS": "Areas",
+      "VERIFICATION": "Verification"
+    }
   },
   "LOOKUPS": {
     "TITLE": "Lookup Management",
@@ -314,11 +440,11 @@
     "TAB_CLINIC_TYPE": "Clinic Types",
     "TAB_PAYMENT_METHOD": "Payment Methods",
     "TAB_APPOINTMENT_STATUS": "Appointment Statuses",
-    "CITIES": "Cities",
-    "AREAS": "Areas",
-    "CITY": "City",
-    "ADD_CITY": "Add city",
-    "ADD_AREA": "Add area",
+    "CITIES": "Governorates",
+    "AREAS": "Wilayats",
+    "CITY": "Governorate",
+    "ADD_CITY": "Add governorate",
+    "ADD_AREA": "Add wilayat",
     "ITEM_COUNT": "{{count}} items",
     "CODE": "Code",
     "CODE_OPTIONAL_HINT": "Leave empty to auto-generate",
@@ -355,7 +481,11 @@
     "PASSWORD_HINT": "Minimum 6 characters. Use a strong mix of letters, numbers, and symbols.",
     "PASSWORD_CHANGED": "Password changed successfully",
     "PASSWORD_CHANGE_ERROR": "Failed to change password",
-    "PASSWORD_MISMATCH": "New password and confirmation do not match"
+    "PASSWORD_MISMATCH": "New password and confirmation do not match",
+    "BIO": "Bio",
+    "PHOTO_BELOW_HINT": "Upload or change your profile photo below",
+    "IMAGE_UPLOAD": "Profile photo",
+    "UPLOAD_PHOTO": "Upload photo"
   },
   "NOTIFICATIONS": {
     "TITLE": "Notifications",
@@ -393,6 +523,7 @@
     "NO_APPOINTMENTS": "No appointments yet",
     "NO_FAVORITES": "No favorite doctors yet",
     "REMOVED_FAVORITE": "Removed from favorites",
+    "REMOVE_FAVORITE_CONFIRM": "Remove this doctor from your favorites?",
     "NO_PRESCRIPTIONS": "No prescriptions",
     "NO_LAB_RESULTS": "No lab results",
     "NO_RECORDS": "No medical records",
@@ -441,7 +572,8 @@
     "OTHER_HINT": "Any other medical document — up to 50 MB",
     "NO_ATTACHMENTS": "No attachments in this section",
     "UPLOAD_SUCCESS": "Files uploaded successfully",
-    "ATTACHMENT_DELETED": "Attachment deleted"
+    "ATTACHMENT_DELETED": "Attachment deleted",
+    "DELETE_ATTACHMENT_CONFIRM": "Delete this attachment? This action cannot be undone."
   },
   "DOCTOR": {
     "DASHBOARD_TITLE": "Doctor Dashboard",
@@ -449,7 +581,7 @@
     "WELCOME": "Welcome Doctor — here's your day summary",
     "TODAY_APPOINTMENTS": "Today's Appointments",
     "WEEK_APPOINTMENTS": "Total Appointments",
-    "MONTH_EARNINGS": "Total Earnings (EGP)",
+    "MONTH_EARNINGS": "Total Earnings (OMR)",
     "PENDING_REQUESTS": "Pending Requests",
     "RATING": "Rating",
     "ACCEPT": "Accept",
@@ -480,6 +612,7 @@
     "FAST": "Fast",
     "BOOKING": "Booking",
     "REVIEWS": "reviews",
+    "CLINIC_REVIEWS": "clinic reviews",
     "PATIENTS": "patients",
     "YEARS_EXP": "yrs experience",
     "ABOUT": "About",
@@ -540,7 +673,10 @@
     "ALL": "All",
     "AWAITING": "Awaiting",
     "NO_TODAY": "No appointments today",
-    "STATUS_PENDING": "Pending"
+    "STATUS_PENDING": "Pending",
+    "PENDING": "Pending",
+    "CANCELLED": "Cancelled",
+    "STATUS_CANCELLED": "Cancelled"
   },
   "ADMIN": {
     "DASHBOARD_TITLE": "Super Admin Dashboard",
@@ -549,7 +685,7 @@
     "TOTAL_USERS": "Total Users",
     "PENDING_VERIFICATION": "Doctors Pending Verification",
     "TOTAL_PAYMENTS": "Total Payments",
-    "MONTH_REVENUE": "Month Revenue (EGP)",
+    "MONTH_REVENUE": "Month Revenue (OMR)",
     "VERIFIED": "Verified",
     "PENDING": "Pending",
     "ACTIVE": "Active",
@@ -557,6 +693,8 @@
     "VERIFY": "Verify",
     "VERIFIED_SUCCESS": "Doctor verified",
     "NO_PENDING": "No doctors pending verification",
+    "SEARCH_DOCTOR_PLACEHOLDER": "Search by doctor name, specialty, or clinic",
+    "SEARCH_CLINIC_DOCTOR_PLACEHOLDER": "Search by doctor name or specialty",
     "CITY_NAME_AR": "City name (Arabic)",
     "CITY_NAME_EN": "City name (English)",
     "CITY_SAVED": "City saved",
@@ -578,11 +716,11 @@
     "TOGGLE_ACTIVE": "Toggle active",
     "MANAGEMENT": "Management",
     "REVIEW_NOW": "Review now",
-    "ADD_CITY": "Add city",
-    "MANAGE_AREAS": "Manage areas",
-    "AREAS_FOR": "Areas in",
-    "AREA_NAME_AR": "Area name (Arabic)",
-    "AREA_NAME_EN": "Area name (English)",
+    "ADD_CITY": "Add governorate",
+    "MANAGE_AREAS": "Manage wilayats",
+    "AREAS_FOR": "Wilayats in",
+    "AREA_NAME_AR": "Wilayat name (Arabic)",
+    "AREA_NAME_EN": "Wilayat name (English)",
     "AREA_SAVED": "Area saved"
   },
   "ERRORS": {
@@ -594,5 +732,9 @@
     "PRESCRIPTION": "Prescription",
     "LAB": "Lab result",
     "IMAGING": "Imaging"
+  },
+  "PROPERTY_FORM": {
+    "MAP_PREVIEW_INVALID": "Unable to preview this URL. Paste the full URL from your browser address bar instead.",
+    "MAP_SHORT_URL_NOT_SUPPORTED": "Short links (maps.app.goo.gl) cannot be embedded. Please paste the full URL from your browser address bar or use Share → Embed a map in Google Maps."
   }
 }

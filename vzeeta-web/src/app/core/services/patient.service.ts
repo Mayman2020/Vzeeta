@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ApiService } from './api.service';
 import { AppConstants } from '../constants/app-constants';
@@ -164,6 +164,12 @@ export class PatientService {
     );
   }
 
+  uploadProfileImage(file: File): Observable<string> {
+    return this.api.uploadFile(file).pipe(
+      switchMap((res) => this.updateProfile({ profileImageUrl: res.url }).pipe(map(() => res.url)))
+    );
+  }
+
   getAttachments(type?: AttachmentType): Observable<PatientAttachment[]> {
     const params: Record<string, string> = type ? { type } : {};
     return this.api.get<ApiResponse<PatientAttachment[]>>(AppConstants.API.PATIENT_ATTACHMENTS, params).pipe(
@@ -174,6 +180,16 @@ export class PatientService {
   addAttachment(payload: { type: AttachmentType; fileUrl: string; titleAr?: string; notes?: string }): Observable<PatientAttachment> {
     return this.api.post<ApiResponse<PatientAttachment>>(AppConstants.API.PATIENT_ATTACHMENTS, payload).pipe(
       map((res) => res.data!)
+    );
+  }
+
+  uploadAttachments(type: AttachmentType, files: File[]): Observable<PatientAttachment[]> {
+    return forkJoin(
+      files.map((file) =>
+        this.api.uploadFile(file).pipe(
+          switchMap((res) => this.addAttachment({ type, fileUrl: res.url, titleAr: file.name }))
+        )
+      )
     );
   }
 

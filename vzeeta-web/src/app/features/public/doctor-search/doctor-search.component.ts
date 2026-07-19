@@ -43,7 +43,9 @@ export class DoctorSearchComponent implements OnInit {
   pageIndex = 0;
   pageSize = DEFAULT_TABLE_PAGE_SIZE;
   totalElements = 0;
-  sortBy: 'relevance' | 'rating' = 'relevance';
+  sortBy: 'relevance' | 'rating' | 'nearest' = 'relevance';
+  userLocation: { lat: number; lng: number } | null = null;
+  locatingUser = false;
 
   constructor(
     fb: FormBuilder,
@@ -162,13 +164,74 @@ export class DoctorSearchComponent implements OnInit {
     });
   }
 
-  setSort(mode: 'relevance' | 'rating'): void {
+  setSort(mode: 'relevance' | 'rating' | 'nearest'): void {
     this.sortBy = mode;
     if (mode === 'rating') {
       this.doctors = [...this.doctors].sort((a, b) => b.rating - a.rating);
+    } else if (mode === 'nearest') {
+      this.sortByNearest();
     } else {
       this.loadDoctors();
     }
+  }
+
+  private sortByNearest(): void {
+    if (this.userLocation) {
+      this.applyNearestSort();
+      return;
+    }
+    if (!('geolocation' in navigator)) {
+      this.snack.error(this.i18n.instant('SEARCH.LOCATION_UNAVAILABLE'));
+      this.sortBy = 'relevance';
+      return;
+    }
+    this.locatingUser = true;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        this.userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        this.locatingUser = false;
+        this.applyNearestSort();
+      },
+      () => {
+        this.locatingUser = false;
+        this.snack.error(this.i18n.instant('SEARCH.LOCATION_DENIED'));
+        this.sortBy = 'relevance';
+      },
+      { timeout: 10000 }
+    );
+  }
+
+  private applyNearestSort(): void {
+    if (!this.userLocation) return;
+    this.doctors = [...this.doctors].sort((a, b) => this.nearestScore(a) - this.nearestScore(b));
+  }
+
+  /** Lower score = better: closer doctors rank first, with rating as a tiebreak/refinement (each star ~ worth 2km closer). */
+  private nearestScore(d: Doctor): number {
+    const distance = this.distanceKm(d);
+    if (distance === null) return Number.POSITIVE_INFINITY;
+    return distance - (d.rating || 0) * 2;
+  }
+
+  private distanceKm(d: Doctor): number | null {
+    if (!this.userLocation || d.latitude == null || d.longitude == null) return null;
+    const R = 6371;
+    const dLat = this.toRad(d.latitude - this.userLocation.lat);
+    const dLng = this.toRad(d.longitude - this.userLocation.lng);
+    const lat1 = this.toRad(this.userLocation.lat);
+    const lat2 = this.toRad(d.latitude);
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  private toRad(deg: number): number {
+    return (deg * Math.PI) / 180;
+  }
+
+  distanceLabel(d: Doctor): string | null {
+    const km = this.distanceKm(d);
+    return km === null ? null : `${km.toFixed(1)} ${this.i18n.instant('SEARCH.KM_AWAY')}`;
   }
 
   doctorName(d: Doctor): string {

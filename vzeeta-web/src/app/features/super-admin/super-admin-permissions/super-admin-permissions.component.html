@@ -1,0 +1,42 @@
+    <div class="app-page">
+      <app-page-header titleKey="PERMISSIONS.TITLE" subtitleKey="PERMISSIONS.SUBTITLE"></app-page-header>
+      <div class="app-list-surface" *ngIf="!loading; else loadingTpl">
+        <section class="app-card table-card">
+        <div class="permissions-toolbar">
+          <mat-form-field appearance="outline" class="filter-field" floatLabel="always" subscriptSizing="dynamic">
+            <mat-label>{{ 'PERMISSIONS.SELECT_ROLE' | translate }}</mat-label>
+            <mat-select [(ngModel)]="selectedRole" (selectionChange)="onRoleChange()" panelClass="app-select-panel permissions-role-panel">
+              <mat-option *ngFor="let role of roles" [value]="role">{{ ('ROLES.' + role) | translate }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="saving || loading">
+            {{ 'COMMON.SAVE' | translate }}
+          </button>
+        </div>
+
+        <div class="perm-grid">
+          <div class="perm-header">
+            <span>{{ 'PERMISSIONS.MODULE' | translate }}</span>
+            <span *ngFor="let action of actions">{{ ('PERMISSIONS.' + action.toUpperCase()) | translate }}</span>
+          </div>
+          <div class="perm-row" *ngFor="let module of displayedModules">
+            <span class="module-name">{{ moduleLabelKey(module) | translate }}</span>
+            <mat-checkbox
+              *ngFor="let action of actions"
+              [checked]="isChecked(module, action)"
+              (change)="toggle(module, action, $event.checked)">
+            </mat-checkbox>
+          </div>
+        </div>
+        <app-table-pager
+          [length]="modules.length"
+          [pageSize]="pageSize"
+          [pageIndex]="pageIndex"
+          (pageIndexChange)="onPageChange($event)">
+        </app-table-pager>
+      </section>
+      </div>
+      <ng-template #loadingTpl>
+        <div class="loading-wrap"><mat-spinner diameter="36"></mat-spinner></div>
+      </ng-template>
+    </div>

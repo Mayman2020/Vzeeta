@@ -24,7 +24,11 @@ public class DoctorSummaryDto {
     private List<String> specialtyNames;
     private Long clinicId;
     private String clinicNameAr;
+    private BigDecimal clinicRatingAvg;
+    private Integer clinicRatingCount;
     private String areaNameAr;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
     private boolean verified;
     private Integer yearsExperience;
 }

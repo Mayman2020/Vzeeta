@@ -1,0 +1,27 @@
+    <div class="vc-page">
+      <div class="vc-topbar">
+        <div class="vc-session-info">
+          <div class="vc-avatar-sm">{{ doctorInitial }}</div>
+          <div>
+            <div class="vc-doctor-name">{{ doctorName || ('VIDEO.SESSION_WITH' | translate) }}</div>
+            <div class="vc-status">
+              <span class="vc-dot" [class.connected]="jitsiReady"></span>
+              {{ (jitsiReady ? 'VIDEO.CONNECTED' : 'VIDEO.CONNECTING') | translate }}
+            </div>
+          </div>
+        </div>
+        <div class="vc-room-id">{{ roomName }}</div>
+        <button class="end-call-btn" (click)="endCall()">
+          <span class="material-icons">call_end</span>
+          {{ 'VIDEO.END_CALL' | translate }}
+        </button>
+      </div>
+
+      <div class="vc-main">
+        <div *ngIf="!jitsiReady" class="vc-loading">
+          <mat-spinner diameter="48"></mat-spinner>
+          <p>{{ 'VIDEO.CONNECTING' | translate }}</p>
+        </div>
+        <div id="jitsi-container" class="jitsi-frame"></div>
+      </div>
+    </div>

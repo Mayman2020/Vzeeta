@@ -1,8 +1,12 @@
 <div class="app-shell" [class.sidebar-collapsed]="sidebarCollapsed" [class.rtl]="i18n.isRtl">
-  <app-sidebar [collapsed]="sidebarCollapsed" (collapseToggle)="toggleSidebar()"></app-sidebar>
+  <app-sidebar
+    [collapsed]="sidebarCollapsed"
+    [lang]="i18n.currentLang"
+    (collapseToggle)="toggleSidebar()">
+  </app-sidebar>
   <div class="main-area">
     <app-topbar [sidebarCollapsed]="sidebarCollapsed" (sidebarToggle)="toggleSidebar()"></app-topbar>
-    <main class="main-content" cdkScrollable>
+    <main class="main-content">
       <router-outlet></router-outlet>
     </main>
   </div>

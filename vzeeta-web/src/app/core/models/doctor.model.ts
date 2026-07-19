@@ -36,11 +36,15 @@ export interface Doctor {
   yearsExperience?: number;
   clinicName?: string;
   clinicId?: number;
+  clinicRating?: number;
+  clinicReviewCount?: number;
   verified?: boolean;
   acceptsOnline?: boolean;
   acceptsInClinic?: boolean;
   availableToday?: boolean;
   patientCount?: number;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface TimeSlot {

@@ -1,0 +1,8 @@
+    .sa-dashboard { display: flex; flex-direction: column; gap: 24px; }
+    .sa-welcome-left { display: flex; align-items: center; gap: 14px; }
+    .sa-welcome-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .sa-kpi-link { display: inline-flex; align-items: center; gap: 2px; text-decoration: none; }
+    .sa-kpi-link mat-icon { font-size: 14px !important; width: 14px !important; height: 14px !important; }
+    .sa-kpi-link:hover { text-decoration: underline; }
+    @media (max-width: 900px) { .sa-nav-grid { grid-template-columns: repeat(2, 1fr) !important; } }
+    @media (max-width: 560px) { .sa-nav-grid { grid-template-columns: 1fr 1fr !important; } }

@@ -1,0 +1,75 @@
+    <div class="app-page">
+      <app-page-header titleKey="SUBSCRIPTION.MY_SUBSCRIPTION_TITLE" subtitleKey="SUBSCRIPTION.MY_SUBSCRIPTION_SUBTITLE">
+        <button mat-flat-button color="primary" type="button" (click)="choosePlan()">
+          <mat-icon>add_card</mat-icon> {{ 'SUBSCRIPTION.CHOOSE_PLAN' | translate }}
+        </button>
+      </app-page-header>
+
+      <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+
+      <div *ngIf="!loading" class="app-list-surface">
+        <section class="app-card" style="padding:20px; margin-bottom:20px;">
+          <ng-container *ngIf="current; else noSubscription">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+              <div>
+                <span class="status-chip" [ngClass]="isActive ? 'chip-success' : 'chip-warning'">
+                  {{ ('SUBSCRIPTION.STATUS_' + current.status) | translate }}
+                </span>
+                <p *ngIf="current.freeTrial" style="margin-top:8px;">{{ 'SUBSCRIPTION.FREE_TRIAL_ACTIVE' | translate }}</p>
+                <p *ngIf="current.endDate">{{ 'SUBSCRIPTION.EXPIRES_ON' | translate }}: {{ current.endDate | rmsDate }}</p>
+              </div>
+              <mat-icon style="font-size:48px; width:48px; height:48px;" [ngClass]="isActive ? 'success-icon' : 'warning-icon'">
+                {{ isActive ? 'verified' : 'error_outline' }}
+              </mat-icon>
+            </div>
+          </ng-container>
+          <ng-template #noSubscription>
+            <app-empty-state icon="workspace_premium" titleKey="SUBSCRIPTION.NO_SUBSCRIPTION_YET"></app-empty-state>
+          </ng-template>
+        </section>
+
+        <section class="app-card" style="padding:20px; margin-bottom:20px; border:2px solid #e65100;" *ngIf="pendingCharge">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <mat-icon style="color:#e65100;">payments</mat-icon>
+            <div>
+              <strong>{{ 'SUBSCRIPTION.TOPUP_DUE_TITLE' | translate }}</strong>
+              <p style="margin:4px 0 0;">{{ 'SUBSCRIPTION.TOPUP_DUE_MESSAGE' | translate: { amount: pendingCharge.amount, count: pendingCharge.doctorCount } }}</p>
+            </div>
+          </div>
+          <button mat-flat-button color="primary" type="button" style="margin-top:12px;" *ngIf="!payingTopUp" (click)="payingTopUp = true">
+            {{ 'SUBSCRIPTION.PAY_NOW' | translate }}
+          </button>
+          <div *ngIf="payingTopUp" style="margin-top:12px;">
+            <p>{{ 'SUBSCRIPTION.UPLOAD_RECEIPT_HINT' | translate }}</p>
+            <app-upload-zone [multiple]="false" [urlList]="topUpReceiptUrls" (urlListChange)="onTopUpReceiptChange($event)"></app-upload-zone>
+            <button mat-flat-button color="primary" type="button" style="margin-top:12px;"
+                    [disabled]="topUpReceiptUrls.length === 0 || submittingTopUp" (click)="submitTopUpPayment()">
+              <mat-spinner *ngIf="submittingTopUp" diameter="18"></mat-spinner>
+              <span *ngIf="!submittingTopUp">{{ 'SUBSCRIPTION.SUBMIT_PAYMENT' | translate }}</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="app-card table-card" *ngIf="history.length > 0">
+          <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
+            <th>{{ 'SUBSCRIPTION.PAYMENT_METHOD' | translate }}</th>
+            <th>{{ 'SUBSCRIPTION.DOCTORS' | translate }}</th>
+            <th>{{ 'SUBSCRIPTION.AMOUNT' | translate }}</th>
+            <th>{{ 'COMMON.STATUS' | translate }}</th>
+            <th>{{ 'SUBSCRIPTION.END_DATE' | translate }}</th>
+          </tr></thead><tbody>
+            <tr *ngFor="let row of history">
+              <td>{{ ('SUBSCRIPTION.METHOD_' + row.paymentMethod) | translate }}</td>
+              <td>{{ row.doctorCount ?? '-' }}</td>
+              <td>{{ row.amount | number:'1.2-2' }} {{ 'COMMON.OMR' | translate }}</td>
+              <td>
+                <span class="status-chip" [ngClass]="row.status === 'ACTIVE' ? 'chip-success' : (row.status === 'PENDING_APPROVAL' ? 'chip-warning' : 'chip-danger')">
+                  {{ ('SUBSCRIPTION.STATUS_' + row.status) | translate }}
+                </span>
+              </td>
+              <td>{{ row.endDate ? (row.endDate | rmsDate) : '-' }}</td>
+            </tr>
+          </tbody></table></div>
+        </section>
+      </div>
+    </div>

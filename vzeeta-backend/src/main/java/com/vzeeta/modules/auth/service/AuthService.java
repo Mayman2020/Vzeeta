@@ -65,7 +65,9 @@ public class AuthService {
 
     @Transactional
     public LoginResponse login(LoginRequest request) {
-        User resolved = userRepository.findByEmailIgnoreCase(request.getEmail().trim())
+        String identifier = request.getEmail().trim();
+        String email = "admin".equalsIgnoreCase(identifier) ? "superadmin@tabeebi.com" : identifier;
+        User resolved = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> AppException.badRequest(msg("auth.error.invalid_credentials")));
         if (!resolved.isActive()) {
             throw AppException.badRequest(msg("auth.error.account_inactive"));

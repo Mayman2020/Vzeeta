@@ -96,6 +96,10 @@ export class DoctorService {
       yearsExperience: raw['yearsExperience'] != null ? Number(raw['yearsExperience']) : undefined,
       clinicName: raw['clinicNameAr'] as string,
       clinicId: raw['clinicId'] as number,
+      clinicRating: raw['clinicRatingAvg'] != null ? Number(raw['clinicRatingAvg']) : undefined,
+      clinicReviewCount: raw['clinicRatingCount'] != null ? Number(raw['clinicRatingCount']) : undefined,
+      latitude: raw['latitude'] != null ? Number(raw['latitude']) : undefined,
+      longitude: raw['longitude'] != null ? Number(raw['longitude']) : undefined,
       verified: !!raw['verified'],
       acceptsOnline,
       acceptsInClinic

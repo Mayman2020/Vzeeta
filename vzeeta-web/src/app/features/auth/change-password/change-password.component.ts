@@ -21,43 +21,8 @@ import { NabdLogoComponent } from '../../../shared/components/nabd-logo/nabd-log
     MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatProgressSpinnerModule,
     NabdLogoComponent
   ],
-  template: `
-    <div class="auth-shell">
-      <div class="auth-card">
-        <div class="auth-brand">
-          <app-nabd-logo [size]="48"></app-nabd-logo>
-          <h1>{{ 'PROFILE.CHANGE_PASSWORD' | translate }}</h1>
-          <p>{{ 'PROFILE.CHANGE_PASSWORD_SUBTITLE' | translate }}</p>
-        </div>
-        <form [formGroup]="form" (ngSubmit)="submit()">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{ 'PROFILE.CURRENT_PASSWORD' | translate }}</mat-label>
-            <input matInput type="password" formControlName="currentPassword" autocomplete="current-password">
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{ 'PROFILE.NEW_PASSWORD' | translate }}</mat-label>
-            <input matInput type="password" formControlName="newPassword" autocomplete="new-password">
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{ 'PROFILE.CONFIRM_PASSWORD' | translate }}</mat-label>
-            <input matInput type="password" formControlName="confirmPassword" autocomplete="new-password">
-          </mat-form-field>
-          <button mat-flat-button color="primary" type="submit" class="full-width" [disabled]="form.invalid || saving">
-            {{ 'PROFILE.CHANGE_PASSWORD' | translate }}
-          </button>
-        </form>
-        <div class="loading-wrap" *ngIf="saving"><mat-spinner diameter="32"></mat-spinner></div>
-      </div>
-    </div>
-  `,
-  styles: [`
-    .auth-shell { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: var(--bg, #f8fafc); }
-    .auth-card { width: min(100%, 480px); background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; box-shadow: 0 8px 24px rgba(15,23,42,0.06); position: relative; }
-    .auth-brand { text-align: center; margin-bottom: 20px; h1 { margin: 12px 0 4px; font-size: 1.35rem; } p { margin: 0; color: #64748b; font-size: 0.9rem; } }
-    form { display: flex; flex-direction: column; gap: 8px; }
-    .full-width { width: 100%; }
-    .loading-wrap { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(255,255,255,0.7); border-radius: 16px; }
-  `]
+  templateUrl: './change-password.component.html',
+  styleUrls: ['./change-password.component.scss']
 })
 export class ChangePasswordComponent implements OnInit {
   form: FormGroup;

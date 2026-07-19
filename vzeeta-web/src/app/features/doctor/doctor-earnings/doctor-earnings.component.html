@@ -1,0 +1,6 @@
+    <app-page-header titleKey="NAV.EARNINGS"></app-page-header>
+    <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+    <mat-card *ngIf="!loading" class="earnings-card">
+      <h2>{{ earnings.totalEarnings }} {{ 'COMMON.EGP' | translate }}</h2>
+      <p>{{ 'DOCTOR.PAYMENT_COUNT' | translate }}: {{ earnings.paymentCount }}</p>
+    </mat-card>

@@ -62,6 +62,12 @@ export class TopbarComponent implements OnInit, OnDestroy {
 
   get currentUser() { return this.auth.getCurrentUser(); }
 
+  get profileImageUrl(): string | null {
+    const u = this.currentUser;
+    const url = (u?.profileImageUrl || u?.profileImage || '').trim();
+    return url || null;
+  }
+
   get currentUserDisplayName(): string {
     const u = this.currentUser;
     if (!u) return '';
@@ -128,6 +134,9 @@ export class TopbarComponent implements OnInit, OnDestroy {
     const q = this.searchQuery.trim();
     if (!q) return;
     switch (this.auth.getRole()) {
+      case 'DOCTOR':
+        void this.router.navigate(['/doctor/appointments'], { queryParams: { q } });
+        break;
       case 'CLINIC_ADMIN':
         void this.router.navigate(['/clinic-admin/patients'], { queryParams: { q } });
         break;

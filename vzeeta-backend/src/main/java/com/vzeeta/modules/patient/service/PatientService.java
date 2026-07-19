@@ -2,6 +2,8 @@ package com.vzeeta.modules.patient.service;
 
 import com.vzeeta.modules.appointment.entity.Appointment;
 import com.vzeeta.modules.appointment.repository.AppointmentRepository;
+import com.vzeeta.modules.clinic.entity.Clinic;
+import com.vzeeta.modules.clinic.repository.ClinicRepository;
 import com.vzeeta.modules.doctor.entity.Doctor;
 import com.vzeeta.modules.doctor.repository.DoctorRepository;
 import com.vzeeta.modules.favorite.entity.FavoriteDoctor;
@@ -53,6 +55,7 @@ public class PatientService {
     private final UserRepository userRepository;
     private final FavoriteDoctorRepository favoriteDoctorRepository;
     private final DoctorRepository doctorRepository;
+    private final ClinicRepository clinicRepository;
     private final PublicService publicService;
     private final ReviewRepository reviewRepository;
     private final AppointmentRepository appointmentRepository;
@@ -143,15 +146,21 @@ public class PatientService {
         if (reviewRepository.existsByAppointmentId(appt.getId())) {
             throw AppException.conflict("Review already exists");
         }
+        Doctor reviewedDoctor = doctorRepository.findById(appt.getDoctorId())
+                .orElseThrow(() -> AppException.notFound("Doctor not found"));
         Review review = Review.builder()
                 .appointmentId(appt.getId())
                 .patientId(patient.getId())
                 .doctorId(appt.getDoctorId())
+                .clinicId(reviewedDoctor.getClinicId())
                 .rating(request.getRating())
                 .comment(request.getComment())
                 .build();
         review = reviewRepository.save(review);
         updateDoctorRating(appt.getDoctorId());
+        if (reviewedDoctor.getClinicId() != null) {
+            updateClinicRating(reviewedDoctor.getClinicId());
+        }
         return review;
     }
 
@@ -316,6 +325,16 @@ public class PatientService {
         doctor.setRatingAvg(BigDecimal.valueOf(avg).setScale(2, RoundingMode.HALF_UP));
         doctor.setRatingCount((int) reviews.getTotalElements());
         doctorRepository.save(doctor);
+    }
+
+    private void updateClinicRating(Long clinicId) {
+        Page<Review> reviews = reviewRepository.findByClinicId(clinicId, Pageable.unpaged());
+        if (reviews.isEmpty()) return;
+        double avg = reviews.stream().mapToInt(Review::getRating).average().orElse(0);
+        Clinic clinic = clinicRepository.findById(clinicId).orElseThrow();
+        clinic.setRatingAvg(BigDecimal.valueOf(avg).setScale(2, RoundingMode.HALF_UP));
+        clinic.setRatingCount((int) reviews.getTotalElements());
+        clinicRepository.save(clinic);
     }
 
     private Patient requirePatient(Long userId) {

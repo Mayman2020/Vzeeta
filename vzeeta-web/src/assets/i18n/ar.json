@@ -7,10 +7,19 @@
     "TAGLINE_SHORT": "احجز موعدك",
     "FOOTER": "نبض — جميع الحقوق محفوظة"
   },
+  "NAV_SECTION": {
+    "OVERVIEW": "نظرة عامة",
+    "CLINIC": "العيادة",
+    "CARE": "الرعاية",
+    "MANAGEMENT": "الإدارة",
+    "FINANCE": "المالية",
+    "ACCOUNT": "الحساب"
+  },
   "COMMON": {
     "LANGUAGE": "اللغة",
     "SAR": "ر.س",
-    "EGP": "ج.م",
+    "EGP": "ر.ع",
+    "OMR": "ر.ع",
     "NEXT": "التالي",
     "BACK": "رجوع",
     "NO_DATA": "لا توجد بيانات حالياً",
@@ -50,9 +59,15 @@
     "NEW": "جديد",
     "FAST_ACCESS": "وصول سريع",
     "VIEW_FILE": "عرض الملف",
+    "EXPORT_EXCEL": "تصدير Excel",
+    "NO_RESULTS": "لا توجد نتائج",
+    "REQUIRED": "مطلوب",
     "UPLOAD_MAX_HINT": "صور حتى 20 MB — مستندات/فيديو حتى 50 MB",
     "UPLOAD_SOME_FAILED": "فشل رفع بعض الملفات",
-    "UPLOAD_REJECTED_TOO_LARGE": "حجم الملف يتجاوز الحد المسموح"
+    "UPLOAD_REJECTED_TOO_LARGE": "حجم الملف يتجاوز الحد المسموح",
+    "EMAIL": "البريد الإلكتروني",
+    "PHONE": "الهاتف",
+    "ERROR": "حدث خطأ"
   },
   "TOPBAR": {
     "DARK_MODE": "التبديل للوضع الداكن",
@@ -64,6 +79,10 @@
     "MUTE_SOUND": "كتم الصوت",
     "UNMUTE_SOUND": "تشغيل الصوت"
   },
+  "DIALOG": {
+    "DELETE_TITLE": "تأكيد الحذف",
+    "DELETE_GENERIC": "هل أنت متأكد من حذف هذا السجل؟ لا يمكن التراجع عن هذا الإجراء."
+  },
   "ACTIONS": {
     "ADD": "إضافة",
     "CANCEL": "إلغاء",
@@ -71,8 +90,11 @@
     "DOWNLOAD": "تنزيل",
     "EDIT": "تعديل",
     "VIEW": "عرض",
+    "VIEW_ALL": "عرض الكل",
     "SAVE": "حفظ",
-    "CONFIRM": "تأكيد"
+    "CONFIRM": "تأكيد",
+    "SEARCH": "بحث",
+    "NO_RESULTS": "لا توجد نتائج"
   },
   "AUDIT": {
     "INFO_TITLE": "معلومات التتبع",
@@ -84,7 +106,21 @@
     "UNKNOWN": "غير معروف"
   },
   "UPLOAD": {
-    "REPLACE_FILE": "استبدال الملف"
+    "REPLACE_FILE": "استبدال الملف",
+    "REMOVE_FILE": "حذف الملف",
+    "PROFILE_IMAGE": "الصورة الشخصية",
+    "UPLOAD_PHOTO": "رفع صورة",
+    "CIVIL_ID_IMAGE": "صورة الهوية / المستند",
+    "UPLOAD_CIVIL_ID": "رفع الهوية / المستند"
+  },
+  "LOV": {
+    "SELECT_PLACEHOLDER": "اضغط العدسة للاختيار",
+    "SEARCH_PLACEHOLDER": "ابحث في القائمة...",
+    "CLEAR": "مسح الاختيار",
+    "OPEN": "فتح الاختيار"
+  },
+  "PAGE": {
+    "BREADCRUMB_LABEL": "مسار الصفحة"
   },
   "AUTH": {
     "LOGIN": "تسجيل الدخول",
@@ -199,10 +235,10 @@
     "CTA_DESC": "انضم لآلاف المرضى الذين يثقون في نبض لرعايتهم الصحية"
   },
   "SEARCH": {
-    "DOCTOR_NAME": "اسم الطبيب",
+    "DOCTOR_NAME": "ابحث باسم الطبيب أو التخصص أو اسم العيادة",
     "SPECIALTY": "التخصص",
-    "CITY": "المدينة",
-    "AREA": "المنطقة",
+    "CITY": "المحافظة",
+    "AREA": "الولاية",
     "SEARCH": "بحث",
     "RESULTS_TITLE": "نتائج البحث",
     "FILTERS": "تصفية النتائج",
@@ -218,6 +254,11 @@
     "TRY_DIFFERENT": "جرب تغيير معايير البحث",
     "RELEVANCE": "الأنسب",
     "RATING": "التقييم",
+    "NEAREST": "الأقرب",
+    "LOCATING": "جاري تحديد موقعك...",
+    "LOCATION_UNAVAILABLE": "المتصفح لا يدعم تحديد الموقع",
+    "LOCATION_DENIED": "لم يتم السماح بالوصول للموقع",
+    "KM_AWAY": "كم",
     "SORT_BY": "ترتيب حسب",
     "ALL_DOCTORS": "كل الأطباء المتاحين",
     "SPECIALTY_DOCTORS": "دكاترة {{specialty}}",
@@ -285,12 +326,74 @@
     "CLINICS": "العيادات",
     "USERS": "المستخدمون",
     "VERIFICATION": "التحقق",
-    "CITIES": "المدن",
+    "CITIES": "المحافظات",
     "PAYMENTS": "المدفوعات",
     "SETTINGS": "الإعدادات",
     "PERMISSIONS": "الصلاحيات",
     "LOOKUPS": "البيانات المرجعية",
-    "PROFILE": "الملف الشخصي"
+    "PROFILE": "الملف الشخصي",
+    "SUBSCRIPTION_PLANS": "باقات الاشتراك",
+    "CLINIC_SUBSCRIPTIONS": "اشتراكات العيادات",
+    "MY_SUBSCRIPTION": "اشتراكي"
+  },
+  "SUBSCRIPTION": {
+    "PLANS_TITLE": "باقات الاشتراك",
+    "PLANS_SUBTITLE": "إدارة باقات اشتراك العيادات الشهرية والسنوية",
+    "ADD_PLAN": "إضافة باقة",
+    "EDIT_PLAN": "تعديل الباقة",
+    "PLAN_SAVED": "تم حفظ الباقة",
+    "BILLING_CYCLE": "دورة الفوترة",
+    "MONTHLY": "شهري",
+    "YEARLY": "سنوي",
+    "PRICE_OMR": "السعر (ر.ع)",
+    "GRANT_TRIAL": "منح فترة تجريبية مجانية",
+    "GRANT_TRIAL_FOR": "منح فترة تجريبية مجانية لعيادة {{clinic}}",
+    "TRIAL_MONTHS": "عدد الأشهر (1-12)",
+    "GRANT": "منح",
+    "TRIAL_GRANTED": "تم منح الفترة التجريبية بنجاح",
+    "CLINIC_SUBSCRIPTIONS_TITLE": "اشتراكات العيادات",
+    "CLINIC_SUBSCRIPTIONS_SUBTITLE": "مراجعة طلبات الدفع والموافقة عليها أو رفضها",
+    "PAYMENT_METHOD": "طريقة الدفع",
+    "AMOUNT": "المبلغ",
+    "RECEIPT": "الإيصال",
+    "VIEW_RECEIPT": "عرض الإيصال",
+    "END_DATE": "تاريخ الانتهاء",
+    "APPROVE": "موافقة",
+    "REJECT": "رفض",
+    "REJECT_PAYMENT": "رفض الدفعة",
+    "REJECTION_REASON": "سبب الرفض",
+    "APPROVED_OK": "تم اعتماد الاشتراك وتفعيله",
+    "REJECTED_OK": "تم رفض طلب الدفع",
+    "STATUS_PENDING_PAYMENT": "بانتظار الدفع",
+    "STATUS_PENDING_APPROVAL": "بانتظار المراجعة",
+    "STATUS_ACTIVE": "نشط",
+    "STATUS_REJECTED": "مرفوض",
+    "STATUS_EXPIRED": "منتهي",
+    "STATUS_CANCELLED": "ملغي",
+    "METHOD_RECEIPT_UPLOAD": "إيصال تحويل",
+    "METHOD_ONLINE_PLACEHOLDER": "دفع إلكتروني",
+    "METHOD_ADMIN_GRANT": "منحة إدارية",
+    "MY_SUBSCRIPTION_TITLE": "اشتراكي",
+    "MY_SUBSCRIPTION_SUBTITLE": "حالة اشتراك عيادتك وسجل الدفعات",
+    "CHOOSE_PLAN": "اختيار باقة",
+    "FREE_TRIAL_ACTIVE": "أنت الآن في فترة تجريبية مجانية",
+    "EXPIRES_ON": "تنتهي في",
+    "NO_SUBSCRIPTION_YET": "لا يوجد اشتراك بعد",
+    "CHOOSE_PLAN_TITLE": "اختيار باقة اشتراك",
+    "CHOOSE_PLAN_SUBTITLE": "اختر الباقة المناسبة لعيادتك وأكمل الدفع",
+    "UPLOAD_RECEIPT_HINT": "قم برفع صورة أو ملف إيصال التحويل البنكي",
+    "ONLINE_PLACEHOLDER_NOTE": "الدفع الإلكتروني سيتوفر قريباً. سيتم مراجعة طلبك يدوياً من قبل الإدارة بعد الإرسال.",
+    "SUBMIT_PAYMENT": "إرسال طلب الدفع",
+    "SUBMITTED_OK": "تم إرسال طلب الدفع بنجاح، بانتظار مراجعة الإدارة",
+    "LOCKED_TITLE": "الاشتراك غير مفعّل",
+    "LOCKED_MESSAGE": "انتهى اشتراك عيادتك أو لم يتم تفعيله بعد. يرجى الاشتراك لمتابعة استخدام لوحة إدارة العيادة.",
+    "GO_TO_SUBSCRIPTION": "الذهاب للاشتراك",
+    "PRICING_PER_DOCTOR_HINT": "السعر يُحسب لكل دكتور موثّق. عيادتك حالياً بها {{count}} دكتور موثّق.",
+    "PER_DOCTOR": "لكل دكتور",
+    "DOCTORS": "دكاترة",
+    "TOPUP_DUE_TITLE": "مطلوب دفع إضافي",
+    "TOPUP_DUE_MESSAGE": "تمت إضافة دكتور جديد موثّق لعيادتك. المطلوب دفعه: {{amount}} ر.ع (إجمالي عدد الدكاترة المشمولين الآن: {{count}}).",
+    "PAY_NOW": "الدفع الآن"
   },
   "PERMISSIONS": {
     "TITLE": "صلاحيات الأدوار",
@@ -304,7 +407,30 @@
     "EDIT": "تعديل",
     "DELETE": "حذف",
     "EXPORT": "تصدير",
-    "APPROVE": "اعتماد"
+    "APPROVE": "اعتماد",
+    "MODULES": {
+      "DASHBOARD": "لوحة التحكم",
+      "APPOINTMENTS": "المواعيد",
+      "FAVORITES": "المفضلة",
+      "PRESCRIPTIONS": "الوصفات الطبية",
+      "LAB_RESULTS": "نتائج التحاليل",
+      "MEDICAL_RECORDS": "السجلات الطبية",
+      "NOTIFICATIONS": "الإشعارات",
+      "CALENDAR": "التقويم",
+      "EARNINGS": "الأرباح",
+      "CLINICS": "العيادات",
+      "USERS": "المستخدمون",
+      "DOCTORS": "الأطباء",
+      "PATIENTS": "المرضى",
+      "PAYMENTS": "المدفوعات",
+      "SETTINGS": "الإعدادات",
+      "PERMISSIONS": "الصلاحيات",
+      "SPECIALTIES": "التخصصات",
+      "LOOKUPS": "البيانات المرجعية",
+      "CITIES": "المدن",
+      "AREAS": "المناطق",
+      "VERIFICATION": "التحقق"
+    }
   },
   "LOOKUPS": {
     "TITLE": "إدارة البيانات المرجعية",
@@ -314,11 +440,11 @@
     "TAB_CLINIC_TYPE": "أنواع العيادات",
     "TAB_PAYMENT_METHOD": "طرق الدفع",
     "TAB_APPOINTMENT_STATUS": "حالات المواعيد",
-    "CITIES": "المدن",
-    "AREAS": "المناطق",
-    "CITY": "المدينة",
-    "ADD_CITY": "إضافة مدينة",
-    "ADD_AREA": "إضافة منطقة",
+    "CITIES": "المحافظات",
+    "AREAS": "الولايات",
+    "CITY": "المحافظة",
+    "ADD_CITY": "إضافة محافظة",
+    "ADD_AREA": "إضافة ولاية",
     "ITEM_COUNT": "{{count}} عنصر",
     "CODE": "الكود",
     "CODE_OPTIONAL_HINT": "اتركه فارغاً للتوليد التلقائي",
@@ -355,7 +481,11 @@
     "PASSWORD_HINT": "6 أحرف على الأقل. استخدم مزيجاً قوياً من حروف وأرقام ورموز.",
     "PASSWORD_CHANGED": "تم تغيير كلمة المرور بنجاح",
     "PASSWORD_CHANGE_ERROR": "تعذّر تغيير كلمة المرور",
-    "PASSWORD_MISMATCH": "كلمة المرور الجديدة والتأكيد غير متطابقين"
+    "PASSWORD_MISMATCH": "كلمة المرور الجديدة والتأكيد غير متطابقين",
+    "BIO": "نبذة تعريفية",
+    "PHOTO_BELOW_HINT": "يمكنك رفع أو تغيير صورة الملف بالأسفل",
+    "IMAGE_UPLOAD": "صورة الملف الشخصي",
+    "UPLOAD_PHOTO": "رفع صورة"
   },
   "NOTIFICATIONS": {
     "TITLE": "الإشعارات",
@@ -393,6 +523,7 @@
     "NO_APPOINTMENTS": "لا توجد مواعيد حالياً",
     "NO_FAVORITES": "لم تضف أطباء للمفضلة بعد",
     "REMOVED_FAVORITE": "تمت الإزالة من المفضلة",
+    "REMOVE_FAVORITE_CONFIRM": "إزالة هذا الطبيب من المفضلة؟",
     "NO_PRESCRIPTIONS": "لا توجد وصفات طبية",
     "NO_LAB_RESULTS": "لا توجد نتائج مختبر",
     "NO_RECORDS": "لا توجد سجلات طبية",
@@ -441,7 +572,8 @@
     "OTHER_HINT": "أي مستند طبي آخر — حتى 50 MB",
     "NO_ATTACHMENTS": "لا توجد مرفقات في هذا القسم",
     "UPLOAD_SUCCESS": "تم رفع الملفات بنجاح",
-    "ATTACHMENT_DELETED": "تم حذف المرفق"
+    "ATTACHMENT_DELETED": "تم حذف المرفق",
+    "DELETE_ATTACHMENT_CONFIRM": "حذف هذا المرفق؟ لا يمكن التراجع عن هذا الإجراء."
   },
   "DOCTOR": {
     "DASHBOARD_TITLE": "لوحة الطبيب",
@@ -449,7 +581,7 @@
     "WELCOME": "مرحباً دكتور — إليك ملخص يومك",
     "TODAY_APPOINTMENTS": "مواعيد اليوم",
     "WEEK_APPOINTMENTS": "إجمالي المواعيد",
-    "MONTH_EARNINGS": "إجمالي الأرباح (ج.م)",
+    "MONTH_EARNINGS": "إجمالي الأرباح (ر.ع)",
     "PENDING_REQUESTS": "طلبات معلقة",
     "RATING": "التقييم",
     "ACCEPT": "قبول",
@@ -480,6 +612,7 @@
     "FAST": "سريع",
     "BOOKING": "الحجز",
     "REVIEWS": "تقييم",
+    "CLINIC_REVIEWS": "تقييم للعيادة",
     "PATIENTS": "مريض",
     "YEARS_EXP": "سنوات خبرة",
     "ABOUT": "نبذة عن الطبيب",
@@ -524,7 +657,10 @@
     "ALL": "الكل",
     "AWAITING": "في الانتظار",
     "NO_TODAY": "لا توجد مواعيد اليوم",
-    "STATUS_PENDING": "معلق"
+    "STATUS_PENDING": "معلق",
+    "PENDING": "معلق",
+    "CANCELLED": "ملغي",
+    "STATUS_CANCELLED": "ملغي"
   },
   "ADMIN": {
     "DASHBOARD_TITLE": "لوحة مدير النظام",
@@ -533,7 +669,7 @@
     "TOTAL_USERS": "إجمالي المستخدمين",
     "PENDING_VERIFICATION": "أطباء بانتظار التحقق",
     "TOTAL_PAYMENTS": "إجمالي المدفوعات",
-    "MONTH_REVENUE": "إيرادات الشهر (ج.م)",
+    "MONTH_REVENUE": "إيرادات الشهر (ر.ع)",
     "VERIFIED": "موثق",
     "PENDING": "معلق",
     "ACTIVE": "نشط",
@@ -541,6 +677,8 @@
     "VERIFY": "توثيق",
     "VERIFIED_SUCCESS": "تم توثيق الطبيب",
     "NO_PENDING": "لا يوجد أطباء بانتظار التحقق",
+    "SEARCH_DOCTOR_PLACEHOLDER": "ابحث باسم الطبيب أو التخصص أو اسم العيادة",
+    "SEARCH_CLINIC_DOCTOR_PLACEHOLDER": "ابحث باسم الطبيب أو التخصص",
     "CITY_NAME_AR": "اسم المدينة (عربي)",
     "CITY_NAME_EN": "اسم المدينة (إنجليزي)",
     "CITY_SAVED": "تم حفظ المدينة",
@@ -556,18 +694,18 @@
     "USER_UPDATED": "تم تحديث المستخدم",
     "DEACTIVATE_USER_CONFIRM": "هل تريد إلغاء تفعيل هذا المستخدم؟",
     "USER_ALREADY_INACTIVE": "المستخدم غير مفعّل بالفعل",
-    "CITIES_LIST": "المدن المسجلة",
+    "CITIES_LIST": "المحافظات المسجلة",
     "CITIES_LOOKUP_HINT": "لأنواع العيادات وحالات المواعيد، استخدم",
     "LOOKUPS_LINK": "إدارة القوائم المرجعية",
     "TOGGLE_ACTIVE": "تبديل التفعيل",
     "MANAGEMENT": "الإدارة",
     "REVIEW_NOW": "مراجعة الآن",
-    "ADD_CITY": "إضافة مدينة",
-    "MANAGE_AREAS": "إدارة المناطق",
-    "AREAS_FOR": "مناطق",
-    "AREA_NAME_AR": "اسم المنطقة (عربي)",
-    "AREA_NAME_EN": "اسم المنطقة (إنجليزي)",
-    "AREA_SAVED": "تم حفظ المنطقة"
+    "ADD_CITY": "إضافة محافظة",
+    "MANAGE_AREAS": "إدارة الولايات",
+    "AREAS_FOR": "ولايات",
+    "AREA_NAME_AR": "اسم الولاية (عربي)",
+    "AREA_NAME_EN": "اسم الولاية (إنجليزي)",
+    "AREA_SAVED": "تم حفظ الولاية"
   },
   "VIDEO": {
     "SESSION_WITH": "جلسة استشارة مع الطبيب",
@@ -594,5 +732,9 @@
     "PRESCRIPTION": "وصفة طبية",
     "LAB": "نتيجة مختبر",
     "IMAGING": "أشعة"
+  },
+  "PROPERTY_FORM": {
+    "MAP_PREVIEW_INVALID": "تعذّر معاينة هذا الرابط. الصق الرابط الكامل من شريط عنوان المتصفح.",
+    "MAP_SHORT_URL_NOT_SUPPORTED": "الروابط المختصرة (maps.app.goo.gl) لا يمكن تضمينها. الصق الرابط الكامل من شريط عنوان المتصفح، أو استخدم مشاركة ← تضمين خريطة في Google Maps."
   }
 }

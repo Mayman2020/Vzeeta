@@ -1,0 +1,52 @@
+    <h2 mat-dialog-title>
+      <mat-icon class="dialog-title-icon">{{ data.mode === 'create' ? 'person_add' : 'edit' }}</mat-icon>
+      {{ (data.mode === 'create' ? 'CLINIC.ADD_DOCTOR' : 'CLINIC.EDIT_DOCTOR') | translate }}
+    </h2>
+    <mat-dialog-content class="dialog-body">
+      <form [formGroup]="form" class="rms-dialog-form">
+        <ng-container *ngIf="data.mode === 'create'">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'LOOKUPS.NAME_AR' | translate }}</mat-label>
+            <input matInput formControlName="fullNameAr" dir="rtl">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'LOOKUPS.NAME_EN' | translate }}</mat-label>
+            <input matInput formControlName="fullNameEn" dir="ltr">
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-col">
+            <mat-label>{{ 'COMMON.EMAIL' | translate }}</mat-label>
+            <input matInput type="email" formControlName="email" dir="ltr">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'COMMON.PHONE' | translate }}</mat-label>
+            <input matInput formControlName="phone" dir="ltr">
+          </mat-form-field>
+          <div class="full-col dialog-checks">
+            <mat-checkbox formControlName="acceptsOnline">{{ 'DOCTOR.ACCEPTS_ONLINE' | translate }}</mat-checkbox>
+            <mat-checkbox formControlName="acceptsInClinic">{{ 'DOCTOR.ACCEPTS_IN_CLINIC' | translate }}</mat-checkbox>
+          </div>
+          <p class="full-col hint-text">{{ 'CLINIC.DOCTOR_DEFAULT_PASS' | translate }}</p>
+        </ng-container>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'CLINIC.DOCTOR_TITLE' | translate }}</mat-label>
+          <input matInput formControlName="titleAr" dir="rtl">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>{{ 'COMMON.EGP' | translate }}</mat-label>
+          <input matInput type="number" formControlName="consultationFee">
+        </mat-form-field>
+        <app-audit-trail
+          *ngIf="data.mode === 'edit' && data.doctor?.id"
+          class="full-col"
+          [createdAt]="data.doctor?.createdAt"
+          [updatedAt]="data.doctor?.updatedAt">
+        </app-audit-trail>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" class="dialog-actions">
+      <button mat-stroked-button type="button" (click)="ref.close(false)">{{ 'COMMON.CANCEL' | translate }}</button>
+      <button mat-flat-button color="primary" type="button" (click)="save()" [disabled]="saving || form.invalid">
+        <mat-spinner *ngIf="saving" diameter="18"></mat-spinner>
+        <span *ngIf="!saving">{{ 'COMMON.SAVE' | translate }}</span>
+      </button>
+    </mat-dialog-actions>

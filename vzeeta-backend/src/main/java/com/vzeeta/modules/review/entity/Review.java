@@ -18,6 +18,7 @@ public class Review {
     @Column(name = "appointment_id", nullable = false, unique = true) private Long appointmentId;
     @Column(name = "patient_id", nullable = false) private Long patientId;
     @Column(name = "doctor_id", nullable = false) private Long doctorId;
+    @Column(name = "clinic_id") private Long clinicId;
     private Integer rating;
     private String comment;
     @CreatedDate @Column(name = "created_at", updatable = false) private LocalDateTime createdAt;

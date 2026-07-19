@@ -4,7 +4,9 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_SELECT_CONFIG } from '@angular/material/select';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogModule } from '@angular/material/dialog';
 import { DateFormatAdapter } from './core/adapters/date-format.adapter';
 import { DD_MM_YYYY_DATE_FORMATS } from './core/constants/date-formats';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -18,6 +20,7 @@ import { languageInterceptor } from './core/interceptors/language.interceptor';
 import { AuthService } from './core/services/auth.service';
 import { I18nService } from './core/i18n/i18n.service';
 import { PermissionService } from './core/services/permission.service';
+import { AppConstants } from './core/constants/app-constants';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -56,10 +59,28 @@ export const appConfig: ApplicationConfig = {
         overlayPanelClass: 'app-select-panel'
       }
     },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        appearance: 'outline',
+        floatLabel: 'always'
+      }
+    },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useFactory: () => ({
+        direction: (localStorage.getItem(AppConstants.PERSISTED_KEYS.LANG) || 'ar') === 'ar' ? 'rtl' : 'ltr',
+        maxWidth: '95vw',
+        maxHeight: '90vh',
+        panelClass: 'app-dialog-panel',
+        backdropClass: 'dialog-backdrop'
+      })
+    },
     provideHttpClient(withInterceptors([loadingInterceptor, languageInterceptor, authInterceptor, errorInterceptor])),
     provideTranslateHttpLoader({ prefix: '/assets/i18n/', suffix: '.json' }),
     importProvidersFrom(
       MatSnackBarModule,
+      MatDialogModule,
       TranslateModule.forRoot({
         loader: { provide: TranslateLoader, useClass: TranslateHttpLoader }
       })

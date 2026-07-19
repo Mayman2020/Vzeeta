@@ -1,0 +1,87 @@
+    <div class="cal-page">
+      <!-- Header -->
+      <div class="cal-header">
+        <div>
+          <h1 class="cal-title">{{ 'NAV.CALENDAR' | translate }}</h1>
+          <p class="cal-sub">{{ 'DOCTOR.SCHEDULE_SUBTITLE' | translate }}</p>
+        </div>
+        <button class="add-slot-btn" type="button" (click)="showForm = !showForm">
+          <span class="material-icons">{{ showForm ? 'close' : 'add' }}</span>
+          {{ (showForm ? 'COMMON.CANCEL' : 'DOCTOR.ADD_AVAILABILITY') | translate }}
+        </button>
+      </div>
+
+      <!-- Add Slot Form -->
+      <div class="slot-form-card" *ngIf="showForm">
+        <h3 class="form-title">
+          <span class="material-icons">event_available</span>
+          {{ 'DOCTOR.ADD_AVAILABILITY' | translate }}
+        </h3>
+        <form [formGroup]="slotForm" (ngSubmit)="saveSlot()" class="slot-form">
+          <div class="form-row">
+            <div class="form-field">
+              <label>{{ 'DOCTOR.DAY' | translate }}</label>
+              <select formControlName="dayOfWeek" class="sf-select">
+                <option *ngFor="let d of dayOptions" [value]="d.value">{{ d.label }}</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>{{ 'DOCTOR.START_TIME' | translate }}</label>
+              <input type="time" formControlName="startTime" class="sf-input">
+            </div>
+            <div class="form-field">
+              <label>{{ 'DOCTOR.END_TIME' | translate }}</label>
+              <input type="time" formControlName="endTime" class="sf-input">
+            </div>
+            <div class="form-field">
+              <label>{{ 'DOCTOR.MIN_PER_SLOT' | translate }}</label>
+              <input type="number" formControlName="slotMinutes" min="5" class="sf-input">
+            </div>
+          </div>
+          <div class="form-footer">
+            <label class="online-toggle">
+              <input type="checkbox" formControlName="onlineOnly">
+              <span class="material-icons">videocam</span>
+              {{ 'SEARCH.ONLINE' | translate }}
+            </label>
+            <button class="save-slot-btn" type="submit" [disabled]="slotForm.invalid || saving">
+              <span class="material-icons">save</span>
+              {{ 'COMMON.SAVE' | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Loading -->
+      <div class="cal-loading" *ngIf="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+
+      <!-- Weekly Grid -->
+      <div class="weekly-grid" *ngIf="!loading">
+        <div class="day-column" *ngFor="let day of dayOptions">
+          <div class="day-header" [class.has-slots]="slotsForDay(day.value).length > 0">
+            <span class="day-label">{{ day.label }}</span>
+            <span class="day-count" *ngIf="slotsForDay(day.value).length > 0">
+              {{ slotsForDay(day.value).length }}
+            </span>
+          </div>
+          <div class="day-body">
+            <div class="slot-block" *ngFor="let s of slotsForDay(day.value)" [class.online]="s.onlineOnly">
+              <div class="slot-time">{{ formatTime(s.startTime) }} — {{ formatTime(s.endTime) }}</div>
+              <div class="slot-meta">
+                <span class="slot-type">
+                  <span class="material-icons">{{ s.onlineOnly ? 'videocam' : 'local_hospital' }}</span>
+                  {{ s.onlineOnly ? ('SEARCH.ONLINE' | translate) : ('SEARCH.IN_CLINIC' | translate) }}
+                </span>
+                <span class="slot-duration">{{ s.slotMinutes }}m</span>
+              </div>
+            </div>
+            <div class="day-empty" *ngIf="slotsForDay(day.value).length === 0">
+              <span class="material-icons">block</span>
+              <span>{{ 'DOCTOR.OFF' | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

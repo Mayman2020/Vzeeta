@@ -180,6 +180,12 @@
   box-shadow: 0 0 0 2px var(--surface, #fff), 0 0 0 3px var(--ds-line, var(--line));
 }
 
+.tb-avatar-img {
+  object-fit: cover;
+  padding: 0;
+  background: var(--ds-surface, #fff);
+}
+
 .tb-user-copy {
   display: grid;
   gap: 1px;
@@ -232,6 +238,12 @@
   font-size: 1.12rem;
   font-weight: 800;
   box-shadow: 0 0 0 3px var(--surface, #fff), 0 10px 22px rgba(15, 45, 77, 0.18);
+}
+
+.user-menu-avatar-img {
+  object-fit: cover;
+  padding: 0;
+  background: var(--ds-surface, #fff);
 }
 
 .user-menu-copy {

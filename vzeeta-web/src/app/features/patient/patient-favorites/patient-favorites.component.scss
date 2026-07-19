@@ -1,0 +1,4 @@
+    .entity-card { padding: 1rem; }
+    .card-row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .fee { color: var(--tb-primary); font-weight: 600; }
+    .empty-state { text-align: center; padding: 3rem; color: var(--tb-text-muted); }

@@ -1,0 +1,23 @@
+    <div class="app-page">
+      <app-page-header titleKey="NAV.LAB_RESULTS"></app-page-header>
+      <div *ngIf="listLoad.showInitialSpinner" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+      <app-empty-state *ngIf="listLoad.showSurface && rows.length === 0" icon="science" titleKey="PATIENT.NO_LAB_RESULTS"></app-empty-state>
+      <div class="app-list-surface" *ngIf="listLoad.showSurface && rows.length > 0">
+        <section class="list-stats"><article class="stat-pill stat-pill--count"><strong>{{ totalElements }}</strong></article></section>
+        <section class="app-card table-card">
+          <div class="app-table-wrap"><table class="app-data-table"><thead><tr>
+            <th>{{ 'NAV.LAB_RESULTS' | translate }}</th><th>{{ 'COMMON.ALL' | translate }}</th><th>{{ 'COMMON.ACTIONS' | translate }}</th>
+          </tr></thead><tbody>
+            <tr *ngFor="let r of rows">
+              <td>{{ r.testNameAr }}<br><span class="muted">{{ r.resultSummary }}</span></td>
+              <td>{{ r.resultDate | rmsDate:'date' }}</td>
+              <td>
+                <a *ngIf="downloadUrl(r) as url" mat-stroked-button [href]="url" target="_blank" rel="noopener">{{ 'PATIENT.DOWNLOAD' | translate }}</a>
+                <span *ngIf="!downloadUrl(r)">—</span>
+              </td>
+            </tr>
+          </tbody></table></div>
+          <app-table-pager [length]="totalElements" [pageSize]="pageSize" [pageIndex]="pageIndex" (pageIndexChange)="onPageChange($event)"/>
+        </section>
+      </div>
+    </div>

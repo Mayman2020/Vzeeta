@@ -34,7 +34,7 @@ export class LoginComponent {
     private readonly _music: BackgroundMusicService
   ) {
     this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      email: ['admin', Validators.required],
       password: ['', Validators.required]
     });
   }

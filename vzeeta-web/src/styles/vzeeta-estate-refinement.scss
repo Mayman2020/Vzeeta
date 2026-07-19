@@ -1474,6 +1474,477 @@ button.mat-primary:not(:disabled),
   }
 }
 
+/* Absolute final layer order: must stay after legacy parity blocks. */
+app-main-layout .app-shell {
+  display: flex !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+app-main-layout .main-area {
+  margin-inline-start: var(--sidebar-width, 248px) !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+}
+
+app-main-layout .app-shell.sidebar-collapsed .main-area {
+  margin-inline-start: var(--sidebar-collapsed-width, 76px) !important;
+}
+
+app-sidebar .sidebar {
+  position: fixed !important;
+  inset-block: 0 !important;
+  inset-inline-start: 0 !important;
+  z-index: 220 !important;
+}
+
+.cdk-overlay-container {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 5000 !important;
+}
+
+.cdk-global-overlay-wrapper {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 5001 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.app-dialog-panel.cdk-overlay-pane,
+.cdk-overlay-pane:has(.mat-mdc-dialog-container) {
+  position: static !important;
+  margin: auto !important;
+  transform: none !important;
+  z-index: 5002 !important;
+}
+
+.cdk-overlay-pane:has(.mat-mdc-menu-panel),
+.cdk-overlay-pane:has(.mat-mdc-select-panel),
+.cdk-overlay-pane:has(.mat-mdc-autocomplete-panel) {
+  z-index: 5200 !important;
+}
+
+@media (max-width: 900px) {
+  app-main-layout .main-area,
+  app-main-layout .app-shell.sidebar-collapsed .main-area {
+    margin-inline-start: 0 !important;
+  }
+}
+
+/* Final overlay contract. Keep this at the real EOF. */
+.cdk-global-overlay-wrapper {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: auto !important;
+  display: block !important;
+  align-items: initial !important;
+  justify-content: initial !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+}
+
+.cdk-global-overlay-wrapper:has(.mat-mdc-dialog-container) {
+  z-index: 5001 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+}
+
+.cdk-overlay-connected-position-bounding-box {
+  position: absolute !important;
+  z-index: 5200 !important;
+  display: block !important;
+  pointer-events: none !important;
+}
+
+.cdk-overlay-connected-position-bounding-box .cdk-overlay-pane {
+  pointer-events: auto !important;
+}
+
+.cdk-overlay-pane:has(.mat-mdc-menu-panel),
+.cdk-overlay-pane:has(.tb-lang-menu),
+.cdk-overlay-pane:has(.tb-user-menu),
+.cdk-overlay-pane:has(.mat-mdc-select-panel),
+.cdk-overlay-pane:has(.mat-mdc-autocomplete-panel) {
+  position: absolute !important;
+  margin: 0 !important;
+  transform-origin: inherit !important;
+  max-width: min(420px, calc(100vw - 24px)) !important;
+  z-index: 5201 !important;
+}
+
+.mat-mdc-select-panel.permissions-role-panel {
+  min-width: 220px !important;
+}
+
+.app-dialog-panel.cdk-overlay-pane:has(form),
+.app-dialog-panel.cdk-overlay-pane:has(.dialog-form),
+.app-dialog-panel.cdk-overlay-pane:has(.rms-dialog-form) {
+  width: min(780px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+}
+
+.app-dialog-panel mat-dialog-content > form,
+.app-dialog-panel .dialog-form,
+.app-dialog-panel .rms-dialog-form,
+.app-dialog-panel .lookup-dialog-form,
+.app-dialog-panel .geo-dialog-form {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
+  column-gap: 20px !important;
+  row-gap: 18px !important;
+}
+
+/* Overlay routing fix: dialogs are centered; connected menus/selects keep Material positioning. */
+.cdk-global-overlay-wrapper {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: auto !important;
+  display: block !important;
+  align-items: initial !important;
+  justify-content: initial !important;
+  padding: 0 !important;
+  pointer-events: none !important;
+}
+
+.cdk-global-overlay-wrapper:has(.mat-mdc-dialog-container) {
+  z-index: 5001 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+}
+
+.app-dialog-panel.cdk-overlay-pane,
+.cdk-overlay-pane:has(.mat-mdc-dialog-container) {
+  position: static !important;
+  margin: auto !important;
+  transform: none !important;
+  z-index: 5002 !important;
+}
+
+.cdk-overlay-pane:has(.mat-mdc-menu-panel),
+.cdk-overlay-pane:has(.tb-lang-menu),
+.cdk-overlay-pane:has(.tb-user-menu),
+.cdk-overlay-pane:has(.mat-mdc-select-panel),
+.cdk-overlay-pane:has(.mat-mdc-autocomplete-panel) {
+  margin: 0 !important;
+  z-index: 5200 !important;
+}
+
+.app-dialog-panel.cdk-overlay-pane:has(form),
+.app-dialog-panel.cdk-overlay-pane:has(.dialog-form),
+.app-dialog-panel.cdk-overlay-pane:has(.rms-dialog-form) {
+  width: min(780px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
+}
+
+.app-dialog-panel mat-dialog-content > form,
+.app-dialog-panel .dialog-form,
+.app-dialog-panel .rms-dialog-form,
+.app-dialog-panel .lookup-dialog-form,
+.app-dialog-panel .geo-dialog-form {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
+  column-gap: 20px !important;
+  row-gap: 18px !important;
+}
+
+.app-dialog-panel .mat-mdc-form-field {
+  width: 100% !important;
+  min-width: 0 !important;
+  --mat-form-field-container-height: 58px;
+}
+
+.app-dialog-panel .mat-mdc-text-field-wrapper.mdc-text-field--outlined {
+  min-height: 58px !important;
+  overflow: visible !important;
+}
+
+.app-dialog-panel .mat-mdc-form-field-flex,
+.app-dialog-panel .mat-mdc-form-field-infix {
+  min-width: 0 !important;
+}
+
+.app-dialog-panel .mat-mdc-form-field-infix {
+  min-height: 58px !important;
+  padding-top: 18px !important;
+  padding-bottom: 8px !important;
+}
+
+.app-dialog-panel .mat-mdc-floating-label,
+.app-dialog-panel .mdc-floating-label {
+  max-width: none !important;
+  width: max-content !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  line-height: 1.2 !important;
+  background: var(--ds-surface, #fff) !important;
+  padding-inline: 6px !important;
+}
+
+.app-dialog-panel .mdc-floating-label--float-above {
+  transform: translateY(-28px) scale(0.78) !important;
+}
+
+.app-dialog-panel .mdc-notched-outline__notch {
+  max-width: calc(100% - 28px) !important;
+}
+
+.app-dialog-panel .mdc-notched-outline__leading,
+.app-dialog-panel .mdc-notched-outline__notch,
+.app-dialog-panel .mdc-notched-outline__trailing {
+  border-width: 1px !important;
+  border-color: var(--ds-line, #dce7f0) !important;
+}
+
+.app-dialog-panel .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.app-dialog-panel .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.app-dialog-panel .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+  border-width: 1.5px !important;
+  border-color: var(--ds-accent, #14b8bd) !important;
+}
+
+@media (max-width: 720px) {
+  .app-dialog-panel.cdk-overlay-pane:has(form),
+  .app-dialog-panel.cdk-overlay-pane:has(.dialog-form),
+  .app-dialog-panel.cdk-overlay-pane:has(.rms-dialog-form) {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+  }
+
+  .cdk-global-overlay-wrapper:has(.mat-mdc-dialog-container) {
+    padding: 8px !important;
+  }
+}
+
+/* Final structural lock: keep the internal app on the Property_Managments shell model. */
+app-main-layout {
+  display: block !important;
+  min-height: 100vh !important;
+}
+
+app-main-layout .app-shell {
+  display: flex !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow: visible !important;
+  background: var(--ds-bg, var(--paper)) !important;
+}
+
+app-main-layout .main-area {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  min-height: 100vh !important;
+  margin-inline-start: var(--sidebar-width, 248px) !important;
+  overflow: visible !important;
+  transition: margin-inline-start 280ms var(--e-out, ease) !important;
+}
+
+app-main-layout .app-shell.sidebar-collapsed .main-area {
+  margin-inline-start: var(--sidebar-collapsed-width, 76px) !important;
+}
+
+app-main-layout .main-content {
+  min-height: calc(100vh - var(--topbar-height, 72px)) !important;
+  overflow: visible !important;
+  overflow-x: hidden !important;
+  background: var(--ds-bg, var(--paper)) !important;
+}
+
+app-sidebar .sidebar,
+.sidebar {
+  position: fixed !important;
+  inset-block: 0 !important;
+  inset-inline-start: 0 !important;
+  z-index: 220 !important;
+  width: var(--sidebar-width, 248px) !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+}
+
+app-sidebar .sidebar.collapsed,
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed-width, 76px) !important;
+}
+
+app-topbar,
+app-topbar .topbar,
+.topbar {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 210 !important;
+  flex-shrink: 0 !important;
+  overflow: visible !important;
+}
+
+app-topbar .topbar {
+  min-height: var(--topbar-height, 72px) !important;
+  background: var(--ds-surface, #fff) !important;
+  border-bottom: 1px solid var(--ds-line, #dce7f0) !important;
+}
+
+.cdk-overlay-container {
+  position: fixed !important;
+  z-index: 5000 !important;
+  inset: 0 !important;
+  pointer-events: none;
+}
+
+.cdk-overlay-backdrop {
+  z-index: 5000 !important;
+}
+
+.cdk-global-overlay-wrapper {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 5001 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  pointer-events: none;
+}
+
+.cdk-overlay-pane {
+  pointer-events: auto !important;
+}
+
+.cdk-overlay-pane:has(.mat-mdc-dialog-container),
+.app-dialog-panel.cdk-overlay-pane {
+  position: static !important;
+  margin: auto !important;
+  transform: none !important;
+  max-width: calc(100vw - 32px) !important;
+  max-height: calc(100vh - 32px) !important;
+  z-index: 5002 !important;
+}
+
+.cdk-overlay-pane:has(.mat-mdc-menu-panel),
+.cdk-overlay-pane:has(.mat-mdc-select-panel),
+.cdk-overlay-pane:has(.mat-mdc-autocomplete-panel) {
+  z-index: 5200 !important;
+}
+
+.mat-mdc-menu-panel,
+.mat-mdc-select-panel,
+.mat-mdc-autocomplete-panel {
+  position: relative !important;
+  z-index: 5201 !important;
+  border-radius: 12px !important;
+  border: 1px solid var(--ds-line, #dce7f0) !important;
+  box-shadow: 0 18px 45px rgba(15, 45, 77, 0.18) !important;
+}
+
+.app-dialog-panel .mat-mdc-form-field {
+  display: block !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+.app-dialog-panel .mat-mdc-text-field-wrapper {
+  min-height: 56px !important;
+  border-radius: 6px !important;
+  background: var(--ds-surface, #fff) !important;
+}
+
+.app-dialog-panel .mat-mdc-form-field-flex {
+  min-height: 56px !important;
+  align-items: center !important;
+}
+
+.app-dialog-panel .mat-mdc-form-field-infix {
+  min-height: 56px !important;
+  padding-top: 16px !important;
+  padding-bottom: 8px !important;
+}
+
+.app-dialog-panel .mat-mdc-floating-label {
+  max-width: calc(100% - 24px) !important;
+  background: var(--ds-surface, #fff) !important;
+  padding-inline: 4px !important;
+}
+
+.app-dialog-panel input.mat-mdc-input-element,
+.app-dialog-panel textarea.mat-mdc-input-element {
+  color: var(--ds-text, #0f2d4d) !important;
+  font-size: 0.96rem !important;
+  line-height: 1.4 !important;
+}
+
+.app-dialog-panel .mat-mdc-checkbox {
+  --mdc-checkbox-selected-checkmark-color: #fff;
+  --mdc-checkbox-selected-focus-icon-color: var(--ds-accent, #18c2c0);
+  --mdc-checkbox-selected-hover-icon-color: var(--ds-accent, #18c2c0);
+  --mdc-checkbox-selected-icon-color: var(--ds-accent, #18c2c0);
+  --mdc-checkbox-selected-pressed-icon-color: var(--ds-accent, #18c2c0);
+}
+
+app-main-layout .app-page,
+app-main-layout .page-shell,
+app-main-layout .dashboard-page,
+app-main-layout .notifications-page,
+app-main-layout .sa-dashboard {
+  width: 100% !important;
+  max-width: none !important;
+  margin-inline: 0 !important;
+  padding: 28px clamp(20px, 2.6vw, 36px) 48px !important;
+}
+
+app-main-layout .app-card.table-card,
+app-main-layout .app-card.directory-table-card,
+app-main-layout .estate-card.directory-table-card {
+  overflow: hidden !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--ds-line, #dce7f0) !important;
+  background: var(--ds-surface, #fff) !important;
+}
+
+app-main-layout .estate-table-toolbar,
+app-main-layout .directory-toolbar,
+app-main-layout .table-list-toolbar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+  padding: 14px 16px !important;
+  border-bottom: 1px solid var(--ds-line, #dce7f0) !important;
+  background: var(--ds-surface-2, #f8fbff) !important;
+}
+
+app-main-layout .app-table-wrap {
+  width: 100% !important;
+  overflow-x: auto !important;
+  background: var(--ds-surface, #fff) !important;
+}
+
+@media (max-width: 900px) {
+  app-main-layout .main-area,
+  app-main-layout .app-shell.sidebar-collapsed .main-area {
+    margin-inline-start: 0 !important;
+  }
+
+  app-sidebar .sidebar,
+  .sidebar {
+    transform: translateX(-100%) !important;
+  }
+
+  html[dir='rtl'] app-sidebar .sidebar,
+  html[dir='rtl'] .sidebar {
+    transform: translateX(100%) !important;
+  }
+
+  app-main-layout .app-shell:not(.sidebar-collapsed) app-sidebar .sidebar,
+  app-main-layout .app-shell:not(.sidebar-collapsed) .sidebar {
+    transform: translateX(0) !important;
+  }
+}
+
 /* Property-style table and pagination, translated to the medical visual system. */
 .app-data-table {
   width: 100% !important;
@@ -1652,4 +2123,356 @@ button.mat-primary:not(:disabled),
 
 html[dir='rtl'] .srs-pager__nav .material-icons {
   transform: scaleX(-1);
+}
+
+/* System parity pass: Property_Managments structure translated to Vzeeta tokens. */
+.cdk-overlay-container {
+  z-index: 1400 !important;
+}
+
+.cdk-global-overlay-wrapper {
+  padding: 16px !important;
+}
+
+.dialog-backdrop,
+.cdk-overlay-backdrop.dialog-backdrop {
+  background: rgba(15, 45, 77, 0.46) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.app-dialog-panel.cdk-overlay-pane {
+  max-width: calc(100vw - 32px) !important;
+}
+
+.app-dialog-panel .mat-mdc-dialog-container {
+  width: 100% !important;
+  max-height: min(90vh, calc(100vh - 32px)) !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  box-shadow: 0 30px 90px rgba(15, 45, 77, 0.28) !important;
+}
+
+.app-dialog-panel .mat-mdc-dialog-container .mdc-dialog__container,
+.app-dialog-panel .mat-mdc-dialog-container .mat-mdc-dialog-surface {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  max-height: inherit !important;
+  background: var(--ds-surface, #fff) !important;
+  color: var(--ds-text, #0f2d4d) !important;
+}
+
+.app-dialog-panel h2[mat-dialog-title],
+.app-dialog-panel .mat-mdc-dialog-title,
+.app-dialog-panel .app-dialog-title-bar {
+  flex: 0 0 auto !important;
+  min-height: 64px !important;
+  margin: 0 !important;
+  padding: 18px 20px 18px 24px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  background: linear-gradient(135deg, var(--ds-primary, #0f4c81), #0f2d4d) !important;
+  color: #fff !important;
+  font-family: var(--font-ui) !important;
+  font-weight: 800 !important;
+  letter-spacing: 0 !important;
+}
+
+.app-dialog-panel .app-dialog-title-main {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+}
+
+.app-dialog-panel .app-dialog-title-text,
+.app-dialog-panel h2[mat-dialog-title] span:not(.material-icons) {
+  min-width: 0 !important;
+  overflow-wrap: anywhere !important;
+}
+
+.app-dialog-panel .dialog-title-icon,
+.app-dialog-panel h2[mat-dialog-title] .material-icons,
+.app-dialog-panel h2[mat-dialog-title] mat-icon {
+  color: var(--ds-accent, #18c2c0) !important;
+}
+
+.app-dialog-panel .app-dialog-close-btn {
+  flex: 0 0 38px !important;
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid rgba(255, 255, 255, 0.35) !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+.app-dialog-panel .app-dialog-close-btn:hover {
+  background: rgba(255, 255, 255, 0.24) !important;
+}
+
+.app-dialog-panel .app-dialog-close-btn .material-icons,
+.app-dialog-panel .app-dialog-close-btn .mat-icon {
+  width: 22px !important;
+  height: 22px !important;
+  font-size: 22px !important;
+  line-height: 22px !important;
+  color: #fff !important;
+}
+
+.app-dialog-panel mat-dialog-content,
+.app-dialog-panel .mat-mdc-dialog-content,
+.app-dialog-panel .dialog-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  padding: 22px 24px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  color: var(--ds-text, #0f2d4d) !important;
+  background: var(--ds-surface, #fff) !important;
+}
+
+.app-dialog-panel mat-dialog-content > form,
+.app-dialog-panel .dialog-form,
+.app-dialog-panel .rms-dialog-form {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.app-dialog-panel mat-dialog-content > form > .full,
+.app-dialog-panel mat-dialog-content > form > .full-col,
+.app-dialog-panel .dialog-form > .full,
+.app-dialog-panel .dialog-form > .full-col {
+  grid-column: 1 / -1 !important;
+}
+
+.app-dialog-panel mat-form-field,
+.app-dialog-panel app-date-field,
+.app-dialog-panel app-upload-zone,
+.app-dialog-panel app-patient-search-field,
+.app-dialog-panel app-doctor-search-field,
+.app-dialog-panel app-lookup-select {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.app-dialog-panel mat-dialog-actions,
+.app-dialog-panel .mat-mdc-dialog-actions,
+.app-dialog-panel .app-dialog-actions,
+.app-dialog-panel .dialog-actions,
+.app-dialog-panel .dialog-actions-row {
+  flex: 0 0 auto !important;
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 2 !important;
+  margin: 0 !important;
+  padding: 14px 24px 20px !important;
+  min-height: 64px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  border-top: 1px solid var(--ds-line, #dce7f0) !important;
+  background: var(--ds-surface, #fff) !important;
+}
+
+.app-dialog-panel .dialog-intro,
+.app-dialog-panel .confirm-message {
+  grid-column: 1 / -1 !important;
+  margin: 0 0 14px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--ds-line, #dce7f0) !important;
+  background: linear-gradient(180deg, var(--ds-surface-2, #f8fbff), #fff) !important;
+}
+
+.mat-mdc-select-panel.app-select-panel,
+.mat-mdc-select-panel,
+.mat-mdc-autocomplete-panel {
+  border: 1px solid var(--ds-line, #dce7f0) !important;
+  border-radius: 14px !important;
+  background: var(--ds-surface, #fff) !important;
+  box-shadow: var(--ds-shadow, 0 18px 45px rgba(15, 45, 77, 0.14)) !important;
+}
+
+.app-page,
+.page-shell,
+.dashboard-page,
+.notifications-page,
+.sa-dashboard {
+  min-height: calc(100vh - var(--topbar-height, 72px)) !important;
+}
+
+.app-table-wrap,
+.table-card,
+.directory-table-card {
+  min-width: 0 !important;
+}
+
+.app-table-wrap {
+  overflow-x: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(15, 76, 129, 0.22) transparent;
+}
+
+.estate-table-toolbar > *,
+.directory-toolbar > *,
+.table-list-toolbar > * {
+  min-width: 0 !important;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center !important;
+  padding-inline: 8px !important;
+}
+
+.sidebar.collapsed .nav-item.active::before {
+  top: 12% !important;
+  bottom: 12% !important;
+}
+
+.sidebar.collapsed .nav-icon-wrap {
+  margin-inline: auto !important;
+}
+
+@media (max-width: 900px) {
+  .app-shell,
+  .app-shell.sidebar-collapsed {
+    display: flex !important;
+    grid-template-columns: none !important;
+  }
+
+  .sidebar {
+    position: fixed !important;
+    inset-block: 0 !important;
+    inset-inline-start: 0 !important;
+    width: var(--sidebar-width, 248px) !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    transform: translateX(-100%) !important;
+    z-index: 300 !important;
+  }
+
+  html[dir='rtl'] .sidebar {
+    transform: translateX(100%) !important;
+  }
+
+  .app-shell:not(.sidebar-collapsed) .sidebar {
+    transform: translateX(0) !important;
+  }
+
+  .main-area {
+    margin-inline-start: 0 !important;
+  }
+
+  .app-dialog-panel mat-dialog-content > form,
+  .app-dialog-panel .dialog-form,
+  .app-dialog-panel .rms-dialog-form {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .cdk-global-overlay-wrapper {
+    padding: 8px !important;
+  }
+
+  .app-dialog-panel.cdk-overlay-pane {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+  }
+
+  .app-dialog-panel h2[mat-dialog-title],
+  .app-dialog-panel .mat-mdc-dialog-title,
+  .app-dialog-panel .app-dialog-title-bar {
+    padding-inline: 16px 10px !important;
+  }
+
+  .app-dialog-panel mat-dialog-content,
+  .app-dialog-panel .mat-mdc-dialog-content,
+  .app-dialog-panel .dialog-body,
+  .app-dialog-panel mat-dialog-actions,
+  .app-dialog-panel .mat-mdc-dialog-actions,
+  .app-dialog-panel .app-dialog-actions,
+  .app-dialog-panel .dialog-actions,
+  .app-dialog-panel .dialog-actions-row {
+    padding-inline: 16px !important;
+  }
+}
+
+/* Absolute final layer order: must stay at EOF after legacy parity blocks. */
+app-main-layout .app-shell {
+  display: flex !important;
+  min-height: 100vh !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+app-main-layout .main-area {
+  margin-inline-start: var(--sidebar-width, 248px) !important;
+  min-height: 100vh !important;
+  overflow: visible !important;
+}
+
+app-main-layout .app-shell.sidebar-collapsed .main-area {
+  margin-inline-start: var(--sidebar-collapsed-width, 76px) !important;
+}
+
+app-sidebar .sidebar {
+  position: fixed !important;
+  inset-block: 0 !important;
+  inset-inline-start: 0 !important;
+  z-index: 220 !important;
+}
+
+.cdk-overlay-container {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 5000 !important;
+}
+
+.cdk-global-overlay-wrapper {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 5001 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.app-dialog-panel.cdk-overlay-pane,
+.cdk-overlay-pane:has(.mat-mdc-dialog-container) {
+  position: static !important;
+  margin: auto !important;
+  transform: none !important;
+  z-index: 5002 !important;
+}
+
+.cdk-overlay-pane:has(.mat-mdc-menu-panel),
+.cdk-overlay-pane:has(.mat-mdc-select-panel),
+.cdk-overlay-pane:has(.mat-mdc-autocomplete-panel) {
+  z-index: 5200 !important;
+}
+
+@media (max-width: 900px) {
+  app-main-layout .main-area,
+  app-main-layout .app-shell.sidebar-collapsed .main-area {
+    margin-inline-start: 0 !important;
+  }
 }

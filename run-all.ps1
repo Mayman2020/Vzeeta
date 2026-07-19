@@ -4,7 +4,7 @@ param(
     [string]$Mode = "all",
     [string]$MobileDevice = "auto",
     [int]$BackendPort = 8081,
-    [int]$FrontendPort = 4200,
+    [int]$FrontendPort = 4202,
     [int]$MobileWebPort = 3000
 )
 

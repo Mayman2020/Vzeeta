@@ -29,6 +29,8 @@ public class Clinic {
     private boolean active = true;
     private boolean verified = false;
     @Column(name = "commission_percent") private BigDecimal commissionPercent;
+    @Column(name = "rating_avg") private BigDecimal ratingAvg;
+    @Column(name = "rating_count") private Integer ratingCount;
     @CreatedDate @Column(name = "created_at", updatable = false) private LocalDateTime createdAt;
     @LastModifiedDate @Column(name = "updated_at") private LocalDateTime updatedAt;
     @CreatedBy @Column(name = "created_by") private Long createdBy;

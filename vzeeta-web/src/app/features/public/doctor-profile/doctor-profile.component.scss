@@ -110,6 +110,16 @@
   .material-icons { font-size: 16px; color: #94a3b8; }
 }
 
+.clinic-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-inline-start: 4px;
+  color: #0f172a;
+  font-weight: 700;
+  .star-ic { font-size: 14px; color: #f59e0b; }
+}
+
 .profile-stats {
   display: flex;
   align-items: center;

@@ -7,28 +7,28 @@ export const SUPER_ADMIN_ROUTES: Routes = [
     canActivate: [permissionGuard],
     data: { permission: 'dashboard', permissionAction: 'view' },
     loadComponent: () =>
-      import('./super-admin-pages.component').then(m => m.SuperAdminDashboardComponent)
+      import('./super-admin-dashboard/super-admin-dashboard.component').then(m => m.SuperAdminDashboardComponent)
   },
   {
     path: 'clinics',
     canActivate: [permissionGuard],
     data: { permission: 'clinics', permissionAction: 'view' },
     loadComponent: () =>
-      import('./super-admin-pages.component').then(m => m.SuperAdminClinicsComponent)
+      import('./super-admin-clinics/super-admin-clinics.component').then(m => m.SuperAdminClinicsComponent)
   },
   {
     path: 'users',
     canActivate: [permissionGuard],
     data: { permission: 'users', permissionAction: 'view' },
     loadComponent: () =>
-      import('./super-admin-pages.component').then(m => m.SuperAdminUsersComponent)
+      import('./super-admin-users/super-admin-users.component').then(m => m.SuperAdminUsersComponent)
   },
   {
     path: 'verification',
     canActivate: [permissionGuard],
     data: { permission: 'verification', permissionAction: 'view' },
     loadComponent: () =>
-      import('./super-admin-pages.component').then(m => m.SuperAdminVerificationComponent)
+      import('./super-admin-verification/super-admin-verification.component').then(m => m.SuperAdminVerificationComponent)
   },
   {
     path: 'cities',
@@ -40,33 +40,47 @@ export const SUPER_ADMIN_ROUTES: Routes = [
     canActivate: [permissionGuard],
     data: { permission: 'payments', permissionAction: 'view' },
     loadComponent: () =>
-      import('./super-admin-pages.component').then(m => m.SuperAdminPaymentsComponent)
+      import('./super-admin-payments/super-admin-payments.component').then(m => m.SuperAdminPaymentsComponent)
+  },
+  {
+    path: 'subscription-plans',
+    canActivate: [permissionGuard],
+    data: { permission: 'subscriptions', permissionAction: 'view' },
+    loadComponent: () =>
+      import('./super-admin-subscription-plans/super-admin-subscription-plans.component').then(m => m.SuperAdminSubscriptionPlansComponent)
+  },
+  {
+    path: 'clinic-subscriptions',
+    canActivate: [permissionGuard],
+    data: { permission: 'subscriptions', permissionAction: 'view' },
+    loadComponent: () =>
+      import('./super-admin-clinic-subscriptions/super-admin-clinic-subscriptions.component').then(m => m.SuperAdminClinicSubscriptionsComponent)
   },
   {
     path: 'settings',
     canActivate: [permissionGuard],
     data: { permission: 'settings', permissionAction: 'view' },
     loadComponent: () =>
-      import('./super-admin-pages.component').then(m => m.SuperAdminSettingsComponent)
+      import('./super-admin-settings/super-admin-settings.component').then(m => m.SuperAdminSettingsComponent)
   },
   {
     path: 'permissions',
     canActivate: [permissionGuard],
     data: { permission: 'permissions', permissionAction: 'view' },
     loadComponent: () =>
-      import('./super-admin-pages.component').then(m => m.SuperAdminPermissionsComponent)
+      import('./super-admin-permissions/super-admin-permissions.component').then(m => m.SuperAdminPermissionsComponent)
   },
   {
     path: 'lookups',
     canActivate: [permissionGuard],
     data: { permission: 'lookups', permissionAction: 'view' },
     loadComponent: () =>
-      import('./super-admin-lookups.component').then(m => m.SuperAdminLookupsComponent)
+      import('./super-admin-lookups/super-admin-lookups.component').then(m => m.SuperAdminLookupsComponent)
   },
   {
     path: 'profile',
     loadComponent: () =>
-      import('../profile/account-profile.component').then(m => m.AccountProfileComponent)
+      import('../profile/account-profile/account-profile.component').then(m => m.AccountProfileComponent)
   },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
 ];

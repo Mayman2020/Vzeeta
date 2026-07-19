@@ -1,0 +1,99 @@
+import { Component, OnInit } from '@angular/core';
+import { NgFor, NgIf, SlicePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
+import { FeatureShellComponent } from '../../../shared/components/feature-shell/feature-shell.component';
+import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
+import { TablePagerComponent } from '../../../shared/components/table-pager/table-pager.component';
+import { ListLoadController } from '../../../shared/utils/list-load.util';
+import { DEFAULT_TABLE_PAGE_SIZE, withPageParams } from '../../../core/utils/pagination.util';
+import { DoctorPortalService, DoctorAvailability } from '../../../core/services/doctor-portal.service';
+import { Appointment } from '../../../core/models/appointment.model';
+import { SnackService } from '../../../core/services/snack.service';
+import { I18nService } from '../../../core/i18n/i18n.service';
+import { RmsDatePipe } from '../../../shared/pipes/rms-date.pipe';
+
+const DAY_NAME_KEYS = ['COMMON.DAY_SUN', 'COMMON.DAY_MON', 'COMMON.DAY_TUE', 'COMMON.DAY_WED', 'COMMON.DAY_THU', 'COMMON.DAY_FRI', 'COMMON.DAY_SAT'];
+const APPOINTMENT_STATUSES = ['PENDING', 'CONFIRMED', 'RESCHEDULED', 'COMPLETED', 'CANCELLED', 'REJECTED'] as const;
+
+
+@Component({
+  selector: 'app-doctor-prescriptions',
+  standalone: true,
+  imports: [
+    NgFor, NgIf, ReactiveFormsModule, RmsDatePipe, TranslateModule, MatButtonModule, MatCardModule,
+    MatFormFieldModule, MatInputModule, PageHeaderComponent, EmptyStateComponent, TablePagerComponent, MatProgressSpinnerModule
+  ],
+  templateUrl: './doctor-prescriptions.component.html',
+  styleUrls: ['./doctor-prescriptions.component.scss']
+})
+export class DoctorPrescriptionsComponent implements OnInit {
+  listLoad = new ListLoadController();
+  rows: Record<string, unknown>[] = [];
+  pageIndex = 0;
+  pageSize = DEFAULT_TABLE_PAGE_SIZE;
+  totalElements = 0;
+  showForm = false;
+  saving = false;
+  rxForm: FormGroup;
+
+  constructor(
+    fb: FormBuilder,
+    private readonly doctorPortal: DoctorPortalService,
+    private readonly snack: SnackService,
+    private readonly i18n: I18nService
+  ) {
+    this.rxForm = fb.group({
+      appointmentId: [null, Validators.required],
+      patientId: [null, Validators.required],
+      diagnosisAr: ['', Validators.required],
+      medicineName: ['', Validators.required],
+      dosage: [''],
+      notes: ['']
+    });
+  }
+
+  ngOnInit(): void { this.load(); }
+  load(): void {
+    this.listLoad.begin();
+    this.doctorPortal.getPrescriptions(withPageParams(this.pageIndex, this.pageSize)).subscribe({
+      next: (res) => { this.rows = res.content; this.totalElements = res.totalElements; this.listLoad.end(); },
+      error: () => { this.rows = []; this.totalElements = 0; this.listLoad.end(); }
+    });
+  }
+  onPageChange(i: number): void { this.pageIndex = i; this.load(); }
+
+  submitPrescription(): void {
+    if (this.rxForm.invalid) return;
+    this.saving = true;
+    const v = this.rxForm.value;
+    this.doctorPortal.createPrescription({
+      appointmentId: Number(v.appointmentId),
+      patientId: Number(v.patientId),
+      diagnosisAr: v.diagnosisAr,
+      notes: v.notes,
+      items: [{ medicineName: v.medicineName, dosage: v.dosage }]
+    }).subscribe({
+      next: () => {
+        this.snack.success(this.i18n.instant('DOCTOR.PRESCRIPTION_SAVED'));
+        this.saving = false;
+        this.showForm = false;
+        this.rxForm.reset();
+        this.load();
+      },
+      error: () => { this.saving = false; }
+    });
+  }
+}

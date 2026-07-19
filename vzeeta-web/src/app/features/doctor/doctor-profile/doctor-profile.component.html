@@ -1,0 +1,8 @@
+    <app-page-header titleKey="NAV.PROFILE"></app-page-header>
+    <div *ngIf="loading" class="loading-wrap"><mat-spinner diameter="40"></mat-spinner></div>
+    <mat-card *ngIf="!loading" class="profile-card">
+      <h2>{{ displayName }}</h2>
+      <p *ngIf="profile['titleAr']">{{ profile['titleAr'] }}</p>
+      <p>{{ 'BOOKING.FEE' | translate }}: {{ profile['consultationFee'] }} {{ 'COMMON.EGP' | translate }}</p>
+      <a mat-stroked-button routerLink="/auth/change-password">{{ 'PROFILE.CHANGE_PASSWORD' | translate }}</a>
+    </mat-card>
